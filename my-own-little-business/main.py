@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
 import argparse
-# import asyncio
-from aiohttp import web
 import configparser
-from importlib.machinery import SourceFileLoader
 import os
 import sys
 
+from aiohttp import web
+from aiohttp_jinja2 import setup as jinja_setup
+from jinja2 import FileSystemLoader
+
+from routes import setup_routes
+from view import handler
 
 def read_configuration_file():
     directory = os.path.dirname(os.path.abspath(__file__))
@@ -30,12 +33,15 @@ def read_configuration_file():
 
 def start_app(app_config):
     app = web.Application()
-    # app["config"] = app_config
 
-    web.run_app(app, host=app_config["host"], port=int(app_config["port"]))
+    setup_routes(app)
+
+    jinja_setup(app, loader=FileSystemLoader("templates"))
+
+    web.run_app(app, host=app_config["server"]["host"],
+                port=int(app_config["server"]["port"]))
 
 
 if __name__ == "__main__":
     config = read_configuration_file()
-    import pdb; pdb.set_trace()
-    start_app(config["server"])
+    start_app(config)
