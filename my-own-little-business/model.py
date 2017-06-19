@@ -7,7 +7,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Numeric
 from sqlalchemy import String
-from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -78,15 +77,6 @@ class Batch(Base):
         return "<Batch (date=%s, opened=%s)>".format(self.date, self.opened)
 
 
-product_order_atbl = Table(
-    "order_product_association",
-    Base.metadata,
-    Column("order_id", Integer, ForeignKey("order.id")),
-    Column("product_id", Integer, ForeignKey("product.id")),
-    Column("quantity", Integer, default=1)
-)
-
-
 class Product(Base):
     __tablename__ = "product"
 
@@ -100,12 +90,12 @@ class Product(Base):
 
 
 class Order(Base):
-    __tablename__ = "order"
+    __tablename__ = "order_"
 
     id = Column(Integer, primary_key=True)
     order_placed_at = Column(DateTime, default=datetime.utcnow)
 
-    products = relationship("Product", secondary=product_order_atbl)
+    products = relationship("OrderProductAssociation")
 
     client_id = Column(Integer, ForeignKey("client.id"))
     client = relationship("Client", back_populates="orders")
@@ -118,6 +108,17 @@ class Order(Base):
 
     def __repr__(self):
         return "<Product (order_placed_at=%s)>".format(self.order_placed_at)
+
+
+class OrderProductAssociation(Base):
+    __tablename__ = "order_product_association"
+
+    quantity = Column(Integer, default=1)
+
+    order_id = Column(Integer, ForeignKey("order_.id"), primary_key=True)
+    product_id = Column(Integer, ForeignKey("product.id"), primary_key=True)
+
+    product = relationship("Product")
 
 
 class Payment(Base):
