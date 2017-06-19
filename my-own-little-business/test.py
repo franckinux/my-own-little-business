@@ -13,6 +13,7 @@ from model import Repository
 from model import Batch
 from model import Product
 from model import Order
+from model import OrderProductAssociation
 from model import Payment
 from utils import read_configuration_file
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     }
     dsn = str(URL(**connection_infos))
 
-    engine = create_engine(dsn, echo=True)
+    engine = create_engine(dsn, echo=False)
 
     Session = sessionmaker(bind=engine)
 
@@ -79,28 +80,51 @@ if __name__ == "__main__":
 
     # link basic object between them
 
-    Session = sessionmaker(bind=engine)
     client_1.repository = repo_1
     client_2.repository = repo_1
 
-    # order_1 = Order()
-    # session.add(order_1)
-    # order_1.client = client_1
-    # order_1.batch = batch_1
-    # order_1.products.append((product_1, 2, "2017-06-18 22:00:00"))
-    # order_1.products.append((product_2, 3))
+    # ---
+    order_1 = Order()
+    session.add(order_1)
+    order_1.client = client_1
+    order_1.batch = batch_1
 
-    # order_2 = Order()
-    # session.add(order_2)
-    # order_2.client = client_1
-    # order_2.products.append((product_1, 1))
-    # order_2.batch = batch_2
-    #
-    # order_3 = Order()
-    # session.add(order_3)
-    # order_3.client = client_2
-    # order_1.products.append((product_1, 1))
-    # order_3.batch = batch_1
+    poa_1_1 = OrderProductAssociation(quantity=2)
+    session.add(poa_1_1)
+    poa_1_1.product = product_1
+    order_1.products.append(poa_1_1)
+
+    poa_1_2 = OrderProductAssociation(quantity=3)
+    session.add(poa_1_2)
+    poa_1_2.product = product_2
+    order_1.products.append(poa_1_2)
+
+    print("client.first_name =", order_1.client.first_name)
+    for poa in order_1.products:
+        print("quantity =", poa.quantity)
+        print("product =", poa.product.name)
+
+    # ---
+    order_2 = Order()
+    session.add(order_2)
+    order_2.client = client_1
+    order_2.batch = batch_2
+
+    poa_2 = OrderProductAssociation(quantity=3)
+    session.add(poa_2)
+    poa_2.product = product_1
+    order_2.products.append(poa_2)
+
+    # ---
+    order_3 = Order()
+    session.add(order_3)
+    order_3.client = client_2
+    order_3.batch = batch_1
+
+    poa_3 = OrderProductAssociation()
+    session.add(poa_3)
+    poa_3.product = product_1
+    order_3.products.append(poa_3)
 
     session.commit()
 
