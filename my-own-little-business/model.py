@@ -24,14 +24,6 @@ class Administrator(Base):
     email_address = Column(String, nullable=False)
     receive_notifications = Column(Boolean, default=True)
 
-    def __init__(self, login, first_name, last_name, email_address,
-                 receive_notifications=True):
-        self.login = login
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email_address = email_address
-        self.receive_notifications = receive_notifications
-
     def __repr__(self):
         return "<Administrator (login=%s)>".format(self.login)
 
@@ -54,16 +46,6 @@ class Client(Base):
 
     orders = relationship("Order", back_populates="client")
 
-    def __init__(self, login, first_name, last_name, email_address, phone_number,
-                 receive_bill=True, wallet=0):
-        self.login = login
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email_address = email_address
-        self.phone_number = phone_number
-        self.receive_bill = receive_bill
-        self.wallet = wallet
-
     def __repr__(self):
         return "<Client (login=%s, first_name=%s, last_name=%s)>".format(
             self.login, self.first_name, self.last_name
@@ -78,9 +60,6 @@ class Repository(Base):
 
     clients = relationship("Client", back_populates="repository")
 
-    def __init__(self, name):
-        self.name = name
-
     def __repr__(self):
         return "<Repository (name=%s)>".format(self.name)
 
@@ -94,11 +73,6 @@ class Batch(Base):
     opened = Column(Boolean, default=True)
 
     orders = relationship("Order", back_populates="batch")
-
-    def __init__(self, date, capacity, opened=True):
-        self.date = date
-        self.capacity = capacity
-        self.opened = opened
 
     def __repr__(self):
         return "<Batch (date=%s, opened=%s)>".format(self.date, self.opened)
@@ -120,11 +94,6 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(String)
     price = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
-
-    def __init__(self, name, description, price):
-        self.name = name
-        self.description = description
-        self.price = price
 
     def __repr__(self):
         return "<Product (name=%s, price=%s)>".format(self.name, self.price)
@@ -161,9 +130,6 @@ class Payment(Base):
     reference = Column(String, nullable=True)
 
     orders = relationship("Order", back_populates="payment")
-
-    def __init__(self, total):
-        self.total = total
 
     def __repr__(self):
         return "<Payment (total=%s, payed_at=%s)>".format(self.total, self.payed_at)
