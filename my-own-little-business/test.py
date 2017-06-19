@@ -42,28 +42,37 @@ if __name__ == "__main__":
 
     session = Session()
 
-    administrator = Administrator("admin", "Franck", "Barbenoire",
-                                  "contact@franck-barbenoire.fr")
+    administrator = Administrator(login="admin", first_name="Franck",
+                                  last_name="Barbenoire",
+                                  email_address="contact@franck-barbenoire.fr")
     session.add(administrator)
 
-    client_1 = Client("rabid", "Raymonde", "Bidochon", "ra.bidochon@binet.namecom", "01-40-50-50-01")
+    client_1 = Client(login="rabid", first_name="Raymonde", last_name="Bidochon",
+                      email_address="ra.bidochon@binet.namecom",
+                      phone_number="01-40-50-50-01")
     session.add(client_1)
-    client_2 = Client("robid", "Robert", "Bidochon", "ro.bidochon@binet.namecom", "01-40-50-50-02")
+    client_2 = Client(login="robid", first_name="Robert", last_name="Bidochon",
+                      email_address="ro.bidochon@binet.namecom",
+                      phone_number="01-40-50-50-02")
     session.add(client_2)
 
-    repo_1 = Repository("Haut village")
+    repo_1 = Repository(name="Haut village")
     session.add(repo_1)
-    repo_2 = Repository("Bas village")
+    repo_2 = Repository(name="Bas village")
     session.add(repo_2)
 
-    product_1 = Product("Pain au sarrasin", "Pain avec de la faine de sarrasin dedans", 5)
+    product_1 = Product(name="Pain au sarrasin",
+                        description="Pain avec de la faine de sarrasin dedans",
+                        price=5)
     session.add(product_1)
-    product_2 = Product("Pain de seigle", "Pain avec de la faine de seigle dedans", 4)
+    product_2 = Product(name="Pain de seigle",
+                        description="Pain avec de la faine de seigle dedans",
+                        price=4)
     session.add(product_2)
 
-    batch_1 = Batch("2017-06-18 08:00:00", 50)
+    batch_1 = Batch(date="2017-06-18 08:00:00", capacity=50)
     session.add(batch_1)
-    batch_2 = Batch("2017-06-19 08:00:00", 50, False)
+    batch_2 = Batch(date="2017-06-19 08:00:00", capacity=50, opened=False)
     session.add(batch_2)
 
     session.commit()
