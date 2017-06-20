@@ -128,4 +128,25 @@ if __name__ == "__main__":
 
     session.commit()
 
+
+    # compute batch load
+    load = 0
+    for order in batch_1.orders:
+        for poa in order.products:
+            load += poa.quantity
+    print("batch 1 load :", load)
+    print("batch 1 capacity :", batch_1.capacity)
+
+    # compute order total price
+    price = 0
+    for poa in order_1.products:
+        price += poa.product.price * poa.quantity
+    print("order 1 total price :", price)
+
+    # search for all orders from a client
+    orders = client_1.orders
+    print("{} orders for client {} {}".format(len(orders), client_1.first_name, client_1.last_name))
+    for order in orders:
+        print("order datetime :", order.placed_at)
+
     engine.dispose()

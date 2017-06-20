@@ -17,7 +17,7 @@ class Administrator(Base):
     __tablename__ = "administrator"
 
     id = Column(Integer, primary_key=True)
-    login = Column(String, nullable=False)
+    login = Column(String, nullable=False, unique=True)
     first_name = Column(String)
     last_name = Column(String)
     email_address = Column(String, nullable=False)
@@ -32,11 +32,11 @@ class Client(Base):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    login = Column(String, nullable=False)
+    login = Column(String, nullable=False, unique=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email_address = Column(String, nullable=False)
-    phone_number = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
     receive_bill = Column(Boolean, default=False)
     wallet = Column(Numeric(precision=8, scale=2, asdecimal=True), default=0)
 
@@ -107,7 +107,7 @@ class Order(Base):
     payment = relationship("Payment", back_populates="orders")
 
     def __repr__(self):
-        return "<Product (placed_at={})>".format(self.placed_at)
+        return "<Order (placed_at={})>".format(self.placed_at)
 
 
 class OrderProductAssociation(Base):
