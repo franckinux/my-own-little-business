@@ -24,7 +24,7 @@ class Administrator(Base):
     receive_notifications = Column(Boolean, default=True)
 
     def __repr__(self):
-        return "<Administrator (login=%s)>".format(self.login)
+        return "<Administrator (login={})>".format(self.login)
 
 
 class Client(Base):
@@ -46,7 +46,7 @@ class Client(Base):
     orders = relationship("Order", back_populates="client")
 
     def __repr__(self):
-        return "<Client (login=%s, first_name=%s, last_name=%s)>".format(
+        return "<Client (login={}, first_name={}, last_name={})>".format(
             self.login, self.first_name, self.last_name
         )
 
@@ -60,7 +60,7 @@ class Repository(Base):
     clients = relationship("Client", back_populates="repository")
 
     def __repr__(self):
-        return "<Repository (name=%s)>".format(self.name)
+        return "<Repository (name={})>".format(self.name)
 
 
 class Batch(Base):
@@ -74,7 +74,7 @@ class Batch(Base):
     orders = relationship("Order", back_populates="batch")
 
     def __repr__(self):
-        return "<Batch (date=%s, opened=%s)>".format(self.date, self.opened)
+        return "<Batch (date={}, opened={})>".format(self.date, self.opened)
 
 
 class Product(Base):
@@ -86,14 +86,14 @@ class Product(Base):
     price = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
 
     def __repr__(self):
-        return "<Product (name=%s, price=%s)>".format(self.name, self.price)
+        return "<Product (name={}, price={})>".format(self.name, self.price)
 
 
 class Order(Base):
     __tablename__ = "order_"
 
     id = Column(Integer, primary_key=True)
-    order_placed_at = Column(DateTime, default=datetime.utcnow)
+    placed_at = Column(DateTime, default=datetime.utcnow)
 
     products = relationship("OrderProductAssociation")
 
@@ -107,7 +107,7 @@ class Order(Base):
     payment = relationship("Payment", back_populates="orders")
 
     def __repr__(self):
-        return "<Product (order_placed_at=%s)>".format(self.order_placed_at)
+        return "<Product (placed_at={})>".format(self.placed_at)
 
 
 class OrderProductAssociation(Base):
@@ -133,4 +133,4 @@ class Payment(Base):
     orders = relationship("Order", back_populates="payment")
 
     def __repr__(self):
-        return "<Payment (total=%s, payed_at=%s)>".format(self.total, self.payed_at)
+        return "<Payment (total={}, payed_at={})>".format(self.total, self.payed_at)
