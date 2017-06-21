@@ -2,12 +2,10 @@ import os
 import sys
 
 from sqlalchemy import create_engine
-import sqlalchemy as sa
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 
 from model import Administrator
-from model import Base
 from model import Client
 from model import Repository
 from model import Batch
@@ -115,6 +113,10 @@ if __name__ == "__main__":
     poa_2.product = product_1
     order_2.products.append(poa_2)
 
+    payment_2 = Payment(total=10)
+    session.add(payment_2)
+    order_2.payment = payment_2
+
     # ---
     order_3 = Order()
     session.add(order_3)
@@ -136,17 +138,26 @@ if __name__ == "__main__":
             load += poa.quantity
     print("batch 1 load :", load)
     print("batch 1 capacity :", batch_1.capacity)
+    print("---")
 
     # compute order total price
     price = 0
     for poa in order_1.products:
         price += poa.product.price * poa.quantity
     print("order 1 total price :", price)
+    print("---")
 
     # search for all orders from a client
     orders = client_1.orders
     print("{} orders for client {} {}".format(len(orders), client_1.first_name, client_1.last_name))
     for order in orders:
+        print("order datetime :", order.placed_at)
+    print("---")
+
+    # search for all non payed orders from a client
+    rows = session.query(Client, Order).join(Client.orders).filter(Client.id == client_1.id).filter(Order.payment != None)
+    print("{} orders for client {} {}".format(rows.count(), client_1.first_name, client_1.last_name))
+    for client, order in rows:
         print("order datetime :", order.placed_at)
 
     engine.dispose()
