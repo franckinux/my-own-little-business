@@ -1,8 +1,10 @@
 from datetime import datetime
+import enum
 
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Numeric
@@ -11,6 +13,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
+
+class PayedStatusEnum(enum.Enum):
+    not_payed = 0
+    payed_by_check = 1
+    payed_inline = 2
 
 
 class Administrator(Base):
@@ -32,12 +40,12 @@ class Client(Base):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    last_seen = Column(DateTime, nullable=True)
     login = Column(String, nullable=False, unique=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email_address = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
-    receive_bill = Column(Boolean, default=False)
     wallet = Column(Numeric(precision=8, scale=2, asdecimal=True), default=0)
 
     repository_id = Column(Integer, ForeignKey("repository.id"))
@@ -127,7 +135,7 @@ class Payment(Base):
     id = Column(Integer, primary_key=True)
     total = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
     payed_at = Column(DateTime, nullable=True)
-    mode = Column(String, nullable=True)
+    mode = Column(Enum(PayedStatusEnum), nullable=True, default=PayedStatusEnum.not_payed)
     reference = Column(String, nullable=True)
 
     orders = relationship("Order", back_populates="payment")
