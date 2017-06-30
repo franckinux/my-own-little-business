@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Operations on repositories{% endblock %}
+{% block content %}
+
+<p><a href="/admin/">Administration</a></p>
+
+<p><a href="/repository/create/">Create a repository</a></p>
+
+<hr>
+
+<table border="1">
+{% for repo in repositories %}
+   <tr>
+      <td><a href="/repository/edit/{{ repo.id }}/">{{ repo.name }}</a></td>
+      <td><a href="/repository/delete/{{ repo.id }}/">Delete</a></td>
+   </tr>
+{% endfor %}
+</table>
+
+{% endblock %}

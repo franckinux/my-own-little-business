@@ -64,6 +64,7 @@ class Repository(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    opened = Column(Boolean, default=True)
 
     clients = relationship("Client", back_populates="repository")
 
@@ -92,6 +93,7 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(String)
     price = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
+    selectable = Column(Boolean, default=True)
 
     def __repr__(self):
         return "<Product (name={}, price={})>".format(self.name, self.price)

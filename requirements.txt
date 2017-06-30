@@ -14,5 +14,5 @@ python-dateutil==2.6.0
 python-editor==1.0.3
 six==1.10.0
 SQLAlchemy==1.1.11
-WTForm==1.0
+WTForms==2.1
 yarl==0.10.3

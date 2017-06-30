@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import asyncio
 import configparser
 import os
 import sys
@@ -14,10 +15,12 @@ from sqlalchemy.engine.url import URL
 
 from routes import setup_routes
 from utils import read_configuration_file
-from view import handler
 
 
-async def attach_db(app):
+async def attach_db(app, loop=None):
+    if loop is None:
+        loop = asyncio.get_event_loop()
+
     config = app["config"]
     config["database"]["password"] = os.getenv("PG_PASS", "") or config["database"]["password"]
 
@@ -31,13 +34,12 @@ async def attach_db(app):
     }
     dsn = str(URL(**db_connection_infos))
 
-    app["db"] = await create_engine(dsn)
+    app["engine"] = await create_engine(dsn, loop=loop)
 
 
 async def detach_db(app):
-    app["db"].close()
-    await app["db"].wait_closed()
-    app["db"] = None
+    app["engine"].close()
+    await app["engine"].wait_closed()
 
 
 def start_app(config):
@@ -49,7 +51,7 @@ def start_app(config):
     jinja_setup(app, loader=FileSystemLoader("templates"))
 
     app.on_startup.append(attach_db)
-    app.on_shutdown.append(detach_db)
+    app.on_cleanup.append(detach_db)
 
     web.run_app(
         app,
