@@ -3,15 +3,16 @@
 <head>
     {% block head %}
     <link rel="stylesheet" href="style.css" />
-    <title>{% block title %}{% endblock %}</title>
+    <title>My Onwn Little Business</title>
     {% endblock %}
 </head>
 <body>
+    <h1>{% block title %}{% endblock %}</h1>
+    <hr>
+
     <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
-        {% block footer %}
-        &copy; Copyright 2017</a>
-        {% endblock %}
-    </div>
+
+    <hr>
+    <p>Copyright (c) 2017</p>
 </body>
 </html>
