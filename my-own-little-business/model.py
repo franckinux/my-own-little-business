@@ -63,7 +63,7 @@ class Repository(Base):
     __tablename__ = "repository"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     opened = Column(Boolean, default=True)
 
     clients = relationship("Client", back_populates="repository")
@@ -90,7 +90,7 @@ class Product(Base):
     __tablename__ = "product"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(String)
     price = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
     selectable = Column(Boolean, default=True)

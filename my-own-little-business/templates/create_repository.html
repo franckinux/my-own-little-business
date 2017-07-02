@@ -1,16 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Repository creation{% endblock %}
-{% block content %}
+{% block title %}Create repository{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="/admin/">Administration</a></li>
+    <li><a href="/repository/list/">Repositories</a></li>
+    <li class="active">Create repository</li>
+</ol>
+{% endblock %}
 
-<p><a href="/admin/">Administration</a>, <a href="/repository/list/">Repositories</a></p>
-
-<form method="POST" action="/repository/create/">
-    <div>{{ form.name.label }} : {{ form.name() }}</div>
-    {% if form.name.errors %}
-        <ul class="errors">{% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-    {% endif %}
-    <div>{{ form.opened.label }} : {{ form.opened() }}</div>
-
-    <div><input id="submit_button" name="submit_button" type="submit" value="Submit"></div>
+{% block page_content %}
+<form method="POST" action="/repository/create/" role="form">
+    <div class="form-group{% if form.name.errors %} has-error{% endif %}">
+        <label for="name">{{ form.name.label }}</label>
+        {{ form.name(class="form-control", placeholder="Enter name") }}
+        {% if form.name.errors %}
+	<div class="help-text">
+            {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="opened">{{ form.opened.label }}</label>
+	{{ form.opened() }}
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/repository/list/" class="btn btn-default">Cancel</a>
+    </div>
 </form>
 {% endblock %}

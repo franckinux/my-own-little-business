@@ -1,3 +1,7 @@
+my-own-little-business/static/bootstrap/
+my-own-little-business/static/jquery/
+my-own-little-business/templates/bootstrap/
+tmp/
 *~
 
 # Byte-compiled / optimized / DLL files
