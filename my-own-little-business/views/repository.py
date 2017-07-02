@@ -49,13 +49,13 @@ async def delete_repository(request):
     async with request.app["engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Repository).where(Repository.__table__.c.id == id_)
+        ok = False
         try:
             result = await conn.execute(q)
             message = "successfuly deleted"
             ok = True
         except IntegrityError:
             message = "cannot delete repository"
-            ok = False
         finally:
             result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
             rows = await result.fetchall()

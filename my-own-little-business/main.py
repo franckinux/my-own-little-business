@@ -42,7 +42,9 @@ async def detach_db(app):
     await app["engine"].wait_closed()
 
 
-def start_app(config):
+def create_app():
+    config = read_configuration_file()
+
     app = web.Application()
     app["config"] = config
 
@@ -53,16 +55,14 @@ def start_app(config):
     app.on_startup.append(attach_db)
     app.on_cleanup.append(detach_db)
 
-    web.run_app(
-        app,
-        host=config["http_server"]["host"],
-        port=int(config["http_server"]["port"])
-    )
+    return app
 
 
 if __name__ == "__main__":
-    config = read_configuration_file()
-    if not config:
-        sys.exit(1)
+    app = create_app()
 
-    start_app(config)
+    web.run_app(
+        app,
+        host=app["config"]["http_server"]["host"],
+        port=int(app["config"]["http_server"]["port"])
+    )
