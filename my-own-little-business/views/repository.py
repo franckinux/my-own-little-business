@@ -15,7 +15,7 @@ from model import Repository
 
 
 class RepositoryForm(Form):
-    name = StringField("Name", [validators.Required(), validators.Length(min=4, max=128)])
+    name = StringField("Name", [validators.Required(), validators.Length(min=6, max=128)])
     opened = BooleanField("Opened")
 
 
@@ -29,25 +29,40 @@ async def create_repository(request):
             form = RepositoryForm(await request.post())
             if form.validate():
                 q = insert(Repository).values(**dict(form.data.items()))
-                await conn.execute(q)
-                return HTTPFound("/repository/list/")
+                try:
+                    await conn.execute(q)
+                except IntegrityError as e:
+                    message = "cannot create the repository"
+                    return {"form": form, "warning_message": message}
+                message = "repository successfuly created"
+                return {"form": form, "success_message": message}
             else:
-                return {"form": form}
+                message = "there are some fields in arror in the form"
+                return {"form": form, "warning_message": message}
         else:  # GET !
             form = RepositoryForm()
             return {"form": form}
 
 
+@aiohttp_jinja2.template("list_repository.html")
 async def delete_repository(request):
     async with request.app["engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Repository).where(Repository.__table__.c.id == id_)
         try:
             result = await conn.execute(q)
+            message = "successfuly deleted"
+            ok = True
         except IntegrityError:
-            # display an error message
-            pass
-        return HTTPFound("/repository/list/")
+            message = "cannot delete repository"
+            ok = False
+        finally:
+            result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
+            rows = await result.fetchall()
+            if ok:
+                return {"repositories": rows, "success_message": message}
+            else:
+                return {"repositories": rows, "warning_message": message}
 
 
 @aiohttp_jinja2.template("edit_repository.html")
@@ -63,11 +78,19 @@ async def edit_repository(request):
         if request.method == "POST":
             form = RepositoryForm(await request.post(), data=data)
             if form.validate():
-                q = update(Repository).where(Repository.__table__.c.id == id_).values(**dict(form.data.items()))
-                await conn.execute(q)
-                return HTTPFound("/repository/edit/{}/".format(id_))
+                q = update(Repository).where(
+                    Repository.__table__.c.id == id_).values(**dict(form.data.items())
+                    )
+                try:
+                    await conn.execute(q)
+                except IntegrityError:
+                    message = "cannot edit the repository"
+                    return {"id": id_, "form": form, "warning_message": message}
+                message = "repository successfuly edited"
+                return {"id": id_, "form": form, "success_message": message}
             else:
-                return {"id": id_, "form": form}
+                message = "there are some fields in error"
+                return {"id": id_, "form": form, "warning_message": message}
         else:  # GET !
             form = RepositoryForm(data=data)
             return {"id": id_, "form": form}

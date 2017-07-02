@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    {% block head %}
-    <link rel="stylesheet" href="style.css" />
-    <title>My Onwn Little Business</title>
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<div class="container">
+    {% block breadcrumb %}{% endblock %}
+    {% block message %}
+    {% if success_message %}
+     <div class="alert alert-success">
+	 <strong>Success!</strong> {{ success_message }}
+    </div>
+    {% endif %}
+    {% if warning_message %}
+    <div class="alert alert-warning">
+	<strong>Warning!</strong> {{ warning_message }}
+    </div>
+    {% endif %}
     {% endblock %}
-</head>
-<body>
-    <h1>{% block title %}{% endblock %}</h1>
-    <hr>
-
-    <div id="content">{% block content %}{% endblock %}</div>
-
-    <hr>
-    <p>Copyright (c) 2017</p>
-</body>
-</html>
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}

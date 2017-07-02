@@ -30,3 +30,9 @@ Create a user and a database : ::
     Type "help" for help.
 
     molb=> \q
+
+Downloads
+=========
+
+- `JQuery <https://code.jquery.com/jquery/>`_
+- `Bootstrap <http://getbootstrap.com/>`_

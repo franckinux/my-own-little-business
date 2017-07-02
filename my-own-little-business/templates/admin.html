@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Administration menu{% endblock %}
-{% block content %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="active">Administration</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
 <ul>
   <li><a href="/repository/list/">Repositories</a></li>
 </ul>
