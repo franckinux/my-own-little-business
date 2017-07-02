@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Create batch{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="/admin/">Administration</a></li>
+    <li><a href="/batch/list/">Batches</a></li>
+    <li class="active">Create batch</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="/batch/create/" role="form">
+    <div class="form-group{% if form.date.errors %} has-error{% endif %}">
+        <label for="date">{{ form.date.label }}</label>
+        {{ form.date(class="form-control", placeholder="Enter date") }}
+        {% if form.date.errors %}
+	<div class="help-text">
+            {% for error in form.date.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
+        <label for="capacity">{{ form.capacity.label }}</label>
+        {{ form.capacity(class="form-control", placeholder="Enter capacity") }}
+        {% if form.capacity.errors %}
+	<div class="help-text">
+            {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="opened">{{ form.opened.label }}</label>
+	{{ form.opened() }}
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/batch/list/" class="btn btn-default">Cancel</a>
+    </div>
+</form>
+{% endblock %}
