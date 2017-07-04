@@ -9,7 +9,8 @@ from sqlalchemy.sql import update
 from sqlalchemy.sql.expression import desc
 from wtforms import Form
 from wtforms import BooleanField
-from wtforms import DateTimeField
+# from wtforms import DateTimeField
+from wtforms import HiddenField
 from wtforms import IntegerField
 from wtforms import validators
 
@@ -17,7 +18,8 @@ from model import Batch
 
 
 class BatchForm(Form):
-    date = DateTimeField("Date", [validators.Required()], format="%Y-%m-%d")
+    # date = DateTimeField("Date", [validators.Required()], format="%Y-%m-%d", type="hidden", value="")
+    date = HiddenField("Date", [validators.Required()])
     capacity = IntegerField("Capacity", [validators.Required()])
     opened = BooleanField("Opened")
 
