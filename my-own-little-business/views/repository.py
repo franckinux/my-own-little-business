@@ -19,7 +19,7 @@ class RepositoryForm(Form):
     opened = BooleanField("Opened")
 
 
-@aiohttp_jinja2.template("create_repository.html")
+@aiohttp_jinja2.template("create-repository.html")
 async def create_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
@@ -44,7 +44,7 @@ async def create_repository(request):
             return {"form": form}
 
 
-@aiohttp_jinja2.template("list_repository.html")
+@aiohttp_jinja2.template("list-repository.html")
 async def delete_repository(request):
     async with request.app["engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
@@ -65,7 +65,7 @@ async def delete_repository(request):
                 return {"repositories": rows, "warning_message": message}
 
 
-@aiohttp_jinja2.template("edit_repository.html")
+@aiohttp_jinja2.template("edit-repository.html")
 async def edit_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
@@ -96,7 +96,7 @@ async def edit_repository(request):
             return {"id": id_, "form": form}
 
 
-@aiohttp_jinja2.template("list_repository.html")
+@aiohttp_jinja2.template("list-repository.html")
 async def list_repository(request):
     async with request.app["engine"].acquire() as conn:
         result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))

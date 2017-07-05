@@ -24,7 +24,7 @@ class BatchForm(Form):
     opened = BooleanField("Opened")
 
 
-@aiohttp_jinja2.template("create_batch.html")
+@aiohttp_jinja2.template("create-batch.html")
 async def create_batch(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
@@ -49,7 +49,7 @@ async def create_batch(request):
             return {"form": form}
 
 
-@aiohttp_jinja2.template("list_batch.html")
+@aiohttp_jinja2.template("list-batch.html")
 async def delete_batch(request):
     async with request.app["engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
@@ -70,7 +70,7 @@ async def delete_batch(request):
                 return {"batches": rows, "warning_message": message}
 
 
-@aiohttp_jinja2.template("edit_batch.html")
+@aiohttp_jinja2.template("edit-batch.html")
 async def edit_batch(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
@@ -101,7 +101,7 @@ async def edit_batch(request):
             return {"id": id_, "form": form}
 
 
-@aiohttp_jinja2.template("list_batch.html")
+@aiohttp_jinja2.template("list-batch.html")
 async def list_batch(request):
     async with request.app["engine"].acquire() as conn:
         result = await conn.execute(select([Batch]).limit(30).order_by(desc(Batch.__table__.c.date)))
