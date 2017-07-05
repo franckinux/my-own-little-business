@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Operations on products{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="/admin/">Administration</a></li>
+    <li class="active">Products</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<a href="/product/create/" class="btn btn-default">Create a product</a>
+
+<table class="table table-hover">
+   <thead>
+      <tr>
+         <th>Name</th>
+         <th>Available</th>
+         <th>Price</th>
+         <th></th>
+      </tr>
+   </thead>
+{% for product in products %}
+   <tbody>
+      <tr>
+         <td><a href="/product/edit/{{ product.id }}/">{{ product.name }}</a></td>
+         <td>{{ product.available }}</td>
+         <td><a href="/product/delete/{{ product.id }}/">Delete</a></td>
+      </tr>
+   </tbody>
+{% endfor %}
+</table>
+{% endblock %}

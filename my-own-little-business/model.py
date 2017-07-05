@@ -93,8 +93,8 @@ class Product(Base):
     name = Column(String, nullable=False, unique=True)
     description = Column(String)
     price = Column(Numeric(precision=8, scale=2, asdecimal=True), nullable=False)
-    selectable = Column(Boolean, default=True)
     load = Column(Numeric(precision=8, scale=2, asdecimal=True), default=1)
+    available = Column(Boolean, default=True)
 
     def __repr__(self):
         return "<Product (name={}, price={})>".format(self.name, self.price)
