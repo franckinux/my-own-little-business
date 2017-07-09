@@ -2,19 +2,32 @@
 
 import argparse
 import asyncio
+import base64
 import configparser
 import os
 import sys
 
 from aiohttp import web
 from aiohttp_jinja2 import setup as jinja_setup
+from aiohttp_session import setup as session_setup, get_session, session_middleware
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiopg.sa import create_engine
+from cryptography import fernet
 from jinja2 import FileSystemLoader
 import sqlalchemy as sa
 from sqlalchemy.engine.url import URL
 
 from routes import setup_routes
 from utils import read_configuration_file
+
+
+def setup_session(app):
+    config = app["config"]
+    secret_key = config["application"]["session_secret_key"]
+
+    fernet_key = fernet.Fernet.generate_key()
+    secret_key = base64.urlsafe_b64decode(fernet_key)
+    session_setup(app, EncryptedCookieStorage(secret_key))
 
 
 async def attach_db(app, loop=None):
@@ -48,6 +61,7 @@ def create_app():
     app = web.Application()
     app["config"] = config
 
+    setup_session(app)
     setup_routes(app)
 
     jinja_setup(app, loader=FileSystemLoader("templates"))

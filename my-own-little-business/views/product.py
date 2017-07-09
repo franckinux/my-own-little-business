@@ -10,17 +10,22 @@ from wtforms import Form
 from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import StringField
+from wtforms import SubmitField
 from wtforms import validators
 
+from .csrf_form import CsrfForm
 from model import Product
+from utils import generate_csrf_meta
+from utils import remove_special_data
 
 
-class ProductForm(Form):
+class ProductForm(CsrfForm):
     name = StringField("Name", [validators.Required(), validators.Length(min=6, max=128)])
     description = StringField("Description")
     price = DecimalField("Price", [validators.Required()])
     load = DecimalField("Load", [validators.Required()])
     available = BooleanField("Available")
+    submit = SubmitField("Submit")
 
 
 @aiohttp_jinja2.template("create-product.html")
@@ -30,9 +35,9 @@ async def create_product(request):
 
     async with request.app["engine"].acquire() as conn:
         if request.method == "POST":
-            form = ProductForm(await request.post())
+            form = ProductForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
-                q = insert(Product).values(**dict(form.data.items()))
+                q = insert(Product).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
                 except IntegrityError as e:
@@ -44,7 +49,7 @@ async def create_product(request):
                 message = "there are some fields in error"
                 return {"form": form, "warning_message": message}
         else:  # GET !
-            form = ProductForm()
+            form = ProductForm(meta=await generate_csrf_meta(request))
             return {"form": form}
 
 
@@ -80,10 +85,14 @@ async def edit_product(request):
         result = await conn.execute(q)
         data = dict(await result.fetchone())
         if request.method == "POST":
-            form = ProductForm(await request.post(), data=data)
+            form = ProductForm(
+                await request.post(),
+                data=data,
+                meta=await generate_csrf_meta(request)
+            )
             if form.validate():
                 q = update(Product).where(
-                    Product.__table__.c.id == id_).values(**dict(form.data.items())
+                    Product.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                     )
                 try:
                     await conn.execute(q)
@@ -96,7 +105,7 @@ async def edit_product(request):
                 message = "there are some fields in error"
                 return {"id": id_, "form": form, "warning_message": message}
         else:  # GET !
-            form = ProductForm(data=data)
+            form = ProductForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
 
 

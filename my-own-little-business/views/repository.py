@@ -9,14 +9,19 @@ from sqlalchemy.sql import update
 from wtforms import Form
 from wtforms import BooleanField
 from wtforms import StringField
+from wtforms import SubmitField
 from wtforms import validators
 
+from .csrf_form import CsrfForm
 from model import Repository
+from utils import generate_csrf_meta
+from utils import remove_special_data
 
 
-class RepositoryForm(Form):
+class RepositoryForm(CsrfForm):
     name = StringField("Name", [validators.Required(), validators.Length(min=6, max=128)])
     opened = BooleanField("Opened")
+    submit = SubmitField("Submit")
 
 
 @aiohttp_jinja2.template("create-repository.html")
@@ -26,9 +31,9 @@ async def create_repository(request):
 
     async with request.app["engine"].acquire() as conn:
         if request.method == "POST":
-            form = RepositoryForm(await request.post())
+            form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
-                q = insert(Repository).values(**dict(form.data.items()))
+                q = insert(Repository).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
                 except IntegrityError as e:
@@ -40,7 +45,7 @@ async def create_repository(request):
                 message = "there are some fields in error"
                 return {"form": form, "warning_message": message}
         else:  # GET !
-            form = RepositoryForm()
+            form = RepositoryForm(meta=await generate_csrf_meta(request))
             return {"form": form}
 
 
@@ -76,10 +81,14 @@ async def edit_repository(request):
         result = await conn.execute(q)
         data = dict(await result.fetchone())
         if request.method == "POST":
-            form = RepositoryForm(await request.post(), data=data)
+            form = RepositoryForm(
+                await request.post(),
+                data=data,
+                meta=await generate_csrf_meta(request)
+            )
             if form.validate():
                 q = update(Repository).where(
-                    Repository.__table__.c.id == id_).values(**dict(form.data.items())
+                    Repository.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                     )
                 try:
                     await conn.execute(q)
@@ -92,7 +101,7 @@ async def edit_repository(request):
                 message = "there are some fields in error"
                 return {"id": id_, "form": form, "warning_message": message}
         else:  # GET !
-            form = RepositoryForm(data=data)
+            form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
 
 

@@ -10,6 +10,10 @@
 
 {% block page_content %}
 <form method="POST" action="/product/create/" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
         <label for="name">{{ form.name.label }}</label>
         {{ form.name(class="form-control", placeholder="Enter name") }}
@@ -51,7 +55,7 @@
 	{{ form.available() }}
     </div>
     <div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {{ form.submit(class="btn btn-primary") }}
         <a href="/product/list/" class="btn btn-default">Cancel</a>
     </div>
 </form>

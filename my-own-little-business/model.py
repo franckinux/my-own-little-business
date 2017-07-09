@@ -39,14 +39,15 @@ class Client(Base):
     __tablename__ = "client"
 
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    last_seen = Column(DateTime, nullable=True)
+    disabled = Column(Boolean, default=True)
     login = Column(String, nullable=False, unique=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email_address = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
     wallet = Column(Numeric(precision=8, scale=2, asdecimal=True), default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_seen = Column(DateTime, nullable=True)
 
     repository_id = Column(Integer, ForeignKey("repository.id"))
     repository = relationship("Repository", back_populates="clients")

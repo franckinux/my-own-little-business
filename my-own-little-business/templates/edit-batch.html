@@ -17,6 +17,10 @@
 
 {% block page_content %}
 <form method="POST" action="/batch/edit/{{ id }}/" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
     <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         <label for="date">{{ form.date.label }}</label>
         {{ form.date() }}
@@ -39,7 +43,7 @@
         {{ form.opened() }}
     </div>
     <div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {{ form.submit(class="btn btn-primary") }}
         <a href="/batch/list/" class="btn btn-default">Cancel</a>
     </div>
 </form>

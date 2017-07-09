@@ -9,19 +9,22 @@ from sqlalchemy.sql import update
 from sqlalchemy.sql.expression import desc
 from wtforms import Form
 from wtforms import BooleanField
-# from wtforms import DateTimeField
 from wtforms import HiddenField
 from wtforms import IntegerField
+from wtforms import SubmitField
 from wtforms import validators
 
+from .csrf_form import CsrfForm
 from model import Batch
+from utils import generate_csrf_meta
+from utils import remove_special_data
 
 
-class BatchForm(Form):
-    # date = DateTimeField("Date", [validators.Required()], format="%Y-%m-%d", type="hidden", value="")
+class BatchForm(CsrfForm):
     date = HiddenField("Date", [validators.Required()])
     capacity = IntegerField("Capacity", [validators.Required()])
     opened = BooleanField("Opened")
+    submit = SubmitField("Submit")
 
 
 @aiohttp_jinja2.template("create-batch.html")
@@ -31,9 +34,9 @@ async def create_batch(request):
 
     async with request.app["engine"].acquire() as conn:
         if request.method == "POST":
-            form = BatchForm(await request.post())
+            form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
-                q = insert(Batch).values(**dict(form.data.items()))
+                q = insert(Batch).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
                 except IntegrityError as e:
@@ -45,7 +48,7 @@ async def create_batch(request):
                 message = "there are some fields in error"
                 return {"form": form, "warning_message": message}
         else:  # GET !
-            form = BatchForm()
+            form = BatchForm(meta=await generate_csrf_meta(request))
             return {"form": form}
 
 
@@ -81,10 +84,14 @@ async def edit_batch(request):
         result = await conn.execute(q)
         data = dict(await result.fetchone())
         if request.method == "POST":
-            form = BatchForm(await request.post(), data=data)
+            form = BatchForm(
+                await request.post(),
+                data=data,
+                meta=await generate_csrf_meta(request)
+            )
             if form.validate():
                 q = update(Batch).where(
-                    Batch.__table__.c.id == id_).values(**dict(form.data.items())
+                    Batch.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                     )
                 try:
                     await conn.execute(q)
@@ -97,7 +104,7 @@ async def edit_batch(request):
                 message = "there are some fields in error"
                 return {"id": id_, "form": form, "warning_message": message}
         else:  # GET !
-            form = BatchForm(data=data)
+            form = BatchForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
 
 
