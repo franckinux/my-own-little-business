@@ -2,6 +2,7 @@ from aiohttp_session import get_session
 import argparse
 import configparser
 import os
+import sys
 
 
 def read_configuration_file():

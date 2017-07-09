@@ -6,7 +6,6 @@ from sqlalchemy import select
 from sqlalchemy.sql import delete
 from sqlalchemy.sql import insert
 from sqlalchemy.sql import update
-from wtforms import Form
 from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import StringField
@@ -40,7 +39,7 @@ async def create_product(request):
                 q = insert(Product).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
-                except IntegrityError as e:
+                except IntegrityError:
                     message = "cannot create the product"
                     return {"form": form, "warning_message": message}
                 message = "product successfuly created"

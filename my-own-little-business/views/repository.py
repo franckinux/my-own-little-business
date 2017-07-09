@@ -6,7 +6,6 @@ from sqlalchemy import select
 from sqlalchemy.sql import delete
 from sqlalchemy.sql import insert
 from sqlalchemy.sql import update
-from wtforms import Form
 from wtforms import BooleanField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -36,7 +35,7 @@ async def create_repository(request):
                 q = insert(Repository).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
-                except IntegrityError as e:
+                except IntegrityError:
                     message = "cannot create the repository"
                     return {"form": form, "warning_message": message}
                 message = "repository successfuly created"
