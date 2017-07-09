@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 
-import argparse
 import asyncio
 import base64
-import configparser
 import os
-import sys
 
 from aiohttp import web
 from aiohttp_jinja2 import setup as jinja_setup
-from aiohttp_session import setup as session_setup, get_session, session_middleware
+from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiopg.sa import create_engine
 from cryptography import fernet
 from jinja2 import FileSystemLoader
-import sqlalchemy as sa
 from sqlalchemy.engine.url import URL
 
 from routes import setup_routes

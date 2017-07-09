@@ -7,7 +7,6 @@ from sqlalchemy.sql import delete
 from sqlalchemy.sql import insert
 from sqlalchemy.sql import update
 from sqlalchemy.sql.expression import desc
-from wtforms import Form
 from wtforms import BooleanField
 from wtforms import HiddenField
 from wtforms import IntegerField
@@ -39,7 +38,7 @@ async def create_batch(request):
                 q = insert(Batch).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
-                except IntegrityError as e:
+                except IntegrityError:
                     message = "cannot create the batch"
                     return {"form": form, "warning_message": message}
                 message = "batch successfuly created"

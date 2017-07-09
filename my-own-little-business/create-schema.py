@@ -2,7 +2,6 @@ import os
 import sys
 
 from sqlalchemy import create_engine
-import sqlalchemy as sa
 from sqlalchemy.engine.url import URL
 
 from model import Base
