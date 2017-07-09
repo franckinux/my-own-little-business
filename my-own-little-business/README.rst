@@ -36,3 +36,10 @@ Downloads
 
 - `JQuery <https://code.jquery.com/jquery/>`_
 - `Bootstrap <http://getbootstrap.com/>`_
+
+Necessary packages 
+==================
+
+For cryptography :
+
+- apt install libssl-dev
