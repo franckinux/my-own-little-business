@@ -5,9 +5,10 @@ import base64
 import os
 
 from aiohttp import web
-from aiohttp_jinja2 import setup as jinja_setup
+from aiohttp_jinja2 import setup as setup_jinja
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
+import aiohttp_session_flash
 from aiopg.sa import create_engine
 from cryptography import fernet
 from jinja2 import FileSystemLoader
@@ -18,9 +19,6 @@ from utils import read_configuration_file
 
 
 def setup_session(app):
-    config = app["config"]
-    secret_key = config["application"]["session_secret_key"]
-
     fernet_key = fernet.Fernet.generate_key()
     secret_key = base64.urlsafe_b64decode(fernet_key)
     session_setup(app, EncryptedCookieStorage(secret_key))
@@ -57,10 +55,18 @@ def create_app():
     app = web.Application()
     app["config"] = config
 
+    # beware of order !
     setup_session(app)
-    setup_routes(app)
+    app.middlewares.append(aiohttp_session_flash.middleware)
+    setup_jinja(
+        app,
+        loader=FileSystemLoader("templates"),
+        context_processors=(
+            aiohttp_session_flash.context_processor,
+        )
+    )
 
-    jinja_setup(app, loader=FileSystemLoader("templates"))
+    setup_routes(app)
 
     app.on_startup.append(attach_db)
     app.on_cleanup.append(detach_db)

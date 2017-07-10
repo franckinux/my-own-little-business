@@ -3,16 +3,23 @@
 <div class="container">
     {% block breadcrumb %}{% endblock %}
     {% block message %}
-    {% if success_message %}
+    {% for message in get_flashed_messages() %}
+    {% if message[0] == 0 %}
      <div class="alert alert-success">
-	 <strong>Success!</strong> {{ success_message }}
+    <strong>Success!</strong> {{ message[1] }}
     </div>
     {% endif %}
-    {% if warning_message %}
+    {% if message[0] == 1 %}
     <div class="alert alert-warning">
-	<strong>Warning!</strong> {{ warning_message }}
+    <strong>Warning!</strong> {{ message[1] }}
     </div>
     {% endif %}
+    {% if message[0] == 2 %}
+     <div class="alert alert-danger">
+    <strong>Error!</strong> {{ message[1] }}
+    </div>
+    {% endif %}
+    {% endfor %}
     {% endblock %}
     {% block page_content %}{% endblock %}
 </div>
