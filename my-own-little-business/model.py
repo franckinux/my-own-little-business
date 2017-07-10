@@ -77,7 +77,7 @@ class Batch(Base):
     __tablename__ = "batch"
 
     id = Column(Integer, primary_key=True)
-    date = Column(DateTime, nullable=False)
+    date = Column(DateTime, nullable=False, unique=True)
     capacity = Column(Integer, nullable=False)
     opened = Column(Boolean, default=True)
 

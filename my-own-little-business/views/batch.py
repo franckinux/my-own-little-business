@@ -1,6 +1,7 @@
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp.web import HTTPFound
 import aiohttp_jinja2
+from aiohttp_session_flash import flash
 from psycopg2 import IntegrityError
 from sqlalchemy import select
 from sqlalchemy.sql import delete
@@ -14,6 +15,7 @@ from wtforms import SubmitField
 from wtforms import validators
 
 from .csrf_form import CsrfForm
+from .flash_messages import *
 from model import Batch
 from utils import generate_csrf_meta
 from utils import remove_special_data
@@ -39,13 +41,13 @@ async def create_batch(request):
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    message = "cannot create the batch"
-                    return {"form": form, "warning_message": message}
-                message = "batch successfuly created"
-                return {"form": form, "success_message": message}
+                    flash(request, (WARNING, "cannot create the batch"))
+                    return {"form": form}
+                flash(request, (SUCCESS, "batch successfuly created"))
+                return {"form": form}
             else:
-                message = "there are some fields in error"
-                return {"form": form, "warning_message": message}
+                flash(request, (ERROR, "there are some fields in error"))
+                return {"form": form}
         else:  # GET !
             form = BatchForm(meta=await generate_csrf_meta(request))
             return {"form": form}
@@ -56,20 +58,16 @@ async def delete_batch(request):
     async with request.app["engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Batch).where(Batch.__table__.c.id == id_)
-        ok = False
         try:
             result = await conn.execute(q)
-            message = "successfuly deleted"
-            ok = True
         except IntegrityError:
-            message = "cannot delete batch"
+            flash(request, (WARNING, "cannot delete the batch"))
+        else:
+            flash(request, (SUCCESS, "batch successfuly deleted"))
         finally:
             result = await conn.execute(select([Batch]).limit(30).order_by(desc(Batch.__table__.c.date)))
             rows = await result.fetchall()
-            if ok:
-                return {"batches": rows, "success_message": message}
-            else:
-                return {"batches": rows, "warning_message": message}
+            return {"batches": rows}
 
 
 @aiohttp_jinja2.template("edit-batch.html")
@@ -95,13 +93,13 @@ async def edit_batch(request):
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    message = "cannot edit the batch"
-                    return {"id": id_, "form": form, "warning_message": message}
-                message = "batch successfuly edited"
-                return {"id": id_, "form": form, "success_message": message}
+                    flash(request, (WARNING, "cannot edit the batch"))
+                    return {"id": id_, "form": form}
+                flash(request, (SUCCESS, "successfuly edited"))
+                return {"id": id_, "form": form}
             else:
-                message = "there are some fields in error"
-                return {"id": id_, "form": form, "warning_message": message}
+                flash(request, (ERROR, "there are some fields in error"))
+                return {"id": id_, "form": form}
         else:  # GET !
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
