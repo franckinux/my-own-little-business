@@ -25,11 +25,11 @@ if __name__ == "__main__":
     }
     dsn = str(URL(**connection_infos))
 
-    engine = create_engine(dsn, echo=True)
+    db_engine = create_engine(dsn, echo=True)
     try:
-        Base.metadata.create_all(engine)
+        Base.metadata.create_all(db_engine)
     except:
         sys.stderr.write("cannot connect to database\n")
         sys.exit(2)
     finally:
-        engine.dispose()
+        db_engine.dispose()

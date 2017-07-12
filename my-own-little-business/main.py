@@ -41,12 +41,12 @@ async def attach_db(app, loop=None):
     }
     dsn = str(URL(**db_connection_infos))
 
-    app["engine"] = await create_engine(dsn, loop=loop)
+    app["db-engine"] = await create_engine(dsn, loop=loop)
 
 
 async def detach_db(app):
-    app["engine"].close()
-    await app["engine"].wait_closed()
+    app["db-engine"].close()
+    await app["db-engine"].wait_closed()
 
 
 def create_app():

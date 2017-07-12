@@ -34,7 +34,7 @@ async def create_product(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         if request.method == "POST":
             form = ProductForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
@@ -56,7 +56,7 @@ async def create_product(request):
 
 @aiohttp_jinja2.template("list-product.html")
 async def delete_product(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Product).where(Product.__table__.c.id == id_)
         try:
@@ -76,7 +76,7 @@ async def edit_product(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = select([Product], Product.__table__.c.id == id_)
         result = await conn.execute(q)
@@ -108,7 +108,7 @@ async def edit_product(request):
 
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         result = await conn.execute(select([Product]).order_by(Product.__table__.c.name))
         rows = await result.fetchall()
     return {"products": rows}

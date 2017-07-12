@@ -33,7 +33,7 @@ async def create_batch(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         if request.method == "POST":
             form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
@@ -55,7 +55,7 @@ async def create_batch(request):
 
 @aiohttp_jinja2.template("list-batch.html")
 async def delete_batch(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Batch).where(Batch.__table__.c.id == id_)
         try:
@@ -75,7 +75,7 @@ async def edit_batch(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = select([Batch], Batch.__table__.c.id == id_)
         result = await conn.execute(q)
@@ -107,7 +107,7 @@ async def edit_batch(request):
 
 @aiohttp_jinja2.template("list-batch.html")
 async def list_batch(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         result = await conn.execute(select([Batch]).limit(30).order_by(desc(Batch.__table__.c.date)))
         rows = await result.fetchall()
     return {"batches": rows}
