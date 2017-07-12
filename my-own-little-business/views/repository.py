@@ -30,7 +30,7 @@ async def create_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         if request.method == "POST":
             form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
@@ -52,7 +52,7 @@ async def create_repository(request):
 
 @aiohttp_jinja2.template("list-repository.html")
 async def delete_repository(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Repository).where(Repository.__table__.c.id == id_)
         try:
@@ -72,7 +72,7 @@ async def edit_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = select([Repository], Repository.__table__.c.id == id_)
         result = await conn.execute(q)
@@ -104,7 +104,7 @@ async def edit_repository(request):
 
 @aiohttp_jinja2.template("list-repository.html")
 async def list_repository(request):
-    async with request.app["engine"].acquire() as conn:
+    async with request.app["db-engine"].acquire() as conn:
         result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
         rows = await result.fetchall()
     return {"repositories": rows}

@@ -325,9 +325,9 @@ if __name__ == "__main__":
 #     }
 #     dsn = str(URL(**connection_infos))
 #
-#     engine = create_engine(dsn, echo=False)
+#     db_engine = create_engine(dsn, echo=False)
 #
-#     Session = sessionmaker(bind=engine)
+#     Session = sessionmaker(bind=db_engine)
 #
 #     # create basic objects
 #
@@ -452,4 +452,4 @@ if __name__ == "__main__":
 #     for client, order in rows:
 #         print("order datetime :", order.placed_at)
 #
-#     engine.dispose()
+#     db_engine.dispose()
