@@ -10,15 +10,15 @@ from model import Client
 
 
 class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
-    def __init__(self, db_engine):
-        self.db_engine = db_engine
+    def __init__(self, db_pool):
+        self.db_pool = db_pool
 
     async def authorized_userid(self, identity):
-        async with self.db_engine.acquire() as conn:
+        async with self.db_pool.acquire() as conn:
             where = sa_and(Client.__table__.c.login == identity,
                            sa_not(Client.__table__.c.disabled))
             query = select([func.count()]).select_from(Client.__table__).where(where).as_scalar()
-            res = await conn.scalar(query)
+            res = await conn.fetchval(query, column=0)
             if res:
                 return identity
             else:
@@ -28,12 +28,11 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
         if identity is None:
             return False
 
-        async with self.db_engine.acquire() as conn:
+        async with self.db_pool.acquire() as conn:
             where = sa_and(Client.__table__.c.login == identity,
                            sa_not(Client.__table__.c.disabled))
             query = select([Client.__table__.c.super_user]).where(where)
-            res = await conn.execute(query)
-            client = await res.fetchone()
+            client = await conn.fetchrow(query)
             if client is not None:
                 if client.super_user:
                     return True
@@ -42,13 +41,12 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
             return False
 
 
-async def check_credentials(db_engine, username, password):
-    async with db_engine.acquire() as conn:
+async def check_credentials(db_pool, username, password):
+    async with db_pool.acquire() as conn:
         where = sa_and(Client.__table__.c.login == username,
                        sa_not(Client.__table__.c.disabled))
         query = select([Client.__table__.c.password_hash]).where(where)
-        res = await conn.execute(query)
-        client = await res.fetchone()
+        client = await conn.fetchrow(query)
         if client is not None:
             hash_ = client.password_hash
             return sha256_crypt.verify(password, hash_)

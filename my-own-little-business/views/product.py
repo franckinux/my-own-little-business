@@ -2,7 +2,7 @@ from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp.web import HTTPFound
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
-from psycopg2 import IntegrityError
+from asyncpg.exceptions import IntegrityConstraintViolationError
 from sqlalchemy import select
 from sqlalchemy.sql import delete
 from sqlalchemy.sql import insert
@@ -13,7 +13,7 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 
-from auth.decorators import require
+from auth import require
 from .csrf_form import CsrfForm
 from model import Product
 from views.utils import generate_csrf_meta
@@ -35,14 +35,14 @@ async def create_product(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         if request.method == "POST":
             form = ProductForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
                 q = insert(Product).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
-                except IntegrityError:
+                except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the product"))
                     return {"form": form}
                 flash(request, ("success", "product successfuly created"))
@@ -58,18 +58,17 @@ async def create_product(request):
 @require("admin")
 @aiohttp_jinja2.template("list-product.html")
 async def delete_product(request):
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Product).where(Product.__table__.c.id == id_)
         try:
-            result = await conn.execute(q)
-        except IntegrityError:
+            await conn.execute(q)
+        except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the product"))
         else:
             flash(request, ("success", "product successfuly deleted"))
         finally:
-            result = await conn.execute(select([Product]).order_by(Product.__table__.c.name))
-            rows = await result.fetchall()
+            rows = await conn.fetch(select([Product]).order_by(Product.__table__.c.name))
             return {"products": rows}
 
 
@@ -79,11 +78,10 @@ async def edit_product(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = select([Product], Product.__table__.c.id == id_)
-        result = await conn.execute(q)
-        data = dict(await result.fetchone())
+        data = dict(await conn.fetchrow(q))
         if request.method == "POST":
             form = ProductForm(
                 await request.post(),
@@ -96,7 +94,7 @@ async def edit_product(request):
                 )
                 try:
                     await conn.execute(q)
-                except IntegrityError:
+                except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the product"))
                     return {"id": id_, "form": form}
                 flash(request, ("success", "product successfuly edited"))
@@ -112,7 +110,6 @@ async def edit_product(request):
 @require("admin")
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
-    async with request.app["db-engine"].acquire() as conn:
-        result = await conn.execute(select([Product]).order_by(Product.__table__.c.name))
-        rows = await result.fetchall()
+    async with request.app["db-pool"].acquire() as conn:
+        rows = await conn.fetch(select([Product]).order_by(Product.__table__.c.name))
     return {"products": rows}

@@ -13,7 +13,7 @@ from aiohttp_session import SimpleCookieStorage
 from aiohttp_security import SessionIdentityPolicy
 from aiohttp_security import setup as setup_security
 import aiohttp_session_flash
-from aiopg.sa import create_engine
+from asyncpgsa import create_pool
 from cryptography import fernet
 from jinja2 import FileSystemLoader
 from sqlalchemy.engine.url import URL
@@ -47,28 +47,27 @@ async def attach_db(config, loop=None):
     }
     dsn = str(URL(**db_connection_infos))
 
-    return await create_engine(dsn, loop=loop)
+    return await create_pool(dsn=dsn, loop=loop)
 
 
 async def detach_db(app):
-    app["db-engine"].close()
-    await app["db-engine"].wait_closed()
+    await app["db-pool"].close()
 
 
 async def create_app():
     config = read_configuration_file()
-    db_engine = await attach_db(config)
+    db_pool = await attach_db(config)
 
     app = web.Application()
     app["config"] = config
-    app["db-engine"] = db_engine
+    app["db-pool"] = db_pool
 
     # beware of order !
     setup_session(app)
     setup_security(
         app,
         SessionIdentityPolicy(),
-        DBAuthorizationPolicy(db_engine)
+        DBAuthorizationPolicy(db_pool)
     )
     app.middlewares.append(aiohttp_session_flash.middleware)
     setup_jinja(

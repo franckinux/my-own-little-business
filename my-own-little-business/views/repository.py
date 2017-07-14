@@ -2,7 +2,7 @@ from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp.web import HTTPFound
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
-from psycopg2 import IntegrityError
+from asyncpg.exceptions import IntegrityConstraintViolationError
 from sqlalchemy import select
 from sqlalchemy.sql import delete
 from sqlalchemy.sql import insert
@@ -12,7 +12,7 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 
-from auth.decorators import require
+from auth import require
 from .csrf_form import CsrfForm
 from model import Repository
 from views.utils import generate_csrf_meta
@@ -31,14 +31,14 @@ async def create_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         if request.method == "POST":
             form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
             if form.validate():
                 q = insert(Repository).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
-                except IntegrityError:
+                except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the repository"))
                     return {"form": form}
                 flash(request, ("success", "repository successfuly created"))
@@ -54,18 +54,17 @@ async def create_repository(request):
 @require("admin")
 @aiohttp_jinja2.template("list-repository.html")
 async def delete_repository(request):
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = delete(Repository).where(Repository.__table__.c.id == id_)
         try:
-            result = await conn.execute(q)
-        except IntegrityError:
+            await conn.execute(q)
+        except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the repository"))
         else:
             flash(request, ("success", "repository successfuly deleted"))
         finally:
-            result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
-            rows = await result.fetchall()
+            rows = await conn.fetch(select([Repository]).order_by(Repository.__table__.c.name))
             return {"repositories": rows}
 
 
@@ -75,11 +74,10 @@ async def edit_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-engine"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         q = select([Repository], Repository.__table__.c.id == id_)
-        result = await conn.execute(q)
-        data = dict(await result.fetchone())
+        data = dict(await conn.fetchrow(q))
         if request.method == "POST":
             form = RepositoryForm(
                 await request.post(),
@@ -89,10 +87,10 @@ async def edit_repository(request):
             if form.validate():
                 q = update(Repository).where(
                     Repository.__table__.c.id == id_).values(**remove_special_data(form.data.items())
-                    )
+                )
                 try:
                     await conn.execute(q)
-                except IntegrityError:
+                except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the repository"))
                     return {"id": id_, "form": form}
                 flash(request, ("success", "repository successfuly edited"))
@@ -108,7 +106,6 @@ async def edit_repository(request):
 @require("admin")
 @aiohttp_jinja2.template("list-repository.html")
 async def list_repository(request):
-    async with request.app["db-engine"].acquire() as conn:
-        result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
-        rows = await result.fetchall()
+    async with request.app["db-pool"].acquire() as conn:
+        rows = await conn.fetch(select([Repository]).order_by(Repository.__table__.c.name))
     return {"repositories": rows}

@@ -2,10 +2,10 @@ aiohttp==2.2.3
 aiohttp-jinja2==0.13.0
 aiohttp-security==0.1.1
 aiohttp-session==0.8.0
-aiohttp-session-flash==0.0.1
-aiopg==0.13.0
+aiohttp-session-flash==0.0.4
 asn1crypto==0.22.0
 async-timeout==1.2.1
+asyncpg==0.12.0
 cffi==1.10.0
 chardet==3.0.4
 cryptography==1.9
@@ -13,8 +13,8 @@ idna==2.5
 Jinja2==2.9.6
 MarkupSafe==1.0
 multidict==3.1.1
+passlib==1.7.1
 pkg-resources==0.0.0
-psycopg2==2.7.1
 pycparser==2.18
 six==1.10.0
 SQLAlchemy==1.1.11

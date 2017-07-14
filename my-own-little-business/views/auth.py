@@ -7,8 +7,8 @@ from wtforms import PasswordField
 from wtforms import SubmitField
 from wtforms import validators
 
+from auth import require
 from auth.db_auth import check_credentials
-from auth.decorators import require
 from .csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
 # from views.utils import remove_special_data
@@ -31,8 +31,8 @@ async def login(request):
             response = HTTPFound('/client/')
             login = form.login.data
             password = form.password.data
-            db_engine = request.app["db-engine"]
-            if await check_credentials(db_engine, login, password):
+            db_pool = request.app["db-pool"]
+            if await check_credentials(db_pool, login, password):
                 await remember(request, response, login)
                 return response
         flash(request, ("danger", "Invalid username/password combination"))
