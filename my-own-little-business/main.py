@@ -7,9 +7,8 @@ import os
 from aiohttp import web
 from aiohttp_jinja2 import setup as setup_jinja
 from aiohttp_session import setup as session_setup
-# TODO : use encrypted cookies in production !
-from aiohttp_session import SimpleCookieStorage
-# from aiohttp_session.cookie_storage import EncryptedCookieStorage
+# from aiohttp_session import SimpleCookieStorage
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiohttp_security import SessionIdentityPolicy
 from aiohttp_security import setup as setup_security
 import aiohttp_session_flash
@@ -27,9 +26,8 @@ from utils import read_configuration_file
 def setup_session(app):
     fernet_key = fernet.Fernet.generate_key()
     secret_key = base64.urlsafe_b64decode(fernet_key)
-    # TODO : use encrypted cookies in production !
-    # session_setup(app, EncryptedCookieStorage(secret_key))
-    session_setup(app, SimpleCookieStorage())  # /!\ Not suitable for production !!!
+    session_setup(app, EncryptedCookieStorage(secret_key))
+    # session_setup(app, SimpleCookieStorage())  # /!\ Not suitable for production !!!
 
 
 async def attach_db(config, loop=None):
