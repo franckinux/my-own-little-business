@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a hclass="active"ref="/">Login</a></li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="/" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group{% if form.login.errors %} has-error{% endif %}">
+        <label for="name">{{ form.login.label }}</label>
+        {{ form.login(class="form-control", placeholder="Enter login") }}
+        {% if form.login.errors %}
+	<div class="help-text">
+            {% for error in form.login.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        <label for="name">{{ form.password.label }}</label>
+        {{ form.password(class="form-control", placeholder="Enter password") }}
+        {% if form.password.errors %}
+	<div class="help-text">
+            {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

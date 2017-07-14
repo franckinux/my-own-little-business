@@ -21,26 +21,14 @@ class PayedStatusEnum(enum.Enum):
     payed_inline = 2
 
 
-class Administrator(Base):
-    __tablename__ = "administrator"
-
-    id = Column(Integer, primary_key=True)
-    login = Column(String, nullable=False, unique=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    email_address = Column(String, nullable=False)
-    receive_notifications = Column(Boolean, default=True)
-
-    def __repr__(self):
-        return "<Administrator (login={})>".format(self.login)
-
-
 class Client(Base):
     __tablename__ = "client"
 
     id = Column(Integer, primary_key=True)
-    disabled = Column(Boolean, default=True)
     login = Column(String, nullable=False, unique=True)
+    password_hash = Column(String, nullable=False)
+    disabled = Column(Boolean, default=False)
+    super_user = Column(Boolean, default=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email_address = Column(String, nullable=False)

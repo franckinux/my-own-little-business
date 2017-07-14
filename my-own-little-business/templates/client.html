@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Client menu{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="active">Client menu</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<p>Hello {{ client.first_name }} !</p>
+<p>Nice to see you again</p>
+
+<ul>
+{% if client.super_user %}
+  <li><a href="/admin/">Admin</a></li>
+  <li><a href="/logout/">Logout</a></li>
+{% endif %}
+</ul>
+
+{% endblock %}

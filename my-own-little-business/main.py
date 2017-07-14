@@ -7,13 +7,18 @@ import os
 from aiohttp import web
 from aiohttp_jinja2 import setup as setup_jinja
 from aiohttp_session import setup as session_setup
-from aiohttp_session.cookie_storage import EncryptedCookieStorage
+# TODO : use encrypted cookies in production !
+from aiohttp_session import SimpleCookieStorage
+# from aiohttp_session.cookie_storage import EncryptedCookieStorage
+from aiohttp_security import SessionIdentityPolicy
+from aiohttp_security import setup as setup_security
 import aiohttp_session_flash
 from aiopg.sa import create_engine
 from cryptography import fernet
 from jinja2 import FileSystemLoader
 from sqlalchemy.engine.url import URL
 
+from auth.db_auth import DBAuthorizationPolicy
 from routes import setup_routes
 from utils import read_configuration_file
 
@@ -21,14 +26,15 @@ from utils import read_configuration_file
 def setup_session(app):
     fernet_key = fernet.Fernet.generate_key()
     secret_key = base64.urlsafe_b64decode(fernet_key)
-    session_setup(app, EncryptedCookieStorage(secret_key))
+    # TODO : use encrypted cookies in production !
+    # session_setup(app, EncryptedCookieStorage(secret_key))
+    session_setup(app, SimpleCookieStorage())  # /!\ Not suitable for production !!!
 
 
-async def attach_db(app, loop=None):
+async def attach_db(config, loop=None):
     if loop is None:
         loop = asyncio.get_event_loop()
 
-    config = app["config"]
     config["database"]["password"] = os.getenv("PG_PASS", "") or config["database"]["password"]
 
     db_connection_infos = {
@@ -41,7 +47,7 @@ async def attach_db(app, loop=None):
     }
     dsn = str(URL(**db_connection_infos))
 
-    app["db-engine"] = await create_engine(dsn, loop=loop)
+    return await create_engine(dsn, loop=loop)
 
 
 async def detach_db(app):
@@ -49,14 +55,21 @@ async def detach_db(app):
     await app["db-engine"].wait_closed()
 
 
-def create_app():
+async def create_app():
     config = read_configuration_file()
+    db_engine = await attach_db(config)
 
     app = web.Application()
     app["config"] = config
+    app["db-engine"] = db_engine
 
     # beware of order !
     setup_session(app)
+    setup_security(
+        app,
+        SessionIdentityPolicy(),
+        DBAuthorizationPolicy(db_engine)
+    )
     app.middlewares.append(aiohttp_session_flash.middleware)
     setup_jinja(
         app,
@@ -68,14 +81,14 @@ def create_app():
 
     setup_routes(app)
 
-    app.on_startup.append(attach_db)
     app.on_cleanup.append(detach_db)
 
     return app
 
 
 if __name__ == "__main__":
-    app = create_app()
+    loop = asyncio.get_event_loop()
+    app = loop.run_until_complete(create_app())
 
     web.run_app(
         app,
