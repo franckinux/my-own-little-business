@@ -2,6 +2,7 @@ import datetime
 import os
 import sys
 
+from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy import select
 from sqlalchemy.engine.url import URL
@@ -10,7 +11,6 @@ from sqlalchemy.sql import join
 from sqlalchemy.sql import update
 from sqlalchemy.sql.expression import and_
 
-from model import Administrator
 from model import Client
 from model import Repository
 from model import Batch
@@ -44,20 +44,23 @@ if __name__ == "__main__":
     with conn.begin() as trans:
         # create basic objects
 
-        # administrator
+        # admin
         result = conn.execute(
-            insert(Administrator).values(
-                login="admin", first_name="Franck",
-                last_name="Barbenoire",
-                email_address="contact@franck-barbenoire.fr"
-            ).returning(Administrator.__table__.c.id)
+            insert(Client).values(
+                login="admin", password_hash=sha256_crypt.hash("admin"),
+                super_user=True,
+                first_name="Tom", last_name="Sawyer",
+                email_address="tom@literature.net",
+                phone_number="888-888-888"
+            ).returning(Client.__table__.c.id)
         )
-        administrator_id = result.fetchone()[0]
+        client_1_id = result.fetchone()[0]
 
         # client 1
         result = conn.execute(
             insert(Client).values(
-                login="rabid", first_name="Raymonde", last_name="Bidochon",
+                login="rabid", password_hash="abc",
+                first_name="Raymonde", last_name="Bidochon",
                 email_address="ra.bidochon@binet.com",
                 phone_number="01-40-50-50-01"
             ).returning(Client.__table__.c.id)
@@ -67,7 +70,8 @@ if __name__ == "__main__":
         # client 2
         result = conn.execute(
             insert(Client).values(
-                login="robid", first_name="Robert", last_name="Bidochon",
+                login="robid", password_hash="def",
+                first_name="Robert", last_name="Bidochon",
                 email_address="ro.bidochon@binet.com",
                 phone_number="01-40-50-50-02"
             ).returning(Client.__table__.c.id)

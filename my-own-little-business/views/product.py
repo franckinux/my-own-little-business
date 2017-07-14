@@ -13,11 +13,11 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 
+from auth.decorators import require
 from .csrf_form import CsrfForm
-from .flash_messages import *
 from model import Product
-from utils import generate_csrf_meta
-from utils import remove_special_data
+from views.utils import generate_csrf_meta
+from views.utils import remove_special_data
 
 
 class ProductForm(CsrfForm):
@@ -29,6 +29,7 @@ class ProductForm(CsrfForm):
     submit = SubmitField("Submit")
 
 
+@require("admin")
 @aiohttp_jinja2.template("create-product.html")
 async def create_product(request):
     if request.method not in ["GET", "POST"]:
@@ -42,18 +43,19 @@ async def create_product(request):
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    flash(request, (WARNING, "cannot create the product"))
+                    flash(request, ("warning", "cannot create the product"))
                     return {"form": form}
-                flash(request, (SUCCESS, "product successfuly created"))
+                flash(request, ("success", "product successfuly created"))
                 return {"form": form}
             else:
-                flash(request, (ERROR, "there are some fields in error"))
+                flash(request, ("danger", "there are some fields in error"))
                 return {"form": form}
         else:  # GET !
             form = ProductForm(meta=await generate_csrf_meta(request))
             return {"form": form}
 
 
+@require("admin")
 @aiohttp_jinja2.template("list-product.html")
 async def delete_product(request):
     async with request.app["db-engine"].acquire() as conn:
@@ -62,15 +64,16 @@ async def delete_product(request):
         try:
             result = await conn.execute(q)
         except IntegrityError:
-            flash(request, (WARNING, "cannot delete the product"))
+            flash(request, ("warning", "cannot delete the product"))
         else:
-            flash(request, (SUCCESS, "product successfuly deleted"))
+            flash(request, ("success", "product successfuly deleted"))
         finally:
             result = await conn.execute(select([Product]).order_by(Product.__table__.c.name))
             rows = await result.fetchall()
             return {"products": rows}
 
 
+@require("admin")
 @aiohttp_jinja2.template("edit-product.html")
 async def edit_product(request):
     if request.method not in ["GET", "POST"]:
@@ -90,22 +93,23 @@ async def edit_product(request):
             if form.validate():
                 q = update(Product).where(
                     Product.__table__.c.id == id_).values(**remove_special_data(form.data.items())
-                    )
+                )
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    flash(request, (WARNING, "cannot edit the product"))
+                    flash(request, ("warning", "cannot edit the product"))
                     return {"id": id_, "form": form}
-                flash(request, (SUCCESS, "product successfuly edited"))
+                flash(request, ("success", "product successfuly edited"))
                 return {"id": id_, "form": form}
             else:
-                flash(request, (ERROR, "there are some fields in error"))
+                flash(request, ("danger", "there are some fields in error"))
                 return {"id": id_, "form": form}
         else:  # GET !
             form = ProductForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
 
 
+@require("admin")
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
     async with request.app["db-engine"].acquire() as conn:

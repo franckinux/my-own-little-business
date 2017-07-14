@@ -1,4 +1,7 @@
 from views.admin import admin_menu
+from views.client import client_menu
+from views.auth import login
+from views.auth import logout
 from views.batch import create_batch
 from views.batch import edit_batch
 from views.batch import delete_batch
@@ -16,6 +19,11 @@ def setup_routes(app):
     app.router.add_static("/static", "static")
 
     app.router.add_get("/admin/", admin_menu)
+    app.router.add_get("/client/", client_menu)
+
+    # auth
+    app.router.add_route("*", "/", login)
+    app.router.add_route("*", "/logout/", logout)
 
     # batches
     app.router.add_route("*", "/batch/create/", create_batch)

@@ -12,11 +12,11 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 
+from auth.decorators import require
 from .csrf_form import CsrfForm
-from .flash_messages import *
 from model import Repository
-from utils import generate_csrf_meta
-from utils import remove_special_data
+from views.utils import generate_csrf_meta
+from views.utils import remove_special_data
 
 
 class RepositoryForm(CsrfForm):
@@ -25,6 +25,7 @@ class RepositoryForm(CsrfForm):
     submit = SubmitField("Submit")
 
 
+@require("admin")
 @aiohttp_jinja2.template("create-repository.html")
 async def create_repository(request):
     if request.method not in ["GET", "POST"]:
@@ -38,18 +39,19 @@ async def create_repository(request):
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    flash(request, (WARNING, "cannot create the repository"))
+                    flash(request, ("warning", "cannot create the repository"))
                     return {"form": form}
-                flash(request, (SUCCESS, "repository successfuly created"))
+                flash(request, ("success", "repository successfuly created"))
                 return {"form": form}
             else:
-                flash(request, (ERROR, "there are some fields in error"))
+                flash(request, ("danger", "there are some fields in error"))
                 return {"form": form}
         else:  # GET !
             form = RepositoryForm(meta=await generate_csrf_meta(request))
             return {"form": form}
 
 
+@require("admin")
 @aiohttp_jinja2.template("list-repository.html")
 async def delete_repository(request):
     async with request.app["db-engine"].acquire() as conn:
@@ -58,15 +60,16 @@ async def delete_repository(request):
         try:
             result = await conn.execute(q)
         except IntegrityError:
-            flash(request, (WARNING, "cannot delete the repository"))
+            flash(request, ("warning", "cannot delete the repository"))
         else:
-            flash(request, (SUCCESS, "repository successfuly deleted"))
+            flash(request, ("success", "repository successfuly deleted"))
         finally:
             result = await conn.execute(select([Repository]).order_by(Repository.__table__.c.name))
             rows = await result.fetchall()
             return {"repositories": rows}
 
 
+@require("admin")
 @aiohttp_jinja2.template("edit-repository.html")
 async def edit_repository(request):
     if request.method not in ["GET", "POST"]:
@@ -90,18 +93,19 @@ async def edit_repository(request):
                 try:
                     await conn.execute(q)
                 except IntegrityError:
-                    flash(request, (WARNING, "cannot edit the repository"))
+                    flash(request, ("warning", "cannot edit the repository"))
                     return {"id": id_, "form": form}
-                flash(request, (SUCCESS, "repository successfuly edited"))
+                flash(request, ("success", "repository successfuly edited"))
                 return {"id": id_, "form": form}
             else:
-                flash(request, (ERROR, "there are some fields in error"))
+                flash(request, ("danger", "there are some fields in error"))
                 return {"id": id_, "form": form}
         else:  # GET !
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
             return {"id": id_, "form": form}
 
 
+@require("admin")
 @aiohttp_jinja2.template("list-repository.html")
 async def list_repository(request):
     async with request.app["db-engine"].acquire() as conn:
