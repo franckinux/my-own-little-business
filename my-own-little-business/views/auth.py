@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from aiohttp.web import HTTPFound, HTTPUnauthorized
+from aiohttp.web import HTTPFound, HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_security import remember, forget
 from aiohttp_session_flash import flash

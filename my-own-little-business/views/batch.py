@@ -1,5 +1,4 @@
 from aiohttp.web import HTTPMethodNotAllowed
-from aiohttp.web import HTTPFound
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
