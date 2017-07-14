@@ -19,6 +19,7 @@ from jinja2 import FileSystemLoader
 from sqlalchemy.engine.url import URL
 
 from auth.db_auth import DBAuthorizationPolicy
+from error import error_middleware
 from routes import setup_routes
 from utils import read_configuration_file
 
@@ -58,7 +59,7 @@ async def create_app():
     config = read_configuration_file()
     db_pool = await attach_db(config)
 
-    app = web.Application()
+    app = web.Application(middlewares=[error_middleware])
     app["config"] = config
     app["db-pool"] = db_pool
 
