@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Register client{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="active">Register client</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="/register/" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group{% if form.login.errors %} has-error{% endif %}">
+        <label for="login">{{ form.login.label }}</label>
+        {{ form.login(class="form-control", placeholder="Enter your login") }}
+        {% if form.login.errors %}
+	<div class="help-text">
+            {% for error in form.login.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password(class="form-control", placeholder="Enter your password") }}
+        {% if form.password.errors %}
+	<div class="help-text">
+            {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.password2.errors %} has-error{% endif %}">
+        <label for="password">{{ form.password2.label }}</label>
+        {{ form.password2(class="form-control", placeholder="Enter again your password") }}
+        {% if form.password2.errors %}
+	<div class="help-text">
+            {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.first_name.errors %} has-error{% endif %}">
+        <label for="first_name">{{ form.first_name.label }}</label>
+        {{ form.first_name(class="form-control", placeholder="Enter your first name") }}
+        {% if form.first_name.errors %}
+	<div class="help-text">
+            {% for error in form.first_name.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.last_name.errors %} has-error{% endif %}">
+        <label for="last_name">{{ form.last_name.label }}</label>
+        {{ form.last_name(class="form-control", placeholder="Enter your last name") }}
+        {% if form.last_name.errors %}
+	<div class="help-text">
+            {% for error in form.last_name.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
+        <label for="email_address">{{ form.email_address.label }}</label>
+        {{ form.email_address(class="form-control", placeholder="Enter your email address") }}
+        {% if form.email_address.errors %}
+	<div class="help-text">
+            {% for error in form.email_address.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.phone_number.errors %} has-error{% endif %}">
+        <label for="phone_number">{{ form.phone_number.label }}</label>
+        {{ form.phone_number(class="form-control", placeholder="Enter your phone number") }}
+        {% if form.phone_number.errors %}
+	<div class="help-text">
+            {% for error in form.phone_number.errors %}<p>{{ error }}</p>{% endfor %}
+	</div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

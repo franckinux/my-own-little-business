@@ -16,6 +16,7 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
     async def authorized_userid(self, identity):
         async with self.db_pool.acquire() as conn:
             where = sa_and(Client.__table__.c.login == identity,
+                           Client.__table__.c.confirmed,
                            sa_not(Client.__table__.c.disabled))
             query = select([func.count()]).select_from(Client.__table__).where(where).as_scalar()
             res = await conn.fetchval(query, column=0)
@@ -30,10 +31,11 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
 
         async with self.db_pool.acquire() as conn:
             where = sa_and(Client.__table__.c.login == identity,
+                           Client.__table__.c.confirmed,
                            sa_not(Client.__table__.c.disabled))
             query = select([Client.__table__.c.super_user]).where(where)
             client = await conn.fetchrow(query)
-            if client is not None:
+            if client.row is not None:
                 if client.super_user:
                     return True
                 if permission == "client":
@@ -44,10 +46,11 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
 async def check_credentials(db_pool, username, password):
     async with db_pool.acquire() as conn:
         where = sa_and(Client.__table__.c.login == username,
+                       Client.__table__.c.confirmed,
                        sa_not(Client.__table__.c.disabled))
         query = select([Client.__table__.c.password_hash]).where(where)
         client = await conn.fetchrow(query)
-        if client is not None:
+        if client.row is not None:
             hash_ = client.password_hash
             return sha256_crypt.verify(password, hash_)
     return False
