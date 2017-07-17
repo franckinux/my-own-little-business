@@ -11,5 +11,5 @@ def remove_special_data(items):
 async def generate_csrf_meta(request):
     return {
         "csrf_context": await get_session(request),
-        "csrf_secret": request.app["config"]["application"]["csrf_secret_key"].encode("ascii")
+        "csrf_secret": request.app["config"]["application"]["secret_key"].encode("ascii")
     }

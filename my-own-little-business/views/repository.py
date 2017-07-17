@@ -9,7 +9,8 @@ from sqlalchemy.sql import update
 from wtforms import BooleanField
 from wtforms import StringField
 from wtforms import SubmitField
-from wtforms import validators
+from wtforms.validators import Length
+from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
@@ -19,7 +20,7 @@ from views.utils import remove_special_data
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField("Name", [validators.Required(), validators.Length(min=6, max=128)])
+    name = StringField("Name", validators=[Required(), Length(min=6, max=128)])
     opened = BooleanField("Opened")
     submit = SubmitField("Submit")
 
@@ -30,24 +31,24 @@ async def create_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-pool"].acquire() as conn:
-        if request.method == "POST":
-            form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
-            if form.validate():
+    if request.method == "POST":
+        form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
+        if form.validate():
+            async with request.app["db-pool"].acquire() as conn:
                 q = insert(Repository).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the repository"))
                     return {"form": form}
-                flash(request, ("success", "repository successfuly created"))
-                return {"form": form}
-            else:
-                flash(request, ("danger", "there are some fields in error"))
-                return {"form": form}
-        else:  # GET !
-            form = RepositoryForm(meta=await generate_csrf_meta(request))
+            flash(request, ("success", "repository successfuly created"))
             return {"form": form}
+        else:
+            flash(request, ("danger", "there are some fields in error"))
+            return {"form": form}
+    else:  # GET !
+        form = RepositoryForm(meta=await generate_csrf_meta(request))
+        return {"form": form}
 
 
 @require("admin")

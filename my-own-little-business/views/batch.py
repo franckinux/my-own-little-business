@@ -11,7 +11,7 @@ from wtforms import BooleanField
 from wtforms import DateTimeField
 from wtforms import IntegerField
 from wtforms import SubmitField
-from wtforms import validators
+from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
@@ -21,8 +21,8 @@ from views.utils import remove_special_data
 
 
 class BatchForm(CsrfForm):
-    date = DateTimeField("Date", [validators.Required()])
-    capacity = IntegerField("Capacity", [validators.Required()])
+    date = DateTimeField("Date", validators=[Required()])
+    capacity = IntegerField("Capacity", validators=[Required()])
     opened = BooleanField("Opened")
     submit = SubmitField("Submit")
 
@@ -33,24 +33,24 @@ async def create_batch(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-pool"].acquire() as conn:
-        if request.method == "POST":
-            form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
-            if form.validate():
+    if request.method == "POST":
+        form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
+        if form.validate():
+            async with request.app["db-pool"].acquire() as conn:
                 q = insert(Batch).values(**remove_special_data(form.data.items()))
                 try:
                     await conn.execute(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the batch"))
                     return {"form": form}
-                flash(request, ("success", "batch successfuly created"))
-                return {"form": form}
-            else:
-                flash(request, ("danger", "there are some fields in error"))
-                return {"form": form}
-        else:  # GET !
-            form = BatchForm(meta=await generate_csrf_meta(request))
+            flash(request, ("success", "batch successfuly created"))
             return {"form": form}
+        else:
+            flash(request, ("danger", "there are some fields in error"))
+            return {"form": form}
+    else:  # GET !
+        form = BatchForm(meta=await generate_csrf_meta(request))
+        return {"form": form}
 
 
 @require("admin")

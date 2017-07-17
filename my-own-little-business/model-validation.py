@@ -5,7 +5,6 @@ import sys
 
 from asyncpgsa import pg
 from passlib.hash import sha256_crypt
-from sqlalchemy import create_engine
 from sqlalchemy import select
 from sqlalchemy.engine.url import URL
 from sqlalchemy.sql import insert
@@ -40,11 +39,12 @@ async def main(config, loop=None):
     await pg.init(dsn)
 
     # create basic objects
-    async with pg.begin() as trans:
+    async with pg.begin():
         # admin
         row = await pg.fetchrow(
             insert(Client).values(
                 login="admin", password_hash=sha256_crypt.hash("admin"),
+                confirmed=True,
                 super_user=True,
                 first_name="Tom", last_name="Sawyer",
                 email_address="tom@literature.net",
@@ -124,7 +124,7 @@ async def main(config, loop=None):
         batch_2_id = row.id
 
     # link basic object between them
-    async with pg.begin() as trans:
+    async with pg.begin():
         # repository to clients
         await pg.execute(update(Client).where(
             Client.__table__.c.id == client_1_id

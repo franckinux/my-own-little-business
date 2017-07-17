@@ -2,11 +2,12 @@
 {% block title %}Login{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a class="active" href="/">Login</a></li>
+    <li class="active">Login</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
+<div class="form-group"><a href="/register/" class="btn btn-default">Register</a></div>
 <form method="POST" action="/" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
