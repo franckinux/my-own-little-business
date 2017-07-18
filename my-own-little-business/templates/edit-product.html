@@ -2,14 +2,14 @@
 {% block title %}Edit product{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="/admin/">Administration</a></li>
-    <li><a href="/product/list/">Products</a></li>
+    <li><a href="{{ url("admin") }}">Administration</a></li>
+    <li><a href="{{ url("list_product") }}">Products</a></li>
     <li class="active">Edit product</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<form method="POST" action="/product/edit/{{ id }}/" role="form">
+<form method="POST" action="{{ url("edit_product", id=id) }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
@@ -18,45 +18,45 @@
         <label for="name">{{ form.name.label }}</label>
         {{ form.name(class="form-control", placeholder="Enter name") }}
         {% if form.name.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div class="form-group{% if form.description.errors %} has-error{% endif %}">
         <label for="description">{{ form.description.label }}</label>
         {{ form.description(class="form-control", placeholder="Enter description") }}
         {% if form.description.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.description.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div class="form-group{% if form.price.errors %} has-error{% endif %}">
         <label for="price">{{ form.price.label }}</label>
         {{ form.price(class="form-control", placeholder="Enter price") }}
         {% if form.price.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.price.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div class="form-group{% if form.load.errors %} has-error{% endif %}">
         <label for="load">{{ form.load.label }}</label>
         {{ form.load(class="form-control", placeholder="Enter load") }}
         {% if form.load.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.load.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div class="form-group">
         <label for="available">{{ form.available.label }}</label>
-	{{ form.available() }}
+        {{ form.available() }}
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="/product/list/" class="btn btn-default">Cancel</a>
+        <a href="{{ url("list_product") }}" class="btn btn-default">Cancel</a>
     </div>
 </form>
 {% endblock %}

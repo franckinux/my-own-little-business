@@ -45,7 +45,7 @@ async def login(request):
     if request.method == "POST":
         form = LoginForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
-            response = HTTPFound('/client/')
+            response = HTTPFound(request.app.router["client"].url_for())
             login = form.login.data
             password = form.password.data
             db_pool = request.app["db-pool"]
@@ -65,7 +65,7 @@ async def login(request):
 
 @require("client")
 async def logout(request):
-    response = HTTPFound('/')
+    response = HTTPFound(request.app.router["login"].url_for())
     await forget(request, response)
     flash(request, ("info", "You have been logged out"))
     return response
@@ -155,4 +155,4 @@ async def confirm(request):
             return
         else:
             flash(request, ("info", "your account has been confirmed, you can now login"))
-            return HTTPFound('/')
+            return HTTPFound(request.app.router["login"].url_for())

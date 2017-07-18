@@ -74,17 +74,17 @@ async def edit_repository(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    async with request.app["db-pool"].acquire() as conn:
-        id_ = int(request.match_info["id"])
-        q = select([Repository], Repository.__table__.c.id == id_)
-        data = dict(await conn.fetchrow(q))
-        if request.method == "POST":
-            form = RepositoryForm(
-                await request.post(),
-                data=data,
-                meta=await generate_csrf_meta(request)
-            )
-            if form.validate():
+    id_ = int(request.match_info["id"])
+    q = select([Repository], Repository.__table__.c.id == id_)
+    data = dict(await conn.fetchrow(q))
+    if request.method == "POST":
+        form = RepositoryForm(
+            await request.post(),
+            data=data,
+            meta=await generate_csrf_meta(request)
+        )
+        if form.validate():
+            async with request.app["db-pool"].acquire() as conn:
                 q = update(Repository).where(
                     Repository.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                 )
@@ -92,15 +92,15 @@ async def edit_repository(request):
                     await conn.execute(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the repository"))
-                    return {"id": id_, "form": form}
-                flash(request, ("success", "repository successfuly edited"))
-                return {"id": id_, "form": form}
-            else:
-                flash(request, ("danger", "there are some fields in error"))
-                return {"id": id_, "form": form}
-        else:  # GET !
-            form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
+                else:
+                    flash(request, ("success", "repository successfuly edited"))
             return {"id": id_, "form": form}
+        else:
+            flash(request, ("danger", "there are some fields in error"))
+            return {"id": id_, "form": form}
+    else:  # GET !
+        form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
+        return {"id": id_, "form": form}
 
 
 @require("admin")

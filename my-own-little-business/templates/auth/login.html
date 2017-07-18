@@ -5,10 +5,9 @@
     <li class="active">Login</li>
 </ol>
 {% endblock %}
-
 {% block page_content %}
-<div class="form-group"><a href="/register/" class="btn btn-default">Register</a></div>
-<form method="POST" action="/" role="form">
+<div class="form-group"><a href={{ url("register") }} class="btn btn-default">Register</a></div>
+<form method="POST" action="{{ url("login") }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
@@ -17,18 +16,18 @@
         <label for="name">{{ form.login.label }}</label>
         {{ form.login(class="form-control", placeholder="Enter login") }}
         {% if form.login.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.login.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div class="form-group{% if form.password.errors %} has-error{% endif %}">
         <label for="name">{{ form.password.label }}</label>
         {{ form.password(class="form-control", placeholder="Enter password") }}
         {% if form.password.errors %}
-	<div class="help-text">
+        <div class="help-text">
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
-	</div>
+        </div>
         {% endif %}
     </div>
     <div>
