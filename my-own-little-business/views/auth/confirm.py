@@ -17,6 +17,30 @@ def generate_confirmation_token(id_, secret_key, expiration=3600):
     return s.dumps({"confirm": id_}).decode("ascii")
 
 
+class SmtpSendingError(Exception):
+    pass
+
+
+async def send(message, config):
+    host = config["smtp_url"]
+    port = config["smtp_port"]
+    username = config["smtp_username"]
+    password = config["smtp_password"]
+    use_tls = False if port == 587 else True
+    try:
+        # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
+        smtp = SMTP(hostname=host, port=port, use_tls=use_tls)
+        await smtp.connect()
+        if port == 587:
+            await smtp.ehlo()
+            await smtp.starttls()
+            await smtp.login(username, password)
+        await smtp.send_message(message)
+        smtp.close()
+    except:
+        raise SmtpSendingError("error while exchanging with smtp server")
+
+
 async def send_confirmation_email(app, client):
     config = app["config"]["application"]
 
@@ -37,12 +61,4 @@ async def send_confirmation_email(app, client):
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)
-
-    # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
-    smtp = SMTP(hostname=config["smtp_url"], port=config["smtp_port"], use_tls=False)
-    await smtp.connect()
-    await smtp.ehlo()
-    await smtp.starttls()
-    await smtp.login(config["smtp_username"], config["smtp_password"])
-    await smtp.send_message(message)
-    smtp.close()
+    await send(message, config)
