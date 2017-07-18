@@ -25,6 +25,7 @@ from auth.db_auth import check_credentials
 from model import Client
 from views.auth.confirm import get_id_from_token
 from views.auth.confirm import send_confirmation_email
+from views.auth.confirm import SmtpSendingError
 from views.csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
 from views.utils import remove_special_data
@@ -110,24 +111,23 @@ async def register(request):
             email = data["email_address"]
             del data["password2"]
             data["password_hash"] = sha256_crypt.hash(data.pop("password"))
-            async with request.app["db-pool"].acquire() as conn:
-                q = insert(Client).values(**data).returning(literal_column('*'))
-                try:
-                    client = await conn.fetchrow(q)
-                except UniqueViolationError:
-                    flash(request, ("warning", "cannot create the client, it already exists"))
-                    return {"form": form}
-            flash(request, ("success", "client successfuly created"))
-
             try:
-                await send_confirmation_email(request.app, client)
-            except:
-                flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
-                q = delete(Client).where(Client.__table__.c.id == client.id)
-                await conn.execute(q)
-            else:
-                flash(request, ("info", "a confirmation email has been sent to you"))
-            return {"form": form}
+                async with request.app["db-pool"].transaction() as conn:
+                    q = insert(Client).values(**data).returning(literal_column('*'))
+                    try:
+                        client = await conn.fetchrow(q)
+                    except UniqueViolationError:
+                        flash(request, ("warning", "cannot create the client, it already exists"))
+                        raise  # client not created
+                    try:
+                        await send_confirmation_email(request.app, client)
+                    except SmtpSendingError:
+                        flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
+                        raise  # rollback the transaction : client not created
+                    flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                    return {"form": form}
+            except UniqueViolationError, SmtpSendingError:
+                pass
         else:
             flash(request, ("danger", "there are some fields in error"))
             return {"form": form}
