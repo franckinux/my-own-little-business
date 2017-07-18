@@ -2,13 +2,13 @@
 {% block title %}Operations on repositories{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="/admin/">Administration</a></li>
+    <li><a href="{{ url("admin") }}">Administration</a></li>
     <li class="active">Repositories</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<a href="/repository/create/" class="btn btn-default">Create a repository</a>
+<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-default">Create a repository</a></div>
 
 <table class="table table-hover">
    <thead>
@@ -21,9 +21,9 @@
 {% for repo in repositories %}
    <tbody>
       <tr>
-         <td><a href="/repository/edit/{{ repo.id }}/">{{ repo.name }}</a></td>
+         <td><a href="{{ url("edit_repository", id=repo.id) }}">{{ repo.name }}</a></td>
          <td>{{ repo.opened }}</td>
-         <td><a href="/repository/delete/{{ repo.id }}/">Delete</a></td>
+         <td><a href="{{ url("delete_repository", id=repo.id) }}">Delete</a></td>
       </tr>
    </tbody>
 {% endfor %}

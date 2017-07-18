@@ -37,9 +37,15 @@ Downloads
 - `JQuery <https://code.jquery.com/jquery/>`_
 - `Bootstrap <http://getbootstrap.com/>`_
 
-Necessary packages 
+Necessary packages
 ==================
 
 For cryptography :
 
 - apt install libssl-dev
+
+Caution
+=======
+
+- aiohttp-jinja2 > 0.13.0 is required. Download it from Github if not available
+  on Pypi (change of url_for not available) ;

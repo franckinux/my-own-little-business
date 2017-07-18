@@ -20,29 +20,29 @@ from views.repository import list_repository
 def setup_routes(app):
     app.router.add_static("/static", "static")
 
-    app.router.add_get("/admin/", admin_menu)
-    app.router.add_get("/client/", client_menu)
+    app.router.add_get("/admin/", admin_menu, name="admin")
+    app.router.add_get("/client/", client_menu, name="client")
 
     # auth
-    app.router.add_route("*", "/", login)
-    app.router.add_route("*", "/logout/", logout)
-    app.router.add_route("*", "/register/", register)
-    app.router.add_get("/confirm/{token}/", confirm)
+    app.router.add_route("*", "/", login, name="login")
+    app.router.add_route("*", "/logout/", logout, name="logout")
+    app.router.add_route("*", "/register/", register, name="register")
+    app.router.add_get("/confirm/{token}/", confirm, name="confirm")
 
     # batches
-    app.router.add_route("*", "/batch/create/", create_batch)
-    app.router.add_get("/batch/delete/{id:\d+}/", delete_batch)
-    app.router.add_route("*", "/batch/edit/{id:\d+}/", edit_batch)
-    app.router.add_get("/batch/list/", list_batch)
+    app.router.add_route("*", "/batch/create/", create_batch, name="create_batch")
+    app.router.add_get("/batch/delete/{id:\d+}/", delete_batch, name="delete_batch")
+    app.router.add_route("*", "/batch/edit/{id:\d+}/", edit_batch, name="edit_batch")
+    app.router.add_get("/batch/list/", list_batch, name="list_batch")
 
     # products
-    app.router.add_route("*", "/product/create/", create_product)
-    app.router.add_get("/product/delete/{id:\d+}/", delete_product)
-    app.router.add_route("*", "/product/edit/{id:\d+}/", edit_product)
-    app.router.add_get("/product/list/", list_product)
+    app.router.add_route("*", "/product/create/", create_product, name="create_product")
+    app.router.add_get("/product/delete/{id:\d+}/", delete_product, name="delete_product")
+    app.router.add_route("*", "/product/edit/{id:\d+}/", edit_product, name="edit_product")
+    app.router.add_get("/product/list/", list_product, name="list_product")
 
     # repositories
-    app.router.add_route("*", "/repository/create/", create_repository)
-    app.router.add_get("/repository/delete/{id:\d+}/", delete_repository)
-    app.router.add_route("*", "/repository/edit/{id:\d+}/", edit_repository)
-    app.router.add_get("/repository/list/", list_repository)
+    app.router.add_route("*", "/repository/create/", create_repository, name="create_repository")
+    app.router.add_get("/repository/delete/{id:\d+}/", delete_repository, name="delete_repository")
+    app.router.add_route("*", "/repository/edit/{id:\d+}/", edit_repository, name="edit_repository")
+    app.router.add_get("/repository/list/", list_repository, name="list_repository")
