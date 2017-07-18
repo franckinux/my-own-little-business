@@ -23,7 +23,7 @@ class SmtpSendingError(Exception):
 
 async def send(message, config):
     host = config["smtp_url"]
-    port = config["smtp_port"]
+    port = int(config["smtp_port"])
     username = config["smtp_username"]
     password = config["smtp_password"]
     use_tls = False if port == 587 else True
@@ -41,7 +41,7 @@ async def send(message, config):
         raise SmtpSendingError("error while exchanging with smtp server")
 
 
-async def send_confirmation_email(app, client):
+async def send_confirmation(app, client):
     config = app["config"]["application"]
 
     token = generate_confirmation_token(client.id, config["secret_key"])

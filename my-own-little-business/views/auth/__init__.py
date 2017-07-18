@@ -9,9 +9,11 @@ from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
 from passlib.hash import sha256_crypt
 from sqlalchemy import literal_column
+from sqlalchemy import select
 from sqlalchemy.sql import insert
 from sqlalchemy.sql import update
 from wtforms import PasswordField
+from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Email
@@ -23,8 +25,9 @@ from wtforms.validators import Required
 from auth import require
 from auth.db_auth import check_credentials
 from model import Client
+from model import Repository
 from views.auth.confirm import get_id_from_token
-from views.auth.confirm import send_confirmation_email
+from views.auth.confirm import send_confirmation
 from views.auth.confirm import SmtpSendingError
 from views.csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
@@ -96,6 +99,7 @@ class RegisterForm(CsrfForm):
     phone_number = StringField("Phone number", validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
+    repository_id = SelectField("Repository", coerce=int)
     submit = SubmitField("Submit")
 
 
@@ -104,8 +108,13 @@ async def register(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
+    async with request.app["db-pool"].acquire() as conn:
+        rows = await conn.fetch(select([Repository]))
+    repository_choices = [(row.id, row.name) for row in rows]
+
     if request.method == "POST":
         form = RegisterForm(await request.post(), meta=await generate_csrf_meta(request))
+        form.repository_id.choices = repository_choices
         if form.validate():
             data = remove_special_data(form.data.items())
             email = data["email_address"]
@@ -120,19 +129,18 @@ async def register(request):
                         flash(request, ("warning", "cannot create the client, it already exists"))
                         raise  # client not created
                     try:
-                        await send_confirmation_email(request.app, client)
+                        await send_confirmation(request.app, client)
                     except SmtpSendingError:
                         flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
                         raise  # rollback the transaction : client not created
                     flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
-                    return {"form": form}
-            except UniqueViolationError, SmtpSendingError:
+            except (UniqueViolationError, SmtpSendingError):
                 pass
         else:
             flash(request, ("danger", "there are some fields in error"))
-            return {"form": form}
     else:  # GET !
         form = RegisterForm(meta=await generate_csrf_meta(request))
+        form.repository_id.choices = repository_choices
     return {"form": form}
 
 
