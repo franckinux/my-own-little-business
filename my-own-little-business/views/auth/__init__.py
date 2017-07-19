@@ -57,7 +57,7 @@ async def login(request):
                     q = update(Client).where(
                         Client.__table__.c.login == login).values(last_seen=datetime.utcnow()
                     )
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 await remember(request, response, login)
                 return response
         flash(request, ("danger", "Invalid username/password combination"))
@@ -157,7 +157,7 @@ async def confirm(request):
     async with request.app["db-pool"].acquire() as conn:
         q = update(Client).where(Client.__table__.c.id == id_).values(confirmed=True)
         try:
-            await conn.execute(q)
+            await conn.fetchrow(q)
         except:
             flash(request, ("danger", "your account cannot be confirmed"))
             return

@@ -41,7 +41,7 @@ async def create_product(request):
             async with request.app["db-pool"].acquire() as conn:
                 q = insert(Product).values(**remove_special_data(form.data.items()))
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the product"))
                     return {"form": form}
@@ -62,7 +62,7 @@ async def delete_product(request):
         id_ = int(request.match_info["id"])
         q = delete(Product).where(Product.__table__.c.id == id_)
         try:
-            await conn.execute(q)
+            await conn.fetchrow(q)
         except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the product"))
         else:
@@ -93,7 +93,7 @@ async def edit_product(request):
                     Product.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                 )
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the product"))
                 else:
