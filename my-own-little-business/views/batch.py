@@ -39,7 +39,7 @@ async def create_batch(request):
             async with request.app["db-pool"].acquire() as conn:
                 q = insert(Batch).values(**remove_special_data(form.data.items()))
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the batch"))
                     return {"form": form}
@@ -60,7 +60,7 @@ async def delete_batch(request):
         id_ = int(request.match_info["id"])
         q = delete(Batch).where(Batch.__table__.c.id == id_)
         try:
-            await conn.execute(q)
+            await conn.fetchrow(q)
         except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the batch"))
         else:
@@ -91,7 +91,7 @@ async def edit_batch(request):
                     Batch.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                 )
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the batch"))
                 else:
