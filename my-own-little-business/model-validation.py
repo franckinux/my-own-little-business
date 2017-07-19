@@ -126,12 +126,12 @@ async def main(config, loop=None):
     # link basic object between them
     async with pg.begin():
         # repository to clients
-        await pg.execute(update(Client).where(
+        await pg.fetchrow(update(Client).where(
             Client.__table__.c.id == client_1_id
         ).values(
             repository_id=repo_1_id
         ))
-        await pg.execute(update(Client).where(
+        await pg.fetchrow(update(Client).where(
             Client.__table__.c.id == client_2_id
         ).values(
             repository_id=repo_1_id
@@ -146,13 +146,13 @@ async def main(config, loop=None):
         order_1_id = row.id
 
         # order-1 to products
-        await pg.execute(
+        await pg.fetchrow(
             insert(OrderProductAssociation).values(
                 quantity=2,
                 order_id=order_1_id, product_id=product_1_id
             )
         )
-        await pg.execute(
+        await pg.fetchrow(
             insert(OrderProductAssociation).values(
                 quantity=3,
                 order_id=order_1_id, product_id=product_2_id
@@ -181,7 +181,7 @@ async def main(config, loop=None):
         order_2_id = row.id
 
         # order-2 to products
-        await pg.execute(
+        await pg.fetchrow(
             insert(OrderProductAssociation).values(
                 quantity=3,
                 order_id=order_2_id, product_id=product_1_id
@@ -197,7 +197,7 @@ async def main(config, loop=None):
         )
         payement_2_id = row.id
 
-        await pg.execute(update(Order).where(
+        await pg.fetchrow(update(Order).where(
             Order.__table__.c.id == order_1_id
         ).values(
             payment_id=payement_2_id
@@ -213,7 +213,7 @@ async def main(config, loop=None):
         order_3_id = row.id
 
         # order-3 to products
-        await pg.execute(
+        await pg.fetchrow(
             insert(OrderProductAssociation).values(
                 quantity=3,
                 order_id=order_3_id, product_id=product_1_id

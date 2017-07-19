@@ -37,7 +37,7 @@ async def create_repository(request):
             async with request.app["db-pool"].acquire() as conn:
                 q = insert(Repository).values(**remove_special_data(form.data.items()))
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the repository"))
                     return {"form": form}
@@ -58,7 +58,7 @@ async def delete_repository(request):
         id_ = int(request.match_info["id"])
         q = delete(Repository).where(Repository.__table__.c.id == id_)
         try:
-            await conn.execute(q)
+            await conn.fetchrow(q)
         except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the repository"))
         else:
@@ -89,7 +89,7 @@ async def edit_repository(request):
                     Repository.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                 )
                 try:
-                    await conn.execute(q)
+                    await conn.fetchrow(q)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the repository"))
                 else:
