@@ -110,37 +110,37 @@ async def register(request):
 
     async with request.app["db-pool"].acquire() as conn:
         rows = await conn.fetch(select([Repository]))
-    repository_choices = [(row.id, row.name) for row in rows]
+        repository_choices = [(row.id, row.name) for row in rows]
 
-    if request.method == "POST":
-        form = RegisterForm(await request.post(), meta=await generate_csrf_meta(request))
-        form.repository_id.choices = repository_choices
-        if form.validate():
-            data = remove_special_data(form.data.items())
-            email = data["email_address"]
-            del data["password2"]
-            data["password_hash"] = sha256_crypt.hash(data.pop("password"))
-            try:
-                async with request.app["db-pool"].transaction() as conn:
-                    q = insert(Client).values(**data).returning(literal_column('*'))
-                    try:
-                        client = await conn.fetchrow(q)
-                    except UniqueViolationError:
-                        flash(request, ("warning", "cannot create the client, it already exists"))
-                        raise  # client not created
-                    try:
-                        await send_confirmation(request.app, client)
-                    except SmtpSendingError:
-                        flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
-                        raise  # rollback the transaction : client not created
-                    flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
-            except (UniqueViolationError, SmtpSendingError):
-                pass
-        else:
-            flash(request, ("danger", "there are some fields in error"))
-    else:  # GET !
-        form = RegisterForm(meta=await generate_csrf_meta(request))
-        form.repository_id.choices = repository_choices
+        if request.method == "POST":
+            form = RegisterForm(await request.post(), meta=await generate_csrf_meta(request))
+            form.repository_id.choices = repository_choices
+            if form.validate():
+                data = remove_special_data(form.data.items())
+                email = data["email_address"]
+                del data["password2"]
+                data["password_hash"] = sha256_crypt.hash(data.pop("password"))
+                try:
+                    async with request.app["db-pool"].transaction() as conn:
+                        q = insert(Client).values(**data).returning(literal_column('*'))
+                        try:
+                            client = await conn.fetchrow(q)
+                        except UniqueViolationError:
+                            flash(request, ("warning", "cannot create the client, it already exists"))
+                            raise  # client not created
+                        try:
+                            await send_confirmation(request.app, client)
+                        except SmtpSendingError:
+                            flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
+                            raise  # rollback the transaction : client not created
+                        flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                except (UniqueViolationError, SmtpSendingError):
+                    pass
+            else:
+                flash(request, ("danger", "there are some fields in error"))
+        else:  # GET !
+            form = RegisterForm(meta=await generate_csrf_meta(request))
+            form.repository_id.choices = repository_choices
     return {"form": form}
 
 

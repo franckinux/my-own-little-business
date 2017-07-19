@@ -78,17 +78,17 @@ async def edit_product(request):
     if request.method not in ["GET", "POST"]:
         raise HTTPMethodNotAllowed()
 
-    id_ = int(request.match_info["id"])
-    q = select([Product], Product.__table__.c.id == id_)
-    data = dict(await conn.fetchrow(q))
-    if request.method == "POST":
-        form = ProductForm(
-            await request.post(),
-            data=data,
-            meta=await generate_csrf_meta(request)
-        )
-        if form.validate():
-            async with request.app["db-pool"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
+        id_ = int(request.match_info["id"])
+        q = select([Product], Product.__table__.c.id == id_)
+        data = dict(await conn.fetchrow(q))
+        if request.method == "POST":
+            form = ProductForm(
+                await request.post(),
+                data=data,
+                meta=await generate_csrf_meta(request)
+            )
+            if form.validate():
                 q = update(Product).where(
                     Product.__table__.c.id == id_).values(**remove_special_data(form.data.items())
                 )
@@ -98,12 +98,10 @@ async def edit_product(request):
                     flash(request, ("warning", "cannot edit the product"))
                 else:
                     flash(request, ("success", "product successfuly edited"))
-            return {"id": id_, "form": form}
-        else:
-            flash(request, ("danger", "there are some fields in error"))
-            return {"id": id_, "form": form}
-    else:  # GET !
-        form = ProductForm(data=data, meta=await generate_csrf_meta(request))
+            else:
+                flash(request, ("danger", "there are some fields in error"))
+        else:  # GET !
+            form = ProductForm(data=data, meta=await generate_csrf_meta(request))
         return {"id": id_, "form": form}
 
 
