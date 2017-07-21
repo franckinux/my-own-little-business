@@ -3,6 +3,7 @@ from datetime import datetime
 import os
 import sys
 
+import asyncpg
 from asyncpgsa import pg
 from passlib.hash import sha256_crypt
 from sqlalchemy import select
@@ -36,245 +37,228 @@ async def main(config, loop=None):
         "database": config["database"]
     }
     dsn = str(URL(**connection_infos))
-    await pg.init(dsn)
+    conn = await asyncpg.connect(dsn)
 
     # create basic objects
-    async with pg.begin():
-        # admin
-        row = await pg.fetchrow(
-            insert(Client).values(
-                login="admin", password_hash=sha256_crypt.hash("admin"),
-                confirmed=True,
-                super_user=True,
-                first_name="Tom", last_name="Sawyer",
-                email_address="tom@literature.net",
-                phone_number="888-888-888"
-            ).returning(Client.__table__.c.id)
-        )
-        client_1_id = row.id
+    # admin
+    await conn.execute(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "                   first_name, last_name, email_address, phone_number) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"),
+            "admin",
+            sha256_crypt.hash("admin"),
+            True,
+            True,
+            "Tom",
+            "Sawyer",
+            "tom@literature.net",
+            "888-888-888"
+    )
 
-        # client 1
-        row = await pg.fetchrow(
-            insert(Client).values(
-                login="rabid", password_hash="abc",
-                first_name="Raymonde", last_name="Bidochon",
-                email_address="ra.bidochon@binet.com",
-                phone_number="01-40-50-50-01"
-            ).returning(Client.__table__.c.id)
-        )
-        client_1_id = row.id
+    # client 1
+    row = await conn.fetchrow(
+        ("INSERT INTO client (login, password_hash, "
+        "                   first_name, last_name, email_address, phone_number) "
+        "VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"),
+            "rabid",
+            sha256_crypt.hash("abc"),
+            "Raymonde",
+            "Bidochon",
+            "ra.bidochon@binet.com",
+            "01-40-50-50-01"
+    )
+    client_1_id = row["id"]
 
-        # client 2
-        row = await pg.fetchrow(
-            insert(Client).values(
-                login="robid", password_hash="def",
-                first_name="Robert", last_name="Bidochon",
-                email_address="ro.bidochon@binet.com",
-                phone_number="01-40-50-50-02"
-            ).returning(Client.__table__.c.id)
-        )
-        client_2_id = row.id
+    # client 2
+    row = await conn.fetchrow(
+        ("INSERT INTO client (login, password_hash, "
+        "                   first_name, last_name, email_address, phone_number) "
+        "VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"),
+            "robid",
+            sha256_crypt.hash("abc"),
+            "Robert",
+            "Bidochon",
+            "ro.bidochon@binet.com",
+            "01-40-50-50-02"
+    )
+    client_2_id = row["id"]
 
-        # repo_1
-        row = await pg.fetchrow(
-            insert(Repository).values(name="Haut village").returning(Repository.__table__.c.id)
-        )
-        repo_1_id = row.id
+    # repo_1
+    row = await conn.fetchrow(
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id",
+        "Haut village"
+    )
+    repo_1_id = row["id"]
 
-        # repo_2
-        row = await pg.fetchrow(
-            insert(Repository).values(name="Bas village").returning(Repository.__table__.c.id)
-        )
-        repo_2_id = row.id
+    # repo_2
+    row = await conn.fetchrow(
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id",
+        "Bas village"
+    )
+    repo_2_id = row["id"]
 
-        # product_1
-        row = await pg.fetchrow(
-            insert(Product).values(
-                name="Pain au sarrasin",
-                description="Pain avec de la faine de sarrasin dedans",
-                price=5
-            ).returning(Product.__table__.c.id)
-        )
-        product_1_id = row.id
+    # product_1
+    row = await conn.fetchrow(
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Pain au sarrasin", "Pain avec de la faine de sarrasin dedans", 5
+    )
+    product_1_id = row["id"]
 
-        # product_2
-        row = await pg.fetchrow(
-            insert(Product).values(
-                name="Pain de seigle",
-                description="Pain avec de la faine de seigle dedans",
-                price=4
-            ).returning(Product.__table__.c.id)
-        )
-        product_2_id = row.id
+    # product_2
+    row = await conn.fetchrow(
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Pain de seigle", "Pain avec de la faine de seigle dedans", 4
+    )
+    product_2_id = row["id"]
 
-        # batch_1
-        row = await pg.fetchrow(
-           insert(Batch).values(
-               date=datetime(2017, 6, 18, 8, 0, 0), capacity=50
-            ).returning(Batch.__table__.c.id)
-        )
-        batch_1_id = row.id
+    # batch_1
+    row = await conn.fetchrow(
+        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
+        datetime(2017, 6, 18, 8, 0, 0), 50, False
+    )
+    batch_1_id = row["id"]
 
-        # batch_2
-        row = await pg.fetchrow(
-            insert(Batch).values(
-                date=datetime(2017, 6, 19, 8, 0, 0), capacity=50, opened=False
-            ).returning(Batch.__table__.c.id)
-        )
-        batch_2_id = row.id
+    # batch_2
+    row = await conn.fetchrow(
+        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
+        datetime(2017, 6, 19, 8, 0, 0), 50, False
+    )
+    batch_2_id = row["id"]
 
     # link basic object between them
-    async with pg.begin():
-        # repository to clients
-        await pg.fetchrow(update(Client).where(
-            Client.__table__.c.id == client_1_id
-        ).values(
-            repository_id=repo_1_id
-        ))
-        await pg.fetchrow(update(Client).where(
-            Client.__table__.c.id == client_2_id
-        ).values(
-            repository_id=repo_1_id
-        ))
+    # repository to clients
+    await conn.execute(
+        "UPDATE client SET repository_id=$1 WHERE id=$2",
+        repo_1_id, client_1_id
+    )
+    await conn.execute(
+        "UPDATE client SET repository_id=$1 WHERE id=$2",
+        repo_1_id, client_2_id
+    )
 
-        # order-1 to client and batch
-        row = await pg.fetchrow(
-            insert(Order).values(
-                client_id=client_1_id, batch_id=batch_1_id
-            ).returning(Order.__table__.c.id)
-        )
-        order_1_id = row.id
+    # order-1 to client and batch
+    row = await conn.fetchrow(
+        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
+        client_1_id, batch_1_id
+    )
+    order_1_id = row["id"]
 
-        # order-1 to products
-        await pg.fetchrow(
-            insert(OrderProductAssociation).values(
-                quantity=2,
-                order_id=order_1_id, product_id=product_1_id
-            )
-        )
-        await pg.fetchrow(
-            insert(OrderProductAssociation).values(
-                quantity=3,
-                order_id=order_1_id, product_id=product_2_id
-            )
-        )
+    # order-1 to products
+    await conn.execute(
+        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
+        order_1_id, product_1_id, 2
+    )
+    await conn.execute(
+        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
+        order_1_id, product_2_id, 3
+    )
 
-        # test simple queries
-        row = await pg.fetchrow(
-            join(Order.__table__, Client.__table__).select().where(Client.__table__.c.id == client_1_id)
-        )
-        print("client.first_name =", row.first_name)
+    # test simple queries
+    row = await conn.fetchrow(
+        "SELECT c.first_name FROM order_ AS o INNER JOIN client AS c ON o.client_id = c.id WHERE c.id = $1",
+        client_1_id
+    )
+    print("client.first_name =", row["first_name"])
 
-        rows = await pg.fetch(
-            join(OrderProductAssociation.__table__, Product.__table__).select().where(OrderProductAssociation.__table__.c.order_id == order_1_id)
-        )
-        for row in rows:
-            print("quantity =", row.quantity)
-            print("product =", row.name)
+    rows = await conn.fetch(
+        "SELECT opa.quantity, p.name FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = $1",
+        order_1_id
+    )
+    for row in rows:
+        print("quantity =", row["quantity"])
+        print("product =", row["name"])
 
-        # order-2 to client and batch
-        row = await pg.fetchrow(
-            insert(Order).values(
-                client_id=client_1_id, batch_id=batch_2_id
-            ).returning(Order.__table__.c.id)
-        )
-        order_2_id = row.id
+    # order-2 to client and batch
+    row = await conn.fetchrow(
+        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
+        client_1_id, batch_2_id
+    )
+    order_2_id = row["id"]
 
-        # order-2 to products
-        await pg.fetchrow(
-            insert(OrderProductAssociation).values(
-                quantity=3,
-                order_id=order_2_id, product_id=product_1_id
-            )
-        )
+    # order-2 to products
+    await conn.execute(
+        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
+        order_2_id, product_1_id, 3
+    )
 
-        # payment to order_2
-        row = await pg.fetchrow(
-            insert(Payment).values(
-                total=10, payed_at=datetime.now(), mode="payed_by_check"
-                # total=10, payed_at=datetime.now(), mode=PayedStatusEnum.payed_by_check
-            ).returning(Payment.__table__.c.id)
-        )
-        payement_2_id = row.id
+    # payment to order_2
+    row = await conn.fetchrow(
+        "INSERT INTO payment (total, payed_at, mode) VALUES ($1, $2, $3) RETURNING id",
+        10, datetime.now(), "payed_by_check"
+    )
+    payment_2_id = row["id"]
 
-        await pg.fetchrow(update(Order).where(
-            Order.__table__.c.id == order_1_id
-        ).values(
-            payment_id=payement_2_id
-        ))
+    await conn.execute(
+        "UPDATE order_ SET payment_id=$1 WHERE id=$2",
+        payment_2_id, order_1_id
+    )
 
-        # ---
-        # order-1 to client and batch
-        row = await pg.fetchrow(
-            insert(Order).values(
-                client_id=client_2_id, batch_id=batch_1_id
-            ).returning(Order.__table__.c.id)
-        )
-        order_3_id = row.id
+    # ---
+    # order-3 to client and batch
+    row = await conn.fetchrow(
+        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
+        client_2_id, batch_1_id
+    )
+    order_3_id = row["id"]
 
-        # order-3 to products
-        await pg.fetchrow(
-            insert(OrderProductAssociation).values(
-                quantity=3,
-                order_id=order_3_id, product_id=product_1_id
-            )
-        )
+    # order-3 to products
+    await conn.execute(
+        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
+        order_3_id, product_1_id, 3
+    )
 
 
     # compute batch load
     load = 0
-    rows = await pg.fetch(
-        select([Order.__table__.c.id]).where(Order.__table__.c.batch_id == batch_1_id)
+    rows = await conn.fetch(
+        "SELECT id FROM order_ WHERE batch_id=$1", batch_1_id
     )
-    order_ids = [row.id for row in rows]
+    order_ids = [row["id"] for row in rows]
 
-    rows = await pg.fetch(
-        join(OrderProductAssociation.__table__, Product.__table__).select().where(OrderProductAssociation.__table__.c.order_id.in_(order_ids))
-    )
-    for row in rows:
-        load += row.quantity * row.load
-    print("batch 1 load :", load)
-    # print("batch 1 capacity :", batch_1.capacity)
+    # rows = await conn.fetch(
+    #     "SELECT opa.quantity, p.load FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id IN ($1)",
+    #     order_ids
+    # )
+    # for row in rows:
+    #     load += row["quantity"] * row["load"]
+    # print("batch 1 load :", load)
+    # # print("batch 1 capacity :", batch_1.capacity)
     print("---")
 
     # compute order total price
     price = 0
-    rows = await pg.fetch(
-        join(OrderProductAssociation.__table__, Product.__table__).select().where(OrderProductAssociation.__table__.c.order_id == order_1_id)
+    rows = await conn.fetch(
+        "SELECT opa.quantity, p.price FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = $1",
+        order_1_id
     )
     for row in rows:
-        price += row.quantity * row.price
+        price += row["quantity"] * row["price"]
     print("order 1 total price :", price)
     print("---")
 
     # search for all orders from a client
-    rows = await pg.fetch(
-        select([Order]).where(Order.__table__.c.client_id == client_1_id)
+    rows = await conn.fetch(
+        "SELECT placed_at FROM order_ WHERE client_id = $1", client_1_id
     )
 
-    print("{} orders for client_1".format(len(rows.data)))
+    print("{} orders for client_1".format(len(rows)))
     for row in rows:
-        print("order datetime :", row.placed_at)
+        print("order datetime :", row["placed_at"])
     print("---")
 
-    # search for all non payed orders from a client
-    rows = await pg.fetch(
-        select([Order]).where(Order.__table__.c.client_id == client_1_id)
-    )
-    order_ids = [row.id for row in rows]
-
-    rows = await pg.fetch(
-        join(Order.__table__, Payment.__table__).select().where(
-            and_(
-                Order.__table__.c.id.in_(order_ids),
-                Payment.__table__.c.mode.in_ != PayedStatusEnum.not_payed
-            )
-        )
-    )
-
-    print("{} non payed orders for client_1".format(len(rows.data)))
-    for row in rows:
-        print("order datetime :", row.placed_at)
+    # # search for all non payed orders from a client
+    # rows = await conn.fetch(
+    #     "SELECT * FROM order_ WHERE client_id = $1", client_1_id
+    # )
+    # order_ids = [row["id"] for row in rows]
+    #
+    # rows = await conn.fetch(
+    #     "SELECT opa.quantity, p.price FROM order_ AS o INNER JOIN payment AS p ON o.payment_id = p.id WHERE o.order_id IN ($1) AND p.mode != 'not_payed'",
+    # )
+    #
+    # print("{} non payed orders for client_1".format(len(rows)))
+    # for row in rows:
+    #     print("order datetime :", row["placed_at"])
 
 
 if __name__ == "__main__":
