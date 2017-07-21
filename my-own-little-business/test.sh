@@ -1,5 +1,5 @@
 #!/bin/bash
 dropdb molb
 createdb molb
-python3 create-schema.py
+psql molb < sql/create-db.sql
 python3 model-validation.py
