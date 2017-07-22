@@ -1,9 +1,6 @@
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from auth import require
-from sqlalchemy import select
-
-from model import Client
 
 
 @require("client")
@@ -11,6 +8,6 @@ from model import Client
 async def client_menu(request):
     login = await authorized_userid(request)
     async with request.app["db-pool"].acquire() as conn:
-        q = select([Client], Client.__table__.c.login == login)
-        client = dict(await conn.fetchrow(q))
+        q = "SELECT * FROM client WHERE login = $1"
+        client = dict(await conn.fetchrow(q, login))
     return {"client": client}

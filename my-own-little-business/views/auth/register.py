@@ -7,10 +7,6 @@ from asyncpg.exceptions import UniqueViolationError
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from passlib.hash import sha256_crypt
-from sqlalchemy import literal_column
-from sqlalchemy import select
-from sqlalchemy.sql import insert
-from sqlalchemy.sql import update
 from wtforms import PasswordField
 from wtforms import SelectField
 from wtforms import StringField
@@ -21,15 +17,16 @@ from wtforms.validators import Length
 from wtforms.validators import Regexp
 from wtforms.validators import Required
 
-from model import Client
-from model import Repository
 from views.auth.send_message import SmtpSendingError
 from views.auth.send_message import send_message
 from views.auth.token import generate_confirmation_token
 from views.auth.token import get_id_from_token
 from views.csrf_form import CsrfForm
+from views.utils import field_list
 from views.utils import generate_csrf_meta
+from views.utils import place_holders
 from views.utils import remove_special_data
+from views.utils import settings
 
 
 class RegisterForm(CsrfForm):
@@ -67,21 +64,23 @@ async def handler(request):
         raise HTTPMethodNotAllowed()
 
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch(select([Repository]))
-        repository_choices = [(row.id, row.name) for row in rows]
+        rows = await conn.fetch("SELECT id, name FROM repository")
+        repository_choices = [(row["id"], row["name"]) for row in rows]
 
         if request.method == "POST":
             form = RegisterForm(await request.post(), meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
             if form.validate():
-                data = dict(remove_special_data(form.data.items()))
+                data = remove_special_data(form.data.items())
                 del data["password2"]
                 data["password_hash"] = sha256_crypt.hash(data.pop("password"))
                 try:
-                    async with request.app["db-pool"].transaction() as conn:
-                        q = insert(Client).values(**data).returning(literal_column('*'))
+                    async with conn.transaction():
+                        q = "INSERT INTO client ({}) VALUES ({}) RETURNING *".format(
+                            field_list(data), place_holders(data)
+                        )
                         try:
-                            client = await conn.fetchrow(q)
+                            client = await conn.fetchrow(q, *data.values())
                         except UniqueViolationError:
                             flash(request, ("warning", "cannot create the client, it already exists"))
                             raise  # client not created
@@ -112,9 +111,9 @@ async def confirm(request):
         return
 
     async with request.app["db-pool"].acquire() as conn:
-        q = update(Client).where(Client.__table__.c.id == id_).values(confirmed=True)
+        q = "UPDATE client SET confirmed = true WHERE id = $1"
         try:
-            await conn.fetchrow(q)
+            await conn.execute(q, id_)
         except:
             flash(request, ("danger", "your account cannot be confirmed"))
             return
@@ -126,8 +125,8 @@ async def confirm(request):
 async def send_confirmation(request, client):
     config = request.app["config"]["application"]
 
-    token = generate_confirmation_token(client.id, config["secret_key"])
-    url = config["url"] + request.app.router["confirm_register"].url_for(token=token)
+    token = generate_confirmation_token(client["id"], config["secret_key"])
+    url = config["url"] + str(request.app.router["confirm_register"].url_for(token=token))
 
     env = get_env(request.app)
     template = env.get_template("auth/register-confirmation.txt")
@@ -139,7 +138,7 @@ async def send_confirmation(request, client):
 
     message = MIMEMultipart("alternative")
     message["subject"] = "Confirm your account"
-    message["to"] = client.email_address
+    message["to"] = client["email_address"]
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)

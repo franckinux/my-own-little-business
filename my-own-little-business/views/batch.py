@@ -1,12 +1,8 @@
+from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
-from sqlalchemy import select
-from sqlalchemy.sql import delete
-from sqlalchemy.sql import insert
-from sqlalchemy.sql import update
-from sqlalchemy.sql.expression import desc
 from wtforms import BooleanField
 from wtforms import DateTimeField
 from wtforms import IntegerField
@@ -15,9 +11,11 @@ from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
-from model import Batch
+from views.utils import field_list
 from views.utils import generate_csrf_meta
+from views.utils import place_holders
 from views.utils import remove_special_data
+from views.utils import settings
 
 
 class BatchForm(CsrfForm):
@@ -36,10 +34,13 @@ async def create_batch(request):
     if request.method == "POST":
         form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
+            data = remove_special_data(form.data.items())
             async with request.app["db-pool"].acquire() as conn:
-                q = insert(Batch).values(**remove_special_data(form.data.items()))
+                q = "INSERT INTO batch ({}) VALUES ({})".format(
+                    field_list(data), place_holders(data)
+                )
                 try:
-                    await conn.fetchrow(q)
+                    await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot create the batch"))
                     return {"form": form}
@@ -54,20 +55,17 @@ async def create_batch(request):
 
 
 @require("admin")
-@aiohttp_jinja2.template("list-batch.html")
 async def delete_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
-        q = delete(Batch).where(Batch.__table__.c.id == id_)
         try:
-            await conn.fetchrow(q)
+            await conn.execute("DELETE FROM batch WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
             flash(request, ("warning", "cannot delete the batch"))
         else:
             flash(request, ("success", "batch successfuly deleted"))
         finally:
-            rows = await conn.fetch(select([Batch]).limit(30).order_by(desc(Batch.__table__.c.date)))
-            return {"batches": rows}
+            return HTTPFound(request.app.router["list_batch"].url_for())
 
 
 @require("admin")
@@ -78,8 +76,7 @@ async def edit_batch(request):
 
     async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
-        q = select([Batch], Batch.__table__.c.id == id_)
-        data = dict(await conn.fetchrow(q))
+        data = dict(await conn.fetchrow("SELECT * FROM batch WHERE id = $1", id_))
         if request.method == "POST":
             form = BatchForm(
                 await request.post(),
@@ -87,15 +84,16 @@ async def edit_batch(request):
                 meta=await generate_csrf_meta(request)
             )
             if form.validate():
-                q = update(Batch).where(
-                    Batch.__table__.c.id == id_).values(**remove_special_data(form.data.items())
+                data = remove_special_data(form.data.items())
+                q = "UPDATE batch SET {} WHERE id = ${:d}".format(
+                    settings(data), len(data) + 1
                 )
                 try:
-                    await conn.fetchrow(q)
+                    await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", "cannot edit the batch"))
                 else:
-                    flash(request, ("success", "successfuly edited"))
+                    flash(request, ("success", "batch successfuly edited"))
             else:
                 flash(request, ("danger", "there are some fields in error"))
         else:  # GET !
@@ -107,5 +105,7 @@ async def edit_batch(request):
 @aiohttp_jinja2.template("list-batch.html")
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch(select([Batch]).limit(30).order_by(desc(Batch.__table__.c.date)))
+        rows = await conn.fetch(
+            "SELECT id, date, capacity, opened FROM batch ORDER by date DESC LIMIT 30"
+        )
     return {"batches": rows}

@@ -3,6 +3,7 @@ aiohttp-jinja2==0.13.0
 aiohttp-security==0.1.1
 aiohttp-session==0.8.0
 aiohttp-session-flash==0.0.4
+aiosmtplib==1.0.1
 asn1crypto==0.22.0
 async-timeout==1.2.1
 asyncpg==0.12.0
@@ -10,6 +11,7 @@ cffi==1.10.0
 chardet==3.0.4
 cryptography==1.9
 idna==2.5
+itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 multidict==3.1.1
@@ -17,6 +19,5 @@ passlib==1.7.1
 pkg-resources==0.0.0
 pycparser==2.18
 six==1.10.0
-SQLAlchemy==1.1.11
 WTForms==2.1
 yarl==0.11.0

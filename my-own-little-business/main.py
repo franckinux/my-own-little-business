@@ -12,10 +12,9 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiohttp_security import SessionIdentityPolicy
 from aiohttp_security import setup as setup_security
 import aiohttp_session_flash
-from asyncpgsa import create_pool
+from asyncpg import create_pool
 from cryptography import fernet
 from jinja2 import FileSystemLoader
-from sqlalchemy.engine.url import URL
 
 from auth.db_auth import DBAuthorizationPolicy
 from error import error_middleware
@@ -36,16 +35,11 @@ async def attach_db(config, loop=None):
 
     config["database"]["password"] = os.getenv("PG_PASS", "") or config["database"]["password"]
 
-    db_connection_infos = {
-        "drivername": "postgres",
-        "host": config["database"]["host"],
-        "port": config["database"]["port"],
-        "username": config["database"]["username"],
-        "password": config["database"]["password"],
-        "database": config["database"]["database"]
-    }
-    dsn = str(URL(**db_connection_infos))
-
+    dsn = "postgres://{}:{}@{}:{}/{}".format(
+        config["database"]["username"], config["database"]["password"],
+        config["database"]["host"], config["database"]["port"],
+        config["database"]["database"]
+    )
     return await create_pool(dsn=dsn, loop=loop)
 
 

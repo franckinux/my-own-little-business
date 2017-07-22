@@ -7,10 +7,6 @@ from asyncpg.exceptions import UniqueViolationError
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from passlib.hash import sha256_crypt
-from sqlalchemy import literal_column
-from sqlalchemy import select
-from sqlalchemy.sql import insert
-from sqlalchemy.sql import update
 from wtforms import PasswordField
 from wtforms import SelectField
 from wtforms import StringField
@@ -21,8 +17,6 @@ from wtforms.validators import Length
 from wtforms.validators import Regexp
 from wtforms.validators import Required
 
-from model import Client
-from model import Repository
 from views.auth.send_message import SmtpSendingError
 from views.auth.send_message import send_message
 from views.auth.token import generate_confirmation_token
@@ -50,11 +44,11 @@ async def handler(request):
         form = EmailForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
             data = dict(form.data.items())
-            email = data["email_address"]
+            email_address = data["email_address"]
             async with request.app["db-pool"].acquire() as conn:
-                q = select([Client]).where(Client.__table__.c.email_address == email)
-                client = await conn.fetchrow(q)
-            if client.row is None:
+                q = "SELECT id, email_address FROM client WHERE email_address = $1"
+                client = await conn.fetchrow(q, email_address)
+            if client is None:
                 flash(request, ("danger", "there is no client corresponding to this email address"))
             else:
                 try:
@@ -85,7 +79,6 @@ async def confirm(request):
         raise HTTPMethodNotAllowed()
 
     token = request.match_info["token"]
-
     try:
         id_ = get_id_from_token(token, request.app["config"]["application"]["secret_key"])
     except:
@@ -93,20 +86,17 @@ async def confirm(request):
         return
 
     if request.method == "POST":
-        import pdb; pdb.set_trace()
         form = PasswordForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
             password_hash = sha256_crypt.hash(form.password.data)
 
             async with request.app["db-pool"].acquire() as conn:
-                # TODO : AND client not disabled
-                q = update(Client).where(Client.__table__.c.id ==
-                                         id_).values(password_hash=password_hash)
+                q = "UPDATE client SET password_hash = $1 WHERE id = $2 AND NOT disabled"
                 try:
-                    await conn.fetchrow(q)
+                    await conn.execute(q, password_hash, id_)
                 except:
                     flash(request, ("danger", "your password cannot be recovered"))
-                    return
+                    return {"form": form, "token": token}
                 else:
                     flash(request, ("info", "your password has been updated, you can now login"))
                     return HTTPFound(request.app.router["login"].url_for())
@@ -121,8 +111,8 @@ async def confirm(request):
 async def send_confirmation(request, client):
     config = request.app["config"]["application"]
 
-    token = generate_confirmation_token(client.id, config["secret_key"])
-    url = config["url"] + request.app.router["confirm_password"].url_for(token=token)
+    token = generate_confirmation_token(client["id"], config["secret_key"])
+    url = config["url"] + str(request.app.router["confirm_password"].url_for(token=token))
 
     env = get_env(request.app)
     template = env.get_template("auth/password-confirmation.txt")
@@ -134,7 +124,7 @@ async def send_confirmation(request, client):
 
     message = MIMEMultipart("alternative")
     message["subject"] = "Password recovery"
-    message["to"] = client.email_address
+    message["to"] = client["email_address"]
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)

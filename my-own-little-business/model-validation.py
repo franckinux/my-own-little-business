@@ -4,23 +4,8 @@ import os
 import sys
 
 import asyncpg
-from asyncpgsa import pg
 from passlib.hash import sha256_crypt
-from sqlalchemy import select
-from sqlalchemy.engine.url import URL
-from sqlalchemy.sql import insert
-from sqlalchemy.sql import join
-from sqlalchemy.sql import update
-from sqlalchemy.sql.expression import and_
 
-from model import Client
-from model import Repository
-from model import Batch
-from model import Product
-from model import Order
-from model import OrderProductAssociation
-from model import PayedStatusEnum
-from model import Payment
 from utils import read_configuration_file
 
 
@@ -28,15 +13,11 @@ async def main(config, loop=None):
     if loop is None:
         loop = asyncio.get_event_loop()
 
-    connection_infos = {
-        "drivername": "postgres",
-        "host": config["host"],
-        "port": config["port"],
-        "username": config["username"],
-        "password": config["password"],
-        "database": config["database"]
-    }
-    dsn = str(URL(**connection_infos))
+    dsn = "postgres://{}:{}@{}:{}/{}".format(
+        config["username"], config["password"],
+        config["host"], config["port"],
+        config["database"]
+    )
     conn = await asyncpg.connect(dsn)
 
     # create basic objects
@@ -215,14 +196,14 @@ async def main(config, loop=None):
     )
     order_ids = [row["id"] for row in rows]
 
-    # rows = await conn.fetch(
-    #     "SELECT opa.quantity, p.load FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id IN ($1)",
-    #     order_ids
-    # )
-    # for row in rows:
-    #     load += row["quantity"] * row["load"]
-    # print("batch 1 load :", load)
-    # # print("batch 1 capacity :", batch_1.capacity)
+    rows = await conn.fetch(
+        "SELECT opa.quantity, p.load FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = ANY($1::int[])",
+        order_ids
+    )
+    for row in rows:
+        load += row["quantity"] * row["load"]
+    print("batch 1 load :", load)
+    # print("batch 1 capacity :", batch_1.capacity)
     print("---")
 
     # compute order total price
@@ -246,19 +227,20 @@ async def main(config, loop=None):
         print("order datetime :", row["placed_at"])
     print("---")
 
-    # # search for all non payed orders from a client
-    # rows = await conn.fetch(
-    #     "SELECT * FROM order_ WHERE client_id = $1", client_1_id
-    # )
-    # order_ids = [row["id"] for row in rows]
-    #
-    # rows = await conn.fetch(
-    #     "SELECT opa.quantity, p.price FROM order_ AS o INNER JOIN payment AS p ON o.payment_id = p.id WHERE o.order_id IN ($1) AND p.mode != 'not_payed'",
-    # )
-    #
-    # print("{} non payed orders for client_1".format(len(rows)))
-    # for row in rows:
-    #     print("order datetime :", row["placed_at"])
+    # search for all non payed orders from a client
+    rows = await conn.fetch(
+        "SELECT * FROM order_ WHERE client_id = $1", client_1_id
+    )
+    order_ids = [row["id"] for row in rows]
+
+    rows = await conn.fetch(
+        "SELECT p.payed_at FROM order_ AS o INNER JOIN payment AS p ON o.payment_id = p.id WHERE o.payment_id = ANY($1::int[]) AND p.mode != 'not_payed'",
+        order_ids
+    )
+
+    print("{} non payed orders for client_1".format(len(rows)))
+    for row in rows:
+        print("payed at :", row["payed_at"])
 
 
 if __name__ == "__main__":
