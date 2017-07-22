@@ -31,9 +31,6 @@ class ProductForm(CsrfForm):
 @require("admin")
 @aiohttp_jinja2.template("create-product.html")
 async def create_product(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     if request.method == "POST":
         form = ProductForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
@@ -48,13 +45,15 @@ async def create_product(request):
                     flash(request, ("warning", "cannot create the product"))
                     return {"form": form}
             flash(request, ("success", "product successfuly created"))
-            return {"form": form}
+            return HTTPFound(request.app.router["list_product"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
             return {"form": form}
-    else:  # GET !
+    elif request.method == "GET":
         form = ProductForm(meta=await generate_csrf_meta(request))
         return {"form": form}
+    else:
+        raise HTTPMethodNotAllowed()
 
 
 @require("admin")
@@ -74,9 +73,6 @@ async def delete_product(request):
 @require("admin")
 @aiohttp_jinja2.template("edit-product.html")
 async def edit_product(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         data = dict(await conn.fetchrow("SELECT * FROM product WHERE id = $1", id_))
@@ -97,11 +93,15 @@ async def edit_product(request):
                     flash(request, ("warning", "cannot edit the product"))
                 else:
                     flash(request, ("success", "product successfuly edited"))
+                    return HTTPFound(request.app.router["list_product"].url_for())
             else:
                 flash(request, ("danger", "there are some fields in error"))
-        else:  # GET !
+            return {"id": id_, "form": form}
+        elif request.method == "GET":
             form = ProductForm(data=data, meta=await generate_csrf_meta(request))
-        return {"id": id_, "form": form}
+            return {"id": id_, "form": form}
+        else:
+            raise HTTPMethodNotAllowed()
 
 
 @require("admin")

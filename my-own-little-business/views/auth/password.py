@@ -1,20 +1,18 @@
 from aiohttp_jinja2 import get_env
+from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
-from asyncpg.exceptions import UniqueViolationError
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from passlib.hash import sha256_crypt
 from wtforms import PasswordField
-from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Email
 from wtforms.validators import EqualTo
 from wtforms.validators import Length
-from wtforms.validators import Regexp
 from wtforms.validators import Required
 
 from views.auth.send_message import SmtpSendingError
@@ -37,9 +35,6 @@ class EmailForm(CsrfForm):
 
 @aiohttp_jinja2.template("auth/email.html")
 async def handler(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     if request.method == "POST":
         form = EmailForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
@@ -56,11 +51,15 @@ async def handler(request):
                 except SmtpSendingError:
                     flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
                 flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
-    else:  # GET !
+        return {"form": form}
+    elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
-    return {"form": form}
+        return {"form": form}
+    else:
+        raise HTTPMethodNotAllowed()
 
 
 class PasswordForm(CsrfForm):
@@ -75,15 +74,12 @@ class PasswordForm(CsrfForm):
 
 @aiohttp_jinja2.template("auth/password.html")
 async def confirm(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     token = request.match_info["token"]
     try:
         id_ = get_id_from_token(token, request.app["config"]["application"]["secret_key"])
     except:
-        flash(request, ("danger", "password recovery cannot recovered"))
-        return
+        flash(request, ("danger", "password cannot be recovered"))
+        raise HTTPBadRequest()
 
     if request.method == "POST":
         form = PasswordForm(await request.post(), meta=await generate_csrf_meta(request))
@@ -102,10 +98,12 @@ async def confirm(request):
                     return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
-    else:  # GET !
+        return {"form": form, "token": token}
+    elif request.method == "GET":
         form = PasswordForm(meta=await generate_csrf_meta(request))
-    return {"form": form, "token": token}
-
+        return {"form": form, "token": token}
+    else:
+        raise HTTPMethodNotAllowed()
 
 
 async def send_confirmation(request, client):

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
@@ -25,9 +23,6 @@ class LoginForm(CsrfForm):
 
 @aiohttp_jinja2.template("auth/login.html")
 async def login(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     if request.method == "POST":
         form = LoginForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
@@ -42,9 +37,12 @@ async def login(request):
                 await remember(request, response, login)
                 return response
         flash(request, ("danger", "Invalid username/password combination"))
-    else:  # GET !
+        return {"form": form}
+    elif request.method == "GET":
         form = LoginForm(meta=await generate_csrf_meta(request))
-    return {"form": form}
+        return {"form": form}
+    else:
+        raise HTTPMethodNotAllowed()
 
 
 @require("client")

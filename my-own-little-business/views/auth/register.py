@@ -1,4 +1,5 @@
 from aiohttp_jinja2 import get_env
+from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
@@ -26,7 +27,6 @@ from views.utils import field_list
 from views.utils import generate_csrf_meta
 from views.utils import place_holders
 from views.utils import remove_special_data
-from views.utils import settings
 
 
 class RegisterForm(CsrfForm):
@@ -60,9 +60,6 @@ class RegisterForm(CsrfForm):
 
 @aiohttp_jinja2.template("auth/register.html")
 async def handler(request):
-    if request.method not in ["GET", "POST"]:
-        raise HTTPMethodNotAllowed()
-
     async with request.app["db-pool"].acquire() as conn:
         rows = await conn.fetch("SELECT id, name FROM repository")
         repository_choices = [(row["id"], row["name"]) for row in rows]
@@ -90,13 +87,16 @@ async def handler(request):
                             flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
                             raise  # rollback the transaction : client not created
                         flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                        return HTTPFound(request.app.router["login"].url_for())
                 except (UniqueViolationError, SmtpSendingError):
-                    pass
+                    return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "there are some fields in error"))
-        else:  # GET !
+        elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
+        else:
+            raise HTTPMethodNotAllowed()
     return {"form": form}
 
 
@@ -108,7 +108,7 @@ async def confirm(request):
         id_ = get_id_from_token(token, request.app["config"]["application"]["secret_key"])
     except:
         flash(request, ("danger", "your account cannot be confirmed"))
-        return
+        raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
         q = "UPDATE client SET confirmed = true WHERE id = $1"
@@ -116,7 +116,7 @@ async def confirm(request):
             await conn.execute(q, id_)
         except:
             flash(request, ("danger", "your account cannot be confirmed"))
-            return
+            return HTTPFound(request.app.router["register"].url_for())
         else:
             flash(request, ("info", "your account has been confirmed, you can now login"))
             return HTTPFound(request.app.router["login"].url_for())
