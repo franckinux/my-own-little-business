@@ -3,6 +3,7 @@ from views.auth import login
 from views.auth import logout
 from views.auth.password import confirm as confirm_password
 from views.auth.password import handler as password
+from views.auth.profile import profile
 from views.auth.register import confirm as confirm_register
 from views.auth.register import handler as register
 from views.batch import create_batch
@@ -27,6 +28,7 @@ def setup_routes(app):
 
     # auth
     app.router.add_route('*', "/", login, name="login")
+    app.router.add_route('*', "/profile/", profile, name="profile")
     app.router.add_route('*', "/logout/", logout, name="logout")
     app.router.add_route('*', "/register/", register, name="register")
     app.router.add_get("/register/{token}/", confirm_register, name="confirm_register")

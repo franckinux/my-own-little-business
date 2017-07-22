@@ -33,7 +33,7 @@ async def main(config, loop=None):
             "Tom",
             "Sawyer",
             "tom@literature.net",
-            "888-888-888"
+            "06-88-77-66-55"
     )
 
     # client 1

@@ -92,12 +92,13 @@ async def handler(request):
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "there are some fields in error"))
+            return {"form": form}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
+            return {"form": form}
         else:
             raise HTTPMethodNotAllowed()
-    return {"form": form}
 
 
 @aiohttp_jinja2.template("auth/confirmation.html")

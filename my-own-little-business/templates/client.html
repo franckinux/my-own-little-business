@@ -11,6 +11,7 @@
 <p>Nice to see you again</p>
 
 <ul>
+    <li><a href="{{ url("profile") }}">Edit profile</a></li>
 {% if client.super_user %}
     <li><a href="{{ url("admin") }}">Admin</a></li>
 {% endif %}
