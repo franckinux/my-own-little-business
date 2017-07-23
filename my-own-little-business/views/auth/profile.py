@@ -12,6 +12,7 @@ from wtforms import SubmitField
 from wtforms.validators import EqualTo
 from wtforms.validators import Regexp
 
+from auth import require
 from views.csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
 from views.utils import remove_special_data
@@ -32,6 +33,7 @@ class ProfileForm(CsrfForm):
     submit = SubmitField("Submit")
 
 
+@require("client")
 @aiohttp_jinja2.template("auth/profile.html")
 async def profile(request):
     async with request.app["db-pool"].acquire() as conn:

@@ -76,7 +76,8 @@ async def main(config, loop=None):
         "INSERT INTO repository (name) VALUES ($1) RETURNING id",
         "Bas village"
     )
-    repo_2_id = row["id"]
+    # not used
+    # repo_2_id = row["id"]
 
     # product_1
     row = await conn.fetchrow(

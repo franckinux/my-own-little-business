@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Email change{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("client") }}">Client</a></li>
+    <li class="active">Email change</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("email") }}" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
+        <label for="email_address">{{ form.email_address.label }}</label>
+        {{ form.email_address(class="form-control", placeholder="Enter your email address") }}
+        {% if form.email_address.errors %}
+        <div class="help-text">
+            {% for error in form.email_address.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url("client") }}" class="btn btn-default">Cancel</a>
+    </div>
+</form>
+{% endblock %}

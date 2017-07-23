@@ -1,12 +1,11 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
-def generate_confirmation_token(id_, secret_key, expiration=3600):
+def generate_token(secret_key, expiration=3600, **token):
     s = Serializer(secret_key, expiration)
-    return s.dumps({"confirm": id_}).decode("ascii")
+    return s.dumps(token).decode("ascii")
 
 
-def get_id_from_token(token, secret_key):
+def get_token_data(token, secret_key):
     s = Serializer(secret_key)
-    data = s.loads(token)
-    return data["confirm"]
+    return s.loads(token)

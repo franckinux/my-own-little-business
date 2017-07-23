@@ -20,8 +20,8 @@ from wtforms.validators import Required
 
 from views.auth.send_message import SmtpSendingError
 from views.auth.send_message import send_message
-from views.auth.token import generate_confirmation_token
-from views.auth.token import get_id_from_token
+from views.auth.token import generate_token
+from views.auth.token import get_token_data
 from views.csrf_form import CsrfForm
 from views.utils import field_list
 from views.utils import generate_csrf_meta
@@ -80,13 +80,29 @@ async def handler(request):
                             client = await conn.fetchrow(q, *data.values())
                         except UniqueViolationError:
                             flash(request, ("warning", "cannot create the client, it already exists"))
-                            raise  # client not created
-                        try:
-                            await send_confirmation(request, client)
-                        except SmtpSendingError:
-                            flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
                             raise  # rollback the transaction : client not created
-                        flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                        try:
+                            await send_confirmation(request, client["id"], client["email_address"])
+                        except SmtpSendingError:
+                            flash(
+                                request,
+                                (
+                                    "danger",
+                                    "a problem occurred while sending a confirmation email to {]".format(
+                                        client["email_address"]
+                                    )
+                                )
+                            )
+                            raise  # rollback the transaction : client not created
+                        flash(
+                            request,
+                            (
+                                "info",
+                                "a confirmation email has been sent to {}, read it carefully".format(
+                                    client["email_address"]
+                                )
+                            )
+                        )
                         return HTTPFound(request.app.router["login"].url_for())
                 except (UniqueViolationError, SmtpSendingError):
                     return HTTPFound(request.app.router["register"].url_for())
@@ -106,9 +122,10 @@ async def confirm(request):
     token = request.match_info["token"]
 
     try:
-        id_ = get_id_from_token(token, request.app["config"]["application"]["secret_key"])
+        token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
+        id_ = token_data["id"]
     except:
-        flash(request, ("danger", "your account cannot be confirmed"))
+        flash(request, ("danger", "the link is invalid or has expired"))
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
@@ -123,10 +140,10 @@ async def confirm(request):
             return HTTPFound(request.app.router["login"].url_for())
 
 
-async def send_confirmation(request, client):
+async def send_confirmation(request, id_, email_address):
     config = request.app["config"]["application"]
 
-    token = generate_confirmation_token(client["id"], config["secret_key"])
+    token = generate_token(config["secret_key"], id=id_)
     url = config["url"] + str(request.app.router["confirm_register"].url_for(token=token))
 
     env = get_env(request.app)
@@ -138,8 +155,8 @@ async def send_confirmation(request, client):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "Confirm your account"
-    message["to"] = client["email_address"]
+    message["subject"] = "[{}] Confirm your account".format(config["site_name"])
+    message["to"] = email_address
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)

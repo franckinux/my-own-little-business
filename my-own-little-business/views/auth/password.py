@@ -8,32 +8,21 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from passlib.hash import sha256_crypt
 from wtforms import PasswordField
-from wtforms import StringField
 from wtforms import SubmitField
-from wtforms.validators import Email
 from wtforms.validators import EqualTo
 from wtforms.validators import Length
 from wtforms.validators import Required
 
+from views.auth.email_form import EmailForm
 from views.auth.send_message import SmtpSendingError
 from views.auth.send_message import send_message
-from views.auth.token import generate_confirmation_token
-from views.auth.token import get_id_from_token
+from views.auth.token import generate_token
+from views.auth.token import get_token_data
 from views.csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
 
 
-class EmailForm(CsrfForm):
-    email_address = StringField("Email address", validators=[
-        Required(),
-        Length(min=1, max=64),
-        Email()
-    ])
-    submit = SubmitField("Submit")
-
-
-
-@aiohttp_jinja2.template("auth/email.html")
+@aiohttp_jinja2.template("auth/email-password.html")
 async def handler(request):
     if request.method == "POST":
         form = EmailForm(await request.post(), meta=await generate_csrf_meta(request))
@@ -47,10 +36,27 @@ async def handler(request):
                 flash(request, ("danger", "there is no client corresponding to this email address"))
             else:
                 try:
-                    await send_confirmation(request, client)
+                    await send_confirmation(request, client["id"], client["email_address"])
                 except SmtpSendingError:
-                    flash(request, ("danger", "a problem occurred while sending a confirmation email to you"))
-                flash(request, ("info", "a confirmation email has been sent to you, read it carefully"))
+                    flash(
+                        request,
+                        (
+                            "danger",
+                            "a problem occurred while sending a confirmation email to {]".format(
+                                email_address
+                            )
+                        )
+                    )
+                else:
+                    flash(
+                        request,
+                        (
+                            "info",
+                            "a confirmation email has been sent to {}, read it carefully".format(
+                                email_address
+                            )
+                        )
+                    )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
@@ -76,9 +82,10 @@ class PasswordForm(CsrfForm):
 async def confirm(request):
     token = request.match_info["token"]
     try:
-        id_ = get_id_from_token(token, request.app["config"]["application"]["secret_key"])
+        token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
+        id_ = token_data["id"]
     except:
-        flash(request, ("danger", "password cannot be recovered"))
+        flash(request, ("danger", "the link is invalid or has expired"))
         raise HTTPBadRequest()
 
     if request.method == "POST":
@@ -106,10 +113,10 @@ async def confirm(request):
         raise HTTPMethodNotAllowed()
 
 
-async def send_confirmation(request, client):
+async def send_confirmation(request, id_, email_address):
     config = request.app["config"]["application"]
 
-    token = generate_confirmation_token(client["id"], config["secret_key"])
+    token = generate_token(config["secret_key"], id=id_)
     url = config["url"] + str(request.app.router["confirm_password"].url_for(token=token))
 
     env = get_env(request.app)
@@ -121,8 +128,8 @@ async def send_confirmation(request, client):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "Password recovery"
-    message["to"] = client["email_address"]
+    message["subject"] = "[{}] Password recovery".format(config["site_name"])
+    message["to"] = email_address
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)

@@ -1,1 +1,1 @@
-Click on the link to confirm your registration : {{ url }}
+Enter this link in your browser address bar to confirm your registration : {{ url }}

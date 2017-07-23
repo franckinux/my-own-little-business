@@ -1,0 +1,1 @@
+Enter this link in your browser address bar to confirm your email change : {{ url }}
