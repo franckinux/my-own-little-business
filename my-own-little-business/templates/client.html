@@ -1,22 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Client{% endblock %}
+{% block title %}Accueil{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="active">Client</li>
+    <li class="active">Accueil</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<p>Hello {{ client.first_name }} !</p>
-<p>Nice to see you again</p>
+<p>Bonjour {{ client.first_name }} ! Ravi de vous revoir à nouveau.</p>
+
+{% if client.super_user %}
+<ul>
+    <li><a href="{{ url("admin") }}">Admin</a></li>
+</ul>
+{% endif %}
 
 <ul>
-    <li><a href="{{ url("profile") }}">Edit profile</a></li>
-    <li><a href="{{ url("email") }}">Change email</a></li>
-{% if client.super_user %}
-    <li><a href="{{ url("admin") }}">Admin</a></li>
-{% endif %}
-    <li><a href="{{ url("logout") }}">Logout</a></li>
+    <li><a href="{{ url("list_order") }}">Commandes</a></li>
+</ul>
+
+<ul>
+    <li><a href="{{ url("profile") }}">Modifier votre profil</a></li>
+    <li><a href="{{ url("email") }}">Changer d'email</a></li>
+    <li><a href="{{ url("logout") }}">Déconnexion</a></li>
 </ul>
 
 {% endblock %}

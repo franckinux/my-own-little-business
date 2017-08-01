@@ -42,7 +42,8 @@ CREATE TABLE batch (
 CREATE TABLE payment (
     id SERIAL PRIMARY KEY NOT NULL,
     total numeric(8,2) NOT NULL,
-    payed_at timestamp without time zone DEFAULT NOW(),
+    claimed_at timestamp without time zone DEFAULT NOW(),
+    payed_at timestamp without time zone DEFAULT NULL,
     mode payedstatusenum DEFAULT 'not_payed',
     reference character varying
 );
@@ -50,6 +51,7 @@ CREATE TABLE payment (
 
 CREATE TABLE order_ (
     id SERIAL PRIMARY KEY NOT NULL,
+    total numeric(8,2) NOT NULL,
     placed_at timestamp without time zone DEFAULT NOW(),
     client_id integer REFERENCES client(id) NOT NULL,
     batch_id integer REFERENCES batch(id) NOT NULL,

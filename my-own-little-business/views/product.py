@@ -108,5 +108,5 @@ async def edit_product(request):
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name, available FROM product ORDER by name")
+        rows = await conn.fetch("SELECT id, name, available FROM product ORDER BY name")
     return {"products": rows}

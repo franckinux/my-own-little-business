@@ -37,75 +37,78 @@ async def main(config, loop=None):
     )
 
     # client 1
-    row = await conn.fetchrow(
-        ("INSERT INTO client (login, password_hash, "
+    client_1_id = await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "                   first_name, last_name, email_address, phone_number) "
-        "VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"),
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"),
             "rabid",
-            sha256_crypt.hash("abc"),
+            sha256_crypt.hash("abcdef"),
+            True,
+            False,
             "Raymonde",
             "Bidochon",
             "ra.bidochon@binet.com",
             "01-40-50-50-01"
     )
-    client_1_id = row["id"]
 
     # client 2
-    row = await conn.fetchrow(
-        ("INSERT INTO client (login, password_hash, "
+    client_2_id = await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "                   first_name, last_name, email_address, phone_number) "
-        "VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"),
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"),
             "robid",
-            sha256_crypt.hash("abc"),
+            sha256_crypt.hash("ABCDEF"),
+            True,
+            False,
             "Robert",
             "Bidochon",
             "ro.bidochon@binet.com",
             "01-40-50-50-02"
     )
-    client_2_id = row["id"]
 
     # repo_1
-    row = await conn.fetchrow(
+    repo_1_id = await conn.fetchval(
         "INSERT INTO repository (name) VALUES ($1) RETURNING id",
         "Haut village"
     )
-    repo_1_id = row["id"]
 
     # repo_2
-    row = await conn.fetchrow(
+    repo_2_id  = await conn.fetchval(
         "INSERT INTO repository (name) VALUES ($1) RETURNING id",
         "Bas village"
     )
     # not used
-    # repo_2_id = row["id"]
+    repo_2_id
 
     # product_1
-    row = await conn.fetchrow(
+    product_1_id = await conn.fetchval(
         "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
         "Pain au sarrasin", "Pain avec de la faine de sarrasin dedans", 5
     )
-    product_1_id = row["id"]
 
     # product_2
-    row = await conn.fetchrow(
+    product_2_id = await conn.fetchval(
         "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
         "Pain de seigle", "Pain avec de la faine de seigle dedans", 4
     )
-    product_2_id = row["id"]
 
     # batch_1
-    row = await conn.fetchrow(
+    batch_1_id = await conn.fetchval(
         "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-        datetime(2017, 6, 18, 8, 0, 0), 50, False
+        datetime(2018, 6, 18, 8, 0, 0), 50, True
     )
-    batch_1_id = row["id"]
 
     # batch_2
-    row = await conn.fetchrow(
+    batch_2_id = await conn.fetchval(
         "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-        datetime(2017, 6, 19, 8, 0, 0), 50, False
+        datetime(2018, 6, 19, 8, 0, 0), 50, True
     )
-    batch_2_id = row["id"]
+
+    # batch_3
+    batch_3_id = await conn.fetchval(
+        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
+        datetime(2018, 12, 31, 8, 0, 0), 20, True
+    )
 
     # link basic object between them
     # repository to clients
@@ -119,11 +122,10 @@ async def main(config, loop=None):
     )
 
     # order-1 to client and batch
-    row = await conn.fetchrow(
-        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
-        client_1_id, batch_1_id
+    order_1_id = await conn.fetchval(
+        "INSERT INTO order_ (total, client_id, batch_id) VALUES ($1, $2, $3) RETURNING id",
+        20, client_1_id, batch_1_id
     )
-    order_1_id = row["id"]
 
     # order-1 to products
     await conn.execute(
@@ -151,11 +153,10 @@ async def main(config, loop=None):
         print("product =", row["name"])
 
     # order-2 to client and batch
-    row = await conn.fetchrow(
-        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
-        client_1_id, batch_2_id
+    order_2_id = await conn.fetchval(
+        "INSERT INTO order_ (total, client_id, batch_id, placed_at) VALUES ($1, $2, $3, $4) RETURNING id",
+        26, client_1_id, batch_2_id, datetime(2018, 6, 17, 8, 0, 0)
     )
-    order_2_id = row["id"]
 
     # order-2 to products
     await conn.execute(
@@ -164,11 +165,10 @@ async def main(config, loop=None):
     )
 
     # payment to order_2
-    row = await conn.fetchrow(
+    payment_2_id = await conn.fetchval(
         "INSERT INTO payment (total, payed_at, mode) VALUES ($1, $2, $3) RETURNING id",
         10, datetime.now(), "payed_by_check"
     )
-    payment_2_id = row["id"]
 
     await conn.execute(
         "UPDATE order_ SET payment_id=$1 WHERE id=$2",
@@ -177,11 +177,10 @@ async def main(config, loop=None):
 
     # ---
     # order-3 to client and batch
-    row = await conn.fetchrow(
-        "INSERT INTO order_ (client_id, batch_id) VALUES ($1, $2) RETURNING id",
-        client_2_id, batch_1_id
+    order_3_id = await conn.fetchval(
+        "INSERT INTO order_ (total, client_id, batch_id) VALUES ($1, $2, $3) RETURNING id",
+        30, client_2_id, batch_1_id
     )
-    order_3_id = row["id"]
 
     # order-3 to products
     await conn.execute(
@@ -191,31 +190,25 @@ async def main(config, loop=None):
 
 
     # compute batch load
-    load = 0
-    rows = await conn.fetch(
-        "SELECT id FROM order_ WHERE batch_id=$1", batch_1_id
+    q = (
+        "SELECT SUM(opa.quantity * p.load) AS batch_load FROM order_product_association AS opa "
+        "INNER JOIN product AS p ON opa.product_id = p.id "
+        "INNER JOIN order_ AS o ON opa.order_id = o.id "
+        "WHERE o.batch_id = $1"
     )
-    order_ids = [row["id"] for row in rows]
-
-    rows = await conn.fetch(
-        "SELECT opa.quantity, p.load FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = ANY($1::int[])",
-        order_ids
-    )
-    for row in rows:
-        load += row["quantity"] * row["load"]
-    print("batch 1 load :", load)
-    # print("batch 1 capacity :", batch_1.capacity)
+    batch_load = await conn.fetchval(q, batch_1_id)
+    print("batch 1 load :", batch_load)
     print("---")
 
     # compute order total price
-    price = 0
-    rows = await conn.fetch(
-        "SELECT opa.quantity, p.price FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = $1",
-        order_1_id
+    q = (
+        "SELECT SUM(opa.quantity * p.price) AS batch_price FROM order_product_association AS opa "
+        "INNER JOIN product AS p ON opa.product_id = p.id "
+        "INNER JOIN order_ AS o ON opa.order_id = o.id "
+        "WHERE opa.order_id = $1"
     )
-    for row in rows:
-        price += row["quantity"] * row["price"]
-    print("order 1 total price :", price)
+    order_price = await conn.fetchval(q, order_1_id)
+    print("order 1 total price :", order_price)
     print("---")
 
     # search for all orders from a client
@@ -225,7 +218,7 @@ async def main(config, loop=None):
 
     print("{} orders for client_1".format(len(rows)))
     for row in rows:
-        print("order datetime :", row["placed_at"])
+        print("order datetime :", row["placed_at"].strftime("%Y-%m-%d %H:%M:%S"))
     print("---")
 
     # search for all non payed orders from a client
@@ -241,7 +234,7 @@ async def main(config, loop=None):
 
     print("{} non payed orders for client_1".format(len(rows)))
     for row in rows:
-        print("payed at :", row["payed_at"])
+        print("payed at :", row["payed_at"].strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == "__main__":
@@ -253,170 +246,3 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(config))
-
-# orm version
-# ===========
-
-# import os
-# import sys
-#
-# from sqlalchemy import create_engine
-# from sqlalchemy.engine.url import URL
-# from sqlalchemy.orm import sessionmaker
-#
-# from model import Administrator
-# from model import Client
-# from model import Repository
-# from model import Batch
-# from model import Product
-# from model import Order
-# from model import OrderProductAssociation
-# from model import Payment
-# from utils import read_configuration_file
-#
-#
-# if __name__ == "__main__":
-#     config = read_configuration_file()
-#     if not config:
-#         sys.exit(1)
-#     config = config["database"]
-#     config["password"] = os.getenv("PG_PASS", "") or config["password"]
-#
-#     connection_infos = {
-#         "drivername": "postgres",
-#         "host": config["host"],
-#         "port": config["port"],
-#         "username": config["username"],
-#         "password": config["password"],
-#         "database": config["database"]
-#     }
-#     dsn = str(URL(**connection_infos))
-#
-#     db_engine = create_engine(dsn, echo=False)
-#
-#     Session = sessionmaker(bind=db_engine)
-#
-#     # create basic objects
-#
-#     session = Session()
-#
-#     administrator = Administrator(login="admin", first_name="Franck",
-#                                   last_name="Barbenoire",
-#                                   email_address="contact@franck-barbenoire.fr")
-#     session.add(administrator)
-#
-#     client_1 = Client(login="rabid", first_name="Raymonde", last_name="Bidochon",
-#                       email_address="ra.bidochon@binet.namecom",
-#                       phone_number="01-40-50-50-01")
-#     session.add(client_1)
-#     client_2 = Client(login="robid", first_name="Robert", last_name="Bidochon",
-#                       email_address="ro.bidochon@binet.namecom",
-#                       phone_number="01-40-50-50-02")
-#     session.add(client_2)
-#
-#     repo_1 = Repository(name="Haut village")
-#     session.add(repo_1)
-#     repo_2 = Repository(name="Bas village")
-#     session.add(repo_2)
-#
-#     product_1 = Product(name="Pain au sarrasin",
-#                         description="Pain avec de la faine de sarrasin dedans",
-#                         price=5)
-#     session.add(product_1)
-#     product_2 = Product(name="Pain de seigle",
-#                         description="Pain avec de la faine de seigle dedans",
-#                         price=4)
-#     session.add(product_2)
-#
-#     batch_1 = Batch(date="2017-06-18 08:00:00", capacity=50)
-#     session.add(batch_1)
-#     batch_2 = Batch(date="2017-06-19 08:00:00", capacity=50, opened=False)
-#     session.add(batch_2)
-#
-#     session.commit()
-#
-#     # link basic object between them
-#
-#     client_1.repository = repo_1
-#     client_2.repository = repo_1
-#
-#     # ---
-#     order_1 = Order()
-#     session.add(order_1)
-#     order_1.client = client_1
-#     order_1.batch = batch_1
-#
-#     poa_1_1 = OrderProductAssociation(quantity=2)
-#     session.add(poa_1_1)
-#     poa_1_1.product = product_1
-#     order_1.products.append(poa_1_1)
-#
-#     poa_1_2 = OrderProductAssociation(quantity=3)
-#     session.add(poa_1_2)
-#     poa_1_2.product = product_2
-#     order_1.products.append(poa_1_2)
-#
-#     print("client.first_name =", order_1.client.first_name)
-#     for poa in order_1.products:
-#         print("quantity =", poa.quantity)
-#         print("product =", poa.product.name)
-#
-#     # ---
-#     order_2 = Order()
-#     session.add(order_2)
-#     order_2.client = client_1
-#     order_2.batch = batch_2
-#
-#     poa_2 = OrderProductAssociation(quantity=3)
-#     session.add(poa_2)
-#     poa_2.product = product_1
-#     order_2.products.append(poa_2)
-#
-#     payment_2 = Payment(total=10)
-#     session.add(payment_2)
-#     order_2.payment = payment_2
-#
-#     # ---
-#     order_3 = Order()
-#     session.add(order_3)
-#     order_3.client = client_2
-#     order_3.batch = batch_1
-#
-#     poa_3 = OrderProductAssociation()
-#     session.add(poa_3)
-#     poa_3.product = product_1
-#     order_3.products.append(poa_3)
-#
-#     session.commit()
-#
-#
-#     # compute batch load
-#     load = 0
-#     for order in batch_1.orders:
-#         for poa in order.products:
-#             load += poa.quantity
-#     print("batch 1 load :", load)
-#     print("batch 1 capacity :", batch_1.capacity)
-#     print("---")
-#
-#     # compute order total price
-#     price = 0
-#     for poa in order_1.products:
-#         price += poa.product.price * poa.quantity
-#     print("order 1 total price :", price)
-#     print("---")
-#
-#     # search for all orders from a client
-#     orders = client_1.orders
-#     print("{} orders for client {} {}".format(len(orders), client_1.first_name, client_1.last_name))
-#     for order in orders:
-#         print("order datetime :", order.placed_at)
-#     print("---")
-#
-#     # search for all non payed orders from a client
-#     rows = session.query(Client, Order).join(Client.orders).filter(Client.id == client_1.id).filter(Order.payment != None)
-#     print("{} non payed orders for client {} {}".format(rows.count(), client_1.first_name, client_1.last_name))
-#     for client, order in rows:
-#         print("order datetime :", order.placed_at)
-#
-#     db_engine.dispose()

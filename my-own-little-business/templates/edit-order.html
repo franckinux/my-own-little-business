@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Modification d'une commande{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("client") }}">Accueil</a></li>
+    <li><a href="{{ url("list_order") }}">Commandes</a></li>
+    <li class="active">Modification d'une commande</li>
+</ol>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("edit_order", id=id) }}" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group">
+        <label for="batch_id">{{ form.batch_id.label }}</label>
+        {{ form.batch_id(class="form-control") }}
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
+                <td>{{ product.price }}</a></td>
+                <td>
+                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrer la quantité" type="text" value="{{ product.quantity }}">
+	       </td>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url("list_order") }}" class="btn btn-default">Annuler</a>
+    </div>
+</form>
+{% endblock %}

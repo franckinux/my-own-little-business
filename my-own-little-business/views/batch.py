@@ -106,6 +106,6 @@ async def edit_batch(request):
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         rows = await conn.fetch(
-            "SELECT id, date, capacity, opened FROM batch ORDER by date DESC LIMIT 30"
+            "SELECT id, date, capacity, opened FROM batch ORDER BY date DESC LIMIT 30"
         )
     return {"batches": rows}

@@ -13,6 +13,10 @@ from views.batch import edit_batch
 from views.batch import delete_batch
 from views.batch import list_batch
 from views.client import client_menu
+from views.order import create_order
+from views.order import edit_order
+from views.order import delete_order
+from views.order import list_order
 from views.product import create_product
 from views.product import edit_product
 from views.product import delete_product
@@ -56,3 +60,9 @@ def setup_routes(app):
     app.router.add_get("/repository/delete/{id:\d+}/", delete_repository, name="delete_repository")
     app.router.add_route("*", "/repository/edit/{id:\d+}/", edit_repository, name="edit_repository")
     app.router.add_get("/repository/list/", list_repository, name="list_repository")
+
+    # orders
+    app.router.add_route("*", "/order/create/", create_order, name="create_order")
+    app.router.add_get("/order/delete/{id:\d+}/", delete_order, name="delete_order")
+    app.router.add_route("*", "/order/edit/{id:\d+}/", edit_order, name="edit_order")
+    app.router.add_get("/order/list/", list_order, name="list_order")

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Commandes{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li><a href="{{ url("client") }}">Accueil</a></li>
+    <li class="active">Commandes</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<div class="form-group"><a href="{{ url("create_order") }}" class="btn btn-default">Passer commande</a></div>
+
+<table class="table table-hover">
+   <thead>
+      <tr>
+         <th>Date de la commande</th>
+         <th>Date de la fournée</th>
+         <th>Total</th>
+         <th>Paiement</th>
+         <th></th>
+      </tr>
+   </thead>
+{% for order in orders %}
+   <tbody>
+      <tr>
+         {% if now < order.cancellation_date %}
+         <td><a href="{{ url("edit_order", id=order.id) }}">{{ order.placed_at.strftime("%Y-%m-%d %H:%M") }}</a></td>
+         {% else %}
+         <td>>{{ order.placed_at.strftime("%Y-%m-%d %H:%M") }}</td>
+         {% endif %}
+         <td>{{ order.batch_date.strftime("%Y-%m-%d %H:%M") }}</td>
+         <td>{{ order.total }}</td>
+         <td>{{ order.payment_mode|translate_mode() }}</td>
+         <td>{% if now < order.cancellation_date %}<a href="{{ url("delete_order", id=order.id) }}">Annuler</a>{% endif%}</td></tr>
+   </tbody>
+{% endfor %}
+</table>
+{% endblock %}
+

@@ -104,5 +104,5 @@ async def edit_repository(request):
 @aiohttp_jinja2.template("list-repository.html")
 async def list_repository(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name, opened FROM repository ORDER by name")
+        rows = await conn.fetch("SELECT id, name, opened FROM repository ORDER BY name")
     return {"repositories": rows}

@@ -19,6 +19,7 @@ from jinja2 import FileSystemLoader
 from auth.db_auth import DBAuthorizationPolicy
 from error import error_middleware
 from routes import setup_routes
+from views.order import translate_mode
 from utils import read_configuration_file
 
 
@@ -47,7 +48,7 @@ async def detach_db(app):
     await app["db-pool"].close()
 
 
-async def create_app():
+async def create_app(loop):
     config = read_configuration_file()
     db_pool = await attach_db(config)
 
@@ -66,6 +67,7 @@ async def create_app():
     setup_jinja(
         app,
         loader=FileSystemLoader("templates"),
+        filters={"translate_mode": translate_mode},
         context_processors=(
             aiohttp_session_flash.context_processor,
         )
@@ -80,7 +82,7 @@ async def create_app():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    app = loop.run_until_complete(create_app())
+    app = loop.run_until_complete(create_app(loop))
 
     web.run_app(
         app,
