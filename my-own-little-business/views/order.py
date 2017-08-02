@@ -409,28 +409,27 @@ async def edit_order(request):
             form = OrderForm(data=data, meta=await generate_csrf_meta(request))
             form.batch_id.choices = batch_choices
 
-            # get all products
-            rows = await conn.fetch(
-                "SELECT id, name, description, price FROM product WHERE available"
-            )
-            products = [dict(p) for p in rows]
-
-            # get order products
+            # get all products, setting quantity to 0 and put them in a
+            # temporary table who lives only in the session
             q = (
-                "SELECT p.id, p.name, p.description, p.price, opa.quantity "
-                "FROM order_product_association AS opa "
-                "INNER JOIN product AS p ON opa.product_id = p.id "
-                "WHERE opa.order_id = $1"
+                "CREATE TEMPORARY TABLE product_quantity_tmp AS "
+                "SELECT id, name, description, price, 0 AS quantity "
+                "FROM product WHERE available"
             )
-            rows = await conn.fetch(q, order_id)
-            order_products = [dict(p) for p in rows]
+            await conn.execute(q)
 
-            # update all products with the products of the order
-            for p in order_products:
-                for q in products:
-                    if p["id"] == q["id"]:
-                        q["quantity"] = p["quantity"]
-                        break
+            # update all products quantity with order products
+            q = (
+                "UPDATE product_quantity_tmp SET quantity = op.quantity FROM ("
+                "    SELECT p.id, p.name, p.description, p.price, opa.quantity "
+                "    FROM order_product_association AS opa "
+                "    INNER JOIN product AS p ON opa.product_id = p.id "
+                "    WHERE opa.order_id = $1) AS op"
+            )
+            await conn.execute(q, order_id)
+
+            rows = await conn.fetch("SELECT * FROM product_quantity_tmp")
+            products = [dict(p) for p in rows]
 
             return {"id": order_id, "form": form, "products": products}
         else:
