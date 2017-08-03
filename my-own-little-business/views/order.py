@@ -281,19 +281,6 @@ async def edit_order(request):
                 flash(request, ("danger", "Ce formulaire comporte des erreurs."))
                 return {"form": form, "products": products}
 
-            q = "SELECT COUNT(*) FROM order_ WHERE client_id = $1 AND batch_id = $2"
-            ret = await conn.fetchval(q, client_id, new_batch_id)
-            if ret:
-                flash(
-                    request,
-                    (
-                        "warning",
-                        "Vous avez déjà passé une commande sur cette même fournée, "
-                        "veuillez modifier cette dernière."
-                    )
-                )
-                return {"id": order_id, "form": form, "products": products}
-
             # 2 separate loops for correct form rendering
             quantities = {}
             for product in products:
@@ -409,27 +396,32 @@ async def edit_order(request):
             form = OrderForm(data=data, meta=await generate_csrf_meta(request))
             form.batch_id.choices = batch_choices
 
-            # get all products, setting quantity to 0 and put them in a
-            # temporary table who lives only in the session
-            q = (
-                "CREATE TEMPORARY TABLE product_quantity_tmp AS "
-                "SELECT id, name, description, price, 0 AS quantity "
-                "FROM product WHERE available"
-            )
-            await conn.execute(q)
+            async with conn.transaction():
+                # get all products, setting quantity to 0 and put them in a
+                # temporary table who lives only in the transaction
+                q = (
+                    "CREATE TEMPORARY TABLE product_quantity_tmp ON COMMIT DROP AS "
+                    "SELECT id, name, description, price, 0 AS quantity "
+                    "FROM product WHERE available"
+                )
+                await conn.execute(q)
 
-            # update all products quantity with order products
-            q = (
-                "UPDATE product_quantity_tmp SET quantity = op.quantity FROM ("
-                "    SELECT p.id, p.name, p.description, p.price, opa.quantity "
-                "    FROM order_product_association AS opa "
-                "    INNER JOIN product AS p ON opa.product_id = p.id "
-                "    WHERE opa.order_id = $1) AS op"
-            )
-            await conn.execute(q, order_id)
+                # update all products quantity with order products
+                q = (
+                    "UPDATE product_quantity_tmp AS pqt SET quantity = op.quantity "
+                    "FROM ("
+                    "    SELECT p.id, p.name, p.description, p.price, opa.quantity "
+                    "    FROM order_product_association AS opa "
+                    "    INNER JOIN product AS p ON opa.product_id = p.id "
+                    "    WHERE opa.order_id = $1"
+                    ") AS op "
+                    "WHERE pqt.id = op.id"
+                )
+                await conn.execute(q, order_id)
 
-            rows = await conn.fetch("SELECT * FROM product_quantity_tmp")
-            products = [dict(p) for p in rows]
+                q = "SELECT * FROM product_quantity_tmp ORDER BY name"
+                rows = await conn.fetch(q)
+                products = [dict(p) for p in rows]
 
             return {"id": order_id, "form": form, "products": products}
         else:
