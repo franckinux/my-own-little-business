@@ -6,25 +6,13 @@ from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
-from asyncpg.exceptions import IntegrityConstraintViolationError
-from wtforms import BooleanField
-from wtforms import DecimalField
-from wtforms import FieldList
-from wtforms import Form
-from wtforms import FormField
 from wtforms import SelectField
-from wtforms import StringField
 from wtforms import SubmitField
-from wtforms.validators import Length
-from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
-from views.utils import field_list
 from views.utils import generate_csrf_meta
-from views.utils import place_holders
 from views.utils import remove_special_data
-from views.utils import settings
 
 
 class RollbackTransactionException(Exception):
@@ -51,7 +39,7 @@ async def create_order(request):
         # select opened batches whose date is 12 hours in the future and
         # that have no order on it
         q = (
-            " SELECT batch_id, batch_date FROM ("
+            "SELECT batch_id, batch_date FROM ("
             "    SELECT o.batch_id, SUM(opa.quantity * p.load) AS batch_load, "
             "           b.capacity, b.date AS batch_date "
             "    FROM order_product_association AS opa "
@@ -63,7 +51,7 @@ async def create_order(request):
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
             "           b.date AS batch_date "
-            "FROM batch AS b "
+            "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
             "    WHERE b.opened AND o.batch_id IS NULL"
             ") AS sq  "
@@ -236,7 +224,7 @@ async def edit_order(request):
         # that have no order on it
         # select the batch id of the order
         q = (
-            " SELECT batch_id, batch_date FROM ("
+            "SELECT batch_id, batch_date FROM ("
             "    SELECT o.batch_id, SUM(opa.quantity * p.load) AS batch_load, "
             "           b.capacity, b.date AS batch_date "
             "    FROM order_product_association AS opa "
@@ -463,9 +451,9 @@ async def delete_order(request):
                 if not deleted:
                     raise RollbackTransactionException()
 
-                flash( request, ("success", ("Votre commande a bien été annulée.")))
+                flash( request, ("success", ("Votre commande a bien été supprimée.")))
         except RollbackTransactionException:
-            flash( request, ("warning", ("Votre commande ne peut pas être annulée.")))
+            flash( request, ("warning", ("Votre commande ne peut pas être supprimée.")))
     return HTTPFound(request.app.router["list_order"].url_for())
 
 

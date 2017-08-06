@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Email change{% endblock %}
+{% block title %}Changement d'adresse mail{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("client") }}">Client</a></li>
-    <li class="active">Email change</li>
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Changement d'adresse mail</li>
 </ol>
 {% endblock %}
 
@@ -15,7 +15,7 @@
     {% endif %}
     <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
         <label for="email_address">{{ form.email_address.label }}</label>
-        {{ form.email_address(class="form-control", placeholder="Enter your email address") }}
+        {{ form.email_address(class="form-control", placeholder="Entrez votre adresse mail") }}
         {% if form.email_address.errors %}
         <div class="help-text">
             {% for error in form.email_address.errors %}<p>{{ error }}</p>{% endfor %}
@@ -24,7 +24,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("client") }}" class="btn btn-default">Cancel</a>
+        <a href="{{ url("home") }}" class="btn btn-default">Annuler</a>
     </div>
 </form>
 {% endblock %}

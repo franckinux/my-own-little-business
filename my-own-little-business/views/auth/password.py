@@ -33,7 +33,8 @@ async def handler(request):
                 q = "SELECT id, email_address FROM client WHERE email_address = $1"
                 client = await conn.fetchrow(q, email_address)
             if client is None:
-                flash(request, ("danger", "there is no client corresponding to this email address"))
+                flash(request, ("danger", "Il n'y a pas de compte dont l'adresse email est {}".format(
+                                            email_address)))
             else:
                 try:
                     await send_confirmation(request, client["id"], client["email_address"])
@@ -42,7 +43,7 @@ async def handler(request):
                         request,
                         (
                             "danger",
-                            "a problem occurred while sending a confirmation email to {]".format(
+                            "Le message de confirmation ne peut être envoyé à {}".format(
                                 email_address
                             )
                         )
@@ -52,14 +53,14 @@ async def handler(request):
                         request,
                         (
                             "info",
-                            "a confirmation email has been sent to {}, read it carefully".format(
+                            "Un message de confirmation a été envoyé à {}".format(
                                 email_address
                             )
                         )
                     )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", "Le formulaire comporte des erreurs"))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -69,13 +70,13 @@ async def handler(request):
 
 
 class PasswordForm(CsrfForm):
-    password = PasswordField("Password", validators=[
+    password = PasswordField("Mot de passe", validators=[
         Required(),
-        EqualTo("password2", message="Passwords must match"),
+        EqualTo("password2", message="Les mots de passe doivent être identiques"),
         Length(min=6)
     ])
-    password2 = PasswordField("Confirm password", validators=[Required()])
-    submit = SubmitField("Submit")
+    password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
+    submit = SubmitField("Soumettre")
 
 
 @aiohttp_jinja2.template("auth/password.html")
@@ -85,7 +86,7 @@ async def confirm(request):
         token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
         id_ = token_data["id"]
     except:
-        flash(request, ("danger", "the link is invalid or has expired"))
+        flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
     if request.method == "POST":
@@ -98,10 +99,10 @@ async def confirm(request):
                 try:
                     await conn.execute(q, password_hash, id_)
                 except:
-                    flash(request, ("danger", "your password cannot be recovered"))
+                    flash(request, ("danger", "Votre mot de passe ne peut être modifié"))
                     return {"form": form, "token": token}
                 else:
-                    flash(request, ("info", "your password has been updated, you can now login"))
+                    flash(request, ("info", "Votre mot de passe a bien été modifié, vous pouvez vous connecter"))
                     return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
@@ -128,7 +129,7 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Password recovery".format(config["site_name"])
+    message["subject"] = "[{}] Modification de mot de passe".format(config["site_name"])
     message["to"] = email_address
     message["from"] = config["from"]
     message.attach(text_message)

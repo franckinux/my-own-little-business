@@ -1,31 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Operations on repositories{% endblock %}
+{% block title %}Points de livraison{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("admin") }}">Administration</a></li>
-    <li class="active">Repositories</li>
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Points de livraison</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-default">Create a repository</a></div>
+<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-default">Créer un point de livraison</a></div>
 
 <table class="table table-hover">
    <thead>
       <tr>
-         <th>Name</th>
-         <th>Opened</th>
+         <th>Nom</th>
+         <th>Ouvert</th>
          <th></th>
       </tr>
    </thead>
-{% for repo in repositories %}
    <tbody>
+      {% for repo in repositories %}
       <tr>
          <td><a href="{{ url("edit_repository", id=repo.id) }}">{{ repo.name }}</a></td>
          <td>{{ repo.opened }}</td>
-         <td><a href="{{ url("delete_repository", id=repo.id) }}">Delete</a></td>
+         <td><a href="{{ url("delete_repository", id=repo.id) }}">Supprimer</a></td>
       </tr>
+      {% endfor %}
    </tbody>
-{% endfor %}
 </table>
 {% endblock %}

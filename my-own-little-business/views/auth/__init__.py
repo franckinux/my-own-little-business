@@ -16,9 +16,9 @@ from views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):
-    login = StringField("Login", [Required()])
-    password = PasswordField("Password", [Required()])
-    submit = SubmitField("Submit")
+    login = StringField("Identifiant", [Required()])
+    password = PasswordField("Mot de passe", [Required()])
+    submit = SubmitField("Soumettre")
 
 
 @aiohttp_jinja2.template("auth/login.html")
@@ -26,7 +26,7 @@ async def login(request):
     if request.method == "POST":
         form = LoginForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
-            response = HTTPFound(request.app.router["client"].url_for())
+            response = HTTPFound(request.app.router["home"].url_for())
             login = form.login.data
             password = form.password.data
             db_pool = request.app["db-pool"]
@@ -36,7 +36,7 @@ async def login(request):
                     await conn.execute(q, login)
                 await remember(request, response, login)
                 return response
-        flash(request, ("danger", "Invalid username/password combination"))
+        flash(request, ("danger", "La combinaison identifiant/mot de passe est invalide"))
         return {"form": form}
     elif request.method == "GET":
         form = LoginForm(meta=await generate_csrf_meta(request))
@@ -49,5 +49,5 @@ async def login(request):
 async def logout(request):
     response = HTTPFound(request.app.router["login"].url_for())
     await forget(request, response)
-    flash(request, ("info", "You have been logged out"))
+    flash(request, ("info", "Vous êtes déconnecté"))
     return response

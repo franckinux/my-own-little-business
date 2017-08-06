@@ -1,1 +1,1 @@
-Enter this link in your browser address bar to confirm your registration : {{ url }}
+Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre enregistrement : {{ url }}

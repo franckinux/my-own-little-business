@@ -11,7 +11,10 @@
 
 {% if client.super_user %}
 <ul>
-    <li><a href="{{ url("admin") }}">Admin</a></li>
+    <li><a href="{{ url("list_batch") }}">Fournées</a></li>
+    <li><a href="{{ url("list_product") }}">Produits</a></li>
+    <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
+    <li><a href="{{ url("plan") }}">Plan de fournée</a></li>
 </ul>
 {% endif %}
 

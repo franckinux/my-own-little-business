@@ -5,13 +5,13 @@
 <link href="/static/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 {% endblock %}
 
-{% block title %}Create batch{% endblock %}
+{% block title %}Création d'une fournée{% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("admin") }}">Administration</a></li>
-    <li><a href="{{ url("list_batch") }}">Batches</a></li>
-    <li class="active">Create batch</li>
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li><a href="{{ url("list_batch") }}">Fournées</a></li>
+    <li class="active">Création d'une fournée</li>
 </ol>
 {% endblock %}
 
@@ -31,7 +31,7 @@
     </div>
     <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
         <label for="capacity">{{ form.capacity.label }}</label>
-        {{ form.capacity(class="form-control", placeholder="Enter capacity") }}
+        {{ form.capacity(class="form-control", placeholder="Entrez la capacité") }}
         {% if form.capacity.errors %}
         <div class="help-text">
             {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
@@ -44,7 +44,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_batch") }}" class="btn btn-default">Cancel</a>
+        <a href="{{ url("list_batch") }}" class="btn btn-default">Annuler</a>
     </div>
 </form>
 {% endblock %}

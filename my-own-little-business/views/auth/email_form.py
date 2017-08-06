@@ -7,9 +7,9 @@ from views.csrf_form import CsrfForm
 
 
 class EmailForm(CsrfForm):
-    email_address = StringField("Email address", validators=[
+    email_address = StringField("Adresse mail", validators=[
         Required(),
         Length(min=5, max=64),
         Email()
     ])
-    submit = SubmitField("Submit")
+    submit = SubmitField("Soumettre")

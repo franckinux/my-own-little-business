@@ -1,33 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Operations on batches{% endblock %}
+{% block title %}Fournées{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("admin") }}">Administration</a></li>
-    <li class="active">Batches</li>
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Fournées</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<div class="form-group"><a href="{{ url("create_batch") }}" class="btn btn-default">Create a batch</a></div>
+<div class="form-group"><a href="{{ url("create_batch") }}" class="btn btn-default">Créer un fournée</a></div>
 
 <table class="table table-hover">
    <thead>
       <tr>
          <th>Date</th>
-         <th>Capacity</th>
-         <th>Opened</th>
+         <th>Capacité</th>
+         <th>Ouverte</th>
          <th></th>
       </tr>
    </thead>
-{% for batch in batches %}
    <tbody>
+      {% for batch in batches %}
       <tr>
          <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date }}</a></td>
          <td>{{ batch.capacity }}</td>
          <td>{{ batch.opened }}</td>
-         <td><a href="{{ url("delete_batch", id=batch.id) }}">Delete</a></td>
+         <td><a href="{{ url("delete_batch", id=batch.id) }}">Supprimer</a></td>
       </tr>
+      {% endfor %}
    </tbody>
-{% endfor %}
 </table>
 {% endblock %}

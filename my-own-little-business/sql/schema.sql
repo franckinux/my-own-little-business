@@ -23,10 +23,10 @@ CREATE TABLE client (
     last_name character varying NOT NULL,
     email_address character varying UNIQUE NOT NULL,
     phone_number character varying,
-    wallet numeric(8,2) DEFAULT 0,
+    wallet numeric(8,2) DEFAULT 0 CHECK (wallet >= 0),
     created_at timestamp without time zone DEFAULT NOW(),
     last_seen timestamp without time zone,
-    repository_id integer REFERENCES repository(id),
+    repository_id integer REFERENCES repository(id) NOT NULL,
     UNIQUE (first_name, last_name)
 );
 
@@ -34,14 +34,14 @@ CREATE TABLE client (
 CREATE TABLE batch (
     id SERIAL PRIMARY KEY NOT NULL,
     date timestamp without time zone UNIQUE NOT NULL,
-    capacity integer NOT NULL,
+    capacity integer NOT NULL CHECK (capacity > 0),
     opened boolean DEFAULT TRUE
 );
 
 
 CREATE TABLE payment (
     id SERIAL PRIMARY KEY NOT NULL,
-    total numeric(8,2) NOT NULL,
+    total numeric(8,2) NOT NULL CHECK (total > 0),
     claimed_at timestamp without time zone DEFAULT NOW(),
     payed_at timestamp without time zone DEFAULT NULL,
     mode payedstatusenum DEFAULT 'not_payed',
@@ -51,7 +51,7 @@ CREATE TABLE payment (
 
 CREATE TABLE order_ (
     id SERIAL PRIMARY KEY NOT NULL,
-    total numeric(8,2) NOT NULL,
+    total numeric(8,2) NOT NULL CHECK (total >= 0),
     placed_at timestamp without time zone DEFAULT NOW(),
     client_id integer REFERENCES client(id) NOT NULL,
     batch_id integer REFERENCES batch(id) NOT NULL,
@@ -63,14 +63,14 @@ CREATE TABLE product (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
     description character varying,
-    price numeric(8,2) NOT NULL,
-    load numeric(8,2) DEFAULT 1,
+    price numeric(8,2) NOT NULL CHECK (price > 0),
+    load numeric(8,2) DEFAULT 1 CHECK (load > 0),
     available boolean DEFAULT TRUE
 );
 
 
 CREATE TABLE order_product_association (
-    quantity integer,
+    quantity integer CHECK (quantity > 0),
     order_id integer REFERENCES order_(id) NOT NULL,
     product_id integer REFERENCES product(id) NOT NULL,
     PRIMARY KEY (order_id, product_id)

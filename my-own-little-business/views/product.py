@@ -20,12 +20,12 @@ from views.utils import settings
 
 
 class ProductForm(CsrfForm):
-    name = StringField("Name", validators=[Required(), Length(min=6, max=128)])
+    name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
     description = StringField("Description")
-    price = DecimalField("Price", validators=[Required()])
-    load = DecimalField("Load", validators=[Required()])
-    available = BooleanField("Available")
-    submit = SubmitField("Submit")
+    price = DecimalField("Prix", validators=[Required()])
+    load = DecimalField("Charge", validators=[Required()])
+    available = BooleanField("Disponible")
+    submit = SubmitField("Soumettre")
 
 
 @require("admin")
@@ -42,12 +42,12 @@ async def create_product(request):
                 try:
                     await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot create the product"))
+                    flash(request, ("warning", "Le produit ne peut pas être créé"))
                     return {"form": form}
-            flash(request, ("success", "product successfuly created"))
+            flash(request, ("success", "Le produit a bien été créé"))
             return HTTPFound(request.app.router["list_product"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"form": form}
     elif request.method == "GET":
         form = ProductForm(meta=await generate_csrf_meta(request))
@@ -63,9 +63,9 @@ async def delete_product(request):
         try:
             await conn.execute("DELETE FROM product WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "cannot delete the product"))
+            flash(request, ("warning", "Le produit ne peut pas être supprimé"))
         else:
-            flash(request, ("success", "product successfuly deleted"))
+            flash(request, ("success", "Le produit a bien supprimé"))
         finally:
             return HTTPFound(request.app.router["list_product"].url_for())
 
@@ -90,12 +90,12 @@ async def edit_product(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot edit the product"))
+                    flash(request, ("warning", "Le produit ne peut pas être modifé"))
                 else:
-                    flash(request, ("success", "product successfuly edited"))
+                    flash(request, ("success", "Le produit a bien été modifié"))
                     return HTTPFound(request.app.router["list_product"].url_for())
             else:
-                flash(request, ("danger", "there are some fields in error"))
+                flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"id": id_, "form": form}
         elif request.method == "GET":
             form = ProductForm(data=data, meta=await generate_csrf_meta(request))

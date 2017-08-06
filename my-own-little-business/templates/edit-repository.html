@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Edit repository{% endblock %}
+{% block title %}Modification d'un point de livraison{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("admin") }}">Administration</a></li>
-    <li><a href="{{ url("list_repository") }}">Repositories</a></li>
-    <li class="active">Edit repository</li>
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
+    <li class="active">Modification d'un point de livraison</li>
 </ol>
 {% endblock %}
 
@@ -16,7 +16,7 @@
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
         <label for="name">{{ form.name.label }}</label>
-        {{ form.name(class="form-control", placeholder="Enter name") }}
+        {{ form.name(class="form-control", placeholder="Entrez le nom") }}
         {% if form.name.errors %}
         <div class="help-text">
             {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
@@ -29,7 +29,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_repository") }}" class="btn btn-default">Cancel</a>
+        <a href="{{ url("list_repository") }}" class="btn btn-default">Annuler</a>
     </div>
 </form>
 {% endblock %}

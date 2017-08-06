@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Connexion{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="active">Login</li>
+    <li class="active">Connexion</li>
 </ol>
 {% endblock %}
 {% block page_content %}
 <div class="form-group">
-    <a href={{ url("register") }} class="btn btn-default">Register</a>
-    <a href={{ url("password") }} class="btn btn-default">Password lost</a>
+    <a href={{ url("register") }} class="btn btn-default">Enregistrez vous</a>
+    <a href={{ url("password") }} class="btn btn-default">Mot de passe perdu</a>
 </div>
 <form method="POST" action="{{ url("login") }}" role="form">
     {{ form.csrf_token }}
@@ -17,7 +17,7 @@
     {% endif %}
     <div class="form-group{% if form.login.errors %} has-error{% endif %}">
         <label for="name">{{ form.login.label }}</label>
-        {{ form.login(class="form-control", placeholder="Enter login") }}
+        {{ form.login(class="form-control", placeholder="Entrez votre identifiant") }}
         {% if form.login.errors %}
         <div class="help-text">
             {% for error in form.login.errors %}<p>{{ error }}</p>{% endfor %}
@@ -26,7 +26,7 @@
     </div>
     <div class="form-group{% if form.password.errors %} has-error{% endif %}">
         <label for="name">{{ form.password.label }}</label>
-        {{ form.password(class="form-control", placeholder="Enter password") }}
+        {{ form.password(class="form-control", placeholder="Entrez votre mot de passe") }}
         {% if form.password.errors %}
         <div class="help-text">
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}

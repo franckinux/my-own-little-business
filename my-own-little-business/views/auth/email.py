@@ -39,7 +39,7 @@ async def handler(request):
                     request,
                     (
                         "danger",
-                        "a problem occurred while sending a confirmation email to {]".format(
+                        "Le message de confirmation ne peut être envoyé à {}".format(
                             email_address
                         )
                     )
@@ -49,14 +49,14 @@ async def handler(request):
                     request,
                     (
                         "info",
-                        "a confirmation email has been sent to {}, read it carefully".format(
+                        "Un mail de confirmation a été envoyé à {}".format(
                             email_address
                         )
                     )
                 )
-            return HTTPFound(request.app.router["client"].url_for())
+            return HTTPFound(request.app.router["home"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", "Le formulaire comporte des erreurs"))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -72,7 +72,7 @@ async def confirm(request):
         id_ = token_data["id"]
         email_address = token_data["email_address"]
     except:
-        flash(request, ("danger", "the link is invalid or has expired"))
+        flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
@@ -80,9 +80,9 @@ async def confirm(request):
         try:
             await conn.execute(q, email_address, id_)
         except:
-            flash(request, ("danger", "your email address cannot be changed"))
+            flash(request, ("danger", "Votre adresse mail ne peut pas être modifiée"))
         else:
-            flash(request, ("info", "your email address has been changed"))
+            flash(request, ("info", "Votre adresse mail a bien été modifiée"))
         return HTTPFound(request.app.router["login"].url_for())
 
 
@@ -101,7 +101,7 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Email change".format(config["site_name"])
+    message["subject"] = "[{}] Changement d'adresse mail".format(config["site_name"])
     message["to"] = email_address
     message["from"] = config["from"]
     message.attach(text_message)

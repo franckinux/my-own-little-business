@@ -19,9 +19,9 @@ from views.utils import settings
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField("Name", validators=[Required(), Length(min=6, max=128)])
-    opened = BooleanField("Opened")
-    submit = SubmitField("Submit")
+    name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
+    opened = BooleanField("Ouvert")
+    submit = SubmitField("Soumettre")
 
 
 @require("admin")
@@ -38,12 +38,12 @@ async def create_repository(request):
                 try:
                     await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot create the repository"))
+                    flash(request, ("warning", "Le point de livraison ne peut pas être créé"))
                     return {"form": form}
-            flash(request, ("success", "repository successfuly created"))
+            flash(request, ("success", "Le point de livraison a bien été créé"))
             return HTTPFound(request.app.router["list_repository"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"form": form}
     elif request.method == "GET":
         form = RepositoryForm(meta=await generate_csrf_meta(request))
@@ -59,9 +59,9 @@ async def delete_repository(request):
         try:
             await conn.execute("DELETE FROM repository WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "cannot delete the repository"))
+            flash(request, ("warning", "Le point de livraison ne peut pas être supprimé"))
         else:
-            flash(request, ("success", "repository successfuly deleted"))
+            flash(request, ("success", "Le point de livraison a bien été supprimé"))
         finally:
             return HTTPFound(request.app.router["list_repository"].url_for())
 
@@ -86,12 +86,12 @@ async def edit_repository(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot edit the repository"))
+                    flash(request, ("warning", "Le point de livraison ne peut pas être modifié"))
                 else:
-                    flash(request, ("success", "repository successfuly edited"))
+                    flash(request, ("success", "Le point de livraison a bien été modifié"))
                     return HTTPFound(request.app.router["list_repository"].url_for())
             else:
-                flash(request, ("danger", "there are some fields in error"))
+                flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"id": id_, "form": form}
         elif request.method == "GET":
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))

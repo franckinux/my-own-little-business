@@ -21,50 +21,6 @@ async def main(config, loop=None):
     conn = await asyncpg.connect(dsn)
 
     # create basic objects
-    # admin
-    await conn.execute(
-        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
-        "                   first_name, last_name, email_address, phone_number) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"),
-            "admin",
-            sha256_crypt.hash("admin"),
-            True,
-            True,
-            "Tom",
-            "Sawyer",
-            "tom@literature.net",
-            "06-88-77-66-55"
-    )
-
-    # client 1
-    client_1_id = await conn.fetchval(
-        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
-        "                   first_name, last_name, email_address, phone_number) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"),
-            "rabid",
-            sha256_crypt.hash("abcdef"),
-            True,
-            False,
-            "Raymonde",
-            "Bidochon",
-            "ra.bidochon@binet.com",
-            "01-40-50-50-01"
-    )
-
-    # client 2
-    client_2_id = await conn.fetchval(
-        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
-        "                   first_name, last_name, email_address, phone_number) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"),
-            "robid",
-            sha256_crypt.hash("ABCDEF"),
-            True,
-            False,
-            "Robert",
-            "Bidochon",
-            "ro.bidochon@binet.com",
-            "01-40-50-50-02"
-    )
 
     # repo_1
     repo_1_id = await conn.fetchval(
@@ -77,8 +33,70 @@ async def main(config, loop=None):
         "INSERT INTO repository (name) VALUES ($1) RETURNING id",
         "Bas village"
     )
-    # not used
-    repo_2_id
+
+    # super user
+    await conn.execute(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "first_name, last_name, email_address, phone_number, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
+            "admin",
+            sha256_crypt.hash("admin"),
+            True,
+            True,
+            "Tom",
+            "Sawyer",
+            "tom@literature.net",
+            "06-88-77-66-55",
+            repo_1_id
+    )
+
+    # client 1
+    client_1_id = await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "first_name, last_name, email_address, phone_number, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
+            "rabid",
+            sha256_crypt.hash("abcdef"),
+            True,
+            False,
+            "Raymonde",
+            "Bidochon",
+            "ra.bidochon@binet.com",
+            "01-40-50-50-01",
+            repo_1_id
+    )
+
+    # client 2
+    client_2_id = await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "first_name, last_name, email_address, phone_number, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
+            "robid",
+            sha256_crypt.hash("ABCDEF"),
+            True,
+            False,
+            "Robert",
+            "Bidochon",
+            "ro.bidochon@binet.com",
+            "01-40-50-50-02",
+            repo_1_id
+    )
+
+    # client 3
+    client_3_id = await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "first_name, last_name, email_address, phone_number, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
+            "kbid",
+            sha256_crypt.hash("123456"),
+            True,
+            False,
+            "Kador",
+            "Bidochon",
+            "k.bidochon@binet.com",
+            "01-40-50-50-03",
+            repo_2_id
+    )
 
     # product_1
     product_1_id = await conn.fetchval(
@@ -111,15 +129,8 @@ async def main(config, loop=None):
     )
 
     # link basic object between them
-    # repository to clients
-    await conn.execute(
-        "UPDATE client SET repository_id=$1 WHERE id=$2",
-        repo_1_id, client_1_id
-    )
-    await conn.execute(
-        "UPDATE client SET repository_id=$1 WHERE id=$2",
-        repo_1_id, client_2_id
-    )
+
+    # ORDER 1
 
     # order-1 to client and batch
     order_1_id = await conn.fetchval(
@@ -137,20 +148,7 @@ async def main(config, loop=None):
         order_1_id, product_2_id, 3
     )
 
-    # test simple queries
-    row = await conn.fetchrow(
-        "SELECT c.first_name FROM order_ AS o INNER JOIN client AS c ON o.client_id = c.id WHERE c.id = $1",
-        client_1_id
-    )
-    print("client.first_name =", row["first_name"])
-
-    rows = await conn.fetch(
-        "SELECT opa.quantity, p.name FROM order_product_association AS opa INNER JOIN product AS p ON opa.product_id = p.id WHERE opa.order_id = $1",
-        order_1_id
-    )
-    for row in rows:
-        print("quantity =", row["quantity"])
-        print("product =", row["name"])
+    # ORDER 2
 
     # order-2 to client and batch
     order_2_id = await conn.fetchval(
@@ -164,18 +162,8 @@ async def main(config, loop=None):
         order_2_id, product_1_id, 3
     )
 
-    # payment to order_2
-    payment_2_id = await conn.fetchval(
-        "INSERT INTO payment (total, payed_at, mode) VALUES ($1, $2, $3) RETURNING id",
-        10, datetime.now(), "payed_by_check"
-    )
+    # ORDER 3
 
-    await conn.execute(
-        "UPDATE order_ SET payment_id=$1 WHERE id=$2",
-        payment_2_id, order_1_id
-    )
-
-    # ---
     # order-3 to client and batch
     order_3_id = await conn.fetchval(
         "INSERT INTO order_ (total, client_id, batch_id) VALUES ($1, $2, $3) RETURNING id",
@@ -188,6 +176,33 @@ async def main(config, loop=None):
         order_3_id, product_1_id, 3
     )
 
+    # ORDER 4
+
+    # order-4 to client and batch
+    order_4_id = await conn.fetchval(
+        "INSERT INTO order_ (total, client_id, batch_id) VALUES ($1, $2, $3) RETURNING id",
+        50, client_3_id, batch_1_id
+    )
+
+    # order-4 to products
+    await conn.execute(
+        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
+        order_4_id, product_2_id, 7
+    )
+
+
+    # payments
+
+    # payment to order_2
+    payment_2_id = await conn.fetchval(
+        "INSERT INTO payment (total, payed_at, mode) VALUES ($1, $2, $3) RETURNING id",
+        10, datetime.now(), "payed_by_check"
+    )
+
+    await conn.execute(
+        "UPDATE order_ SET payment_id=$1 WHERE id=$2",
+        payment_2_id, order_1_id
+    )
 
     # compute batch load
     q = (

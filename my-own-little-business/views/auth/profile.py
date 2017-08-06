@@ -20,17 +20,17 @@ from views.utils import settings
 
 
 class ProfileForm(CsrfForm):
-    password = PasswordField("Password", validators=[
-        EqualTo("password2", message="Passwords must match"),
+    password = PasswordField("Mot de passe", validators=[
+        EqualTo("password2", message="Les mots de passe doivent être identiques"),
     ])
-    password2 = PasswordField("Confirm password")
-    first_name = StringField("First name")
-    last_name = StringField("Last name")
-    phone_number = StringField("Phone number", validators=[
+    password2 = PasswordField("Répétition du mot de passe")
+    first_name = StringField("Prénom")
+    last_name = StringField("Nom")
+    phone_number = StringField("Numéro de téléphone", validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
-    repository_id = SelectField("Repository", coerce=int)
-    submit = SubmitField("Submit")
+    repository_id = SelectField("Point de livraison", coerce=int)
+    submit = SubmitField("Soumettre")
 
 
 @require("client")
@@ -56,7 +56,7 @@ async def profile(request):
                 password = data.pop("password")
                 if password:
                     if len(password) < 6:
-                        flash(request, ("warning", "password is too short"))
+                        flash(request, ("warning", "Le mot de passe est trop court"))
                         return {"form": form}
                     data["password_hash"] = sha256_crypt.hash(password)
                 q = "UPDATE client SET {} WHERE login = ${}".format(
@@ -65,12 +65,12 @@ async def profile(request):
                 try:
                     await conn.execute(q, *data.values(), login)
                 except UniqueViolationError:
-                    flash(request, ("warning", "cannot update the profile"))
+                    flash(request, ("warning", "Votre profil ne peut être modifié"))
                 else:
-                    flash(request, ("success", "profile successfuly edited"))
-                    return HTTPFound(request.app.router["client"].url_for())
+                    flash(request, ("success", "Votre profil a bien été modifié"))
+                    return HTTPFound(request.app.router["home"].url_for())
             else:
-                flash(request, ("danger", "there are some fields in error"))
+                flash(request, ("danger", "Le formulaire comporte des erreurs"))
             return {"form": form}
         elif request.method == "GET":
             form = ProfileForm(data=data, meta=await generate_csrf_meta(request))

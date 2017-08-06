@@ -20,9 +20,9 @@ from views.utils import settings
 
 class BatchForm(CsrfForm):
     date = DateTimeField("Date", validators=[Required()])
-    capacity = IntegerField("Capacity", validators=[Required()])
-    opened = BooleanField("Opened")
-    submit = SubmitField("Submit")
+    capacity = IntegerField("Capacité", validators=[Required()])
+    opened = BooleanField("Ouverte")
+    submit = SubmitField("Soumettre")
 
 
 @require("admin")
@@ -39,12 +39,12 @@ async def create_batch(request):
                 try:
                     await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot create the batch"))
+                    flash(request, ("warning", "La fournée ne peut pas être crée"))
                     return {"form": form}
-            flash(request, ("success", "batch successfuly created"))
+            flash(request, ("success", "Fournée a bien été crée"))
             return HTTPFound(request.app.router["list_batch"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"form": form}
     elif request.method == "GET":
         form = BatchForm(meta=await generate_csrf_meta(request))
@@ -60,9 +60,9 @@ async def delete_batch(request):
         try:
             await conn.execute("DELETE FROM batch WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "cannot delete the batch"))
+            flash(request, ("warning", "La fournée ne peux pas être supprimée"))
         else:
-            flash(request, ("success", "batch successfuly deleted"))
+            flash(request, ("success", "La fournée a bien été supprimée"))
         finally:
             return HTTPFound(request.app.router["list_batch"].url_for())
 
@@ -87,12 +87,12 @@ async def edit_batch(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "cannot edit the batch"))
+                    flash(request, ("warning", "La fournée ne peut pas être modifiée"))
                 else:
-                    flash(request, ("success", "batch successfuly edited"))
+                    flash(request, ("success", "La fournée a bien été modifiée"))
                     return HTTPFound(request.app.router["list_batch"].url_for())
             else:
-                flash(request, ("danger", "there are some fields in error"))
+                flash(request, ("danger", "Le formulaire contient des erreurs"))
             return {"id": id_, "form": form}
         elif request.method == "GET":
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))

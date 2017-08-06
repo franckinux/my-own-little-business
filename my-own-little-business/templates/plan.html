@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Plan de fournée{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Plan de fournée</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<h3>Fournée</h3>
+
+<form method="POST" action="{{ url("plan") }}" class="form-inline" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group">
+        {{ form.batch_id(class="form-control") }}
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% if products %}
+<h3>Charge de la fournée</h3>
+
+<p>{{ batch.load }} / {{ batch.capacity }}</p>
+
+<h3>Produits de la fournée</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nom du produit</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.quantity }}</td>
+        </tr>
+        {% endfor %}
+    <tbody>
+</table>
+{% endif %}
+
+{% if products_by_repository %}
+<h3>Produits de la fournée par point de livraison</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nom du Point de livraison</th>
+            <th>Nom du produit</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pbr in products_by_repository %}
+        <tr>
+            <td>{{ pbr.repository_name }}</td>
+            <td>{{ pbr.product_name }}</td>
+            <td>{{ pbr.quantity }}</td>
+        </tr>
+        {% endfor %}
+    <tbody>
+</table>
+{% endif %}
+
+{% if products_by_repository_by_client %}
+<h3>Produits de la fournée par point de livraison et par client</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nom du point de livraison</th>
+            <th>Nom du client</th>
+            <th>Prénom du client</th>
+            <th>Nom du produit</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pbrbc in products_by_repository_by_client %}
+        <tr>
+            <td>{{ pbrbc.repository_name }}</td>
+            <td>{{ pbrbc.last_name }}</td>
+            <td>{{ pbrbc.first_name }}</td>
+            <td>{{ pbrbc.product_name }}</td>
+            <td>{{ pbrbc.quantity }}</td>
+        </tr>
+        {% endfor %}
+    <tbody>
+</table>
+{% endif %}
+{% endblock %}

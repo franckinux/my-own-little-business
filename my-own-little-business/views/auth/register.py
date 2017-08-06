@@ -30,32 +30,32 @@ from views.utils import remove_special_data
 
 
 class RegisterForm(CsrfForm):
-    login = StringField("Login", validators=[
+    login = StringField("Identifiant", validators=[
         Required(),
         Length(min=1, max=64),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
-            "Login must have only letters, numbers, dots or underscores"
-            "and begin by a letter"
+            "L'identifiant ne doit comporter que des lettres non accentuées, "
+            "des chiffres, '.'  et '_' et commencer par une lettre"
         )
     ])
-    password = PasswordField("Password", validators=[
+    password = PasswordField("Mot de passe", validators=[
         Required(),
         EqualTo("password2", message="Passwords must match"),
         Length(min=6)
     ])
-    password2 = PasswordField("Confirm password", validators=[Required()])
-    first_name = StringField("First name")
-    last_name = StringField("Last name")
-    email_address = StringField("Email address", validators=[
+    password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
+    first_name = StringField("Prénom")
+    last_name = StringField("Nom")
+    email_address = StringField("Adresse mail", validators=[
         Required(),
         Length(min=1, max=64),
         Email()
     ])
-    phone_number = StringField("Phone number", validators=[
+    phone_number = StringField("Numéro de téléphone", validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
-    repository_id = SelectField("Repository", coerce=int)
-    submit = SubmitField("Submit")
+    repository_id = SelectField("Point de livraison", coerce=int)
+    submit = SubmitField("Soumettre")
 
 
 @aiohttp_jinja2.template("auth/register.html")
@@ -79,7 +79,16 @@ async def handler(request):
                         try:
                             client = await conn.fetchrow(q, *data.values())
                         except UniqueViolationError:
-                            flash(request, ("warning", "cannot create the client, it already exists"))
+                            flash(
+                                request,
+                                (
+                                    "warning",
+                                    (
+                                        "Votre compte ne peut être créé, cet "
+                                        "identifiant est déjà utilisé"
+                                    )
+                                )
+                            )
                             raise  # rollback the transaction : client not created
                         try:
                             await send_confirmation(request, client["id"], client["email_address"])
@@ -88,7 +97,7 @@ async def handler(request):
                                 request,
                                 (
                                     "danger",
-                                    "a problem occurred while sending a confirmation email to {]".format(
+                                    "Le message de confirmation n'a pu être envoyé à {}".format(
                                         client["email_address"]
                                     )
                                 )
@@ -98,7 +107,7 @@ async def handler(request):
                             request,
                             (
                                 "info",
-                                "a confirmation email has been sent to {}, read it carefully".format(
+                                "Un message de confirmation a été envoyé à {}".format(
                                     client["email_address"]
                                 )
                             )
@@ -107,7 +116,7 @@ async def handler(request):
                 except (UniqueViolationError, SmtpSendingError):
                     return HTTPFound(request.app.router["register"].url_for())
             else:
-                flash(request, ("danger", "there are some fields in error"))
+                flash(request, ("danger", "Le formulaire comporte des erreurs"))
             return {"form": form}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
@@ -125,7 +134,7 @@ async def confirm(request):
         token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
         id_ = token_data["id"]
     except:
-        flash(request, ("danger", "the link is invalid or has expired"))
+        flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
@@ -133,10 +142,10 @@ async def confirm(request):
         try:
             await conn.execute(q, id_)
         except:
-            flash(request, ("danger", "your account cannot be confirmed"))
+            flash(request, ("danger", "Vous ne pouvez pas être enregistré"))
             return HTTPFound(request.app.router["register"].url_for())
         else:
-            flash(request, ("info", "your account has been confirmed, you can now login"))
+            flash(request, ("info", "Votre enregistrement est confirmé, vous pouvez vous connecter"))
             return HTTPFound(request.app.router["login"].url_for())
 
 
@@ -155,7 +164,7 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Confirm your account".format(config["site_name"])
+    message["subject"] = "[{}] Confirmation de votre enregistrement".format(config["site_name"])
     message["to"] = email_address
     message["from"] = config["from"]
     message.attach(text_message)

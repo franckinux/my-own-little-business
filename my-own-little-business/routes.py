@@ -1,4 +1,3 @@
-from views.admin import admin_menu
 from views.auth import login
 from views.auth import logout
 from views.auth.email import confirm as confirm_email
@@ -12,11 +11,12 @@ from views.batch import create_batch
 from views.batch import edit_batch
 from views.batch import delete_batch
 from views.batch import list_batch
-from views.client import client_menu
+from views.home import home
 from views.order import create_order
 from views.order import edit_order
 from views.order import delete_order
 from views.order import list_order
+from views.plan import plan
 from views.product import create_product
 from views.product import edit_product
 from views.product import delete_product
@@ -29,8 +29,8 @@ from views.repository import list_repository
 def setup_routes(app):
     app.router.add_static("/static", "static")
 
-    app.router.add_get("/admin/", admin_menu, name="admin")
-    app.router.add_get("/client/", client_menu, name="client")
+    # home
+    app.router.add_get("/home/", home, name="home")
 
     # auth
     app.router.add_route('*', "/", login, name="login")
@@ -66,3 +66,6 @@ def setup_routes(app):
     app.router.add_get("/order/delete/{id:\d+}/", delete_order, name="delete_order")
     app.router.add_route("*", "/order/edit/{id:\d+}/", edit_order, name="edit_order")
     app.router.add_get("/order/list/", list_order, name="list_order")
+
+    # plan
+    app.router.add_route('*', "/plan/", plan, name="plan")
