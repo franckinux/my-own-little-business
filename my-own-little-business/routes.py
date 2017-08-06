@@ -1,3 +1,5 @@
+from views.accounts import list_account
+from views.accounts import delete_account
 from views.auth import login
 from views.auth import logout
 from views.auth.email import confirm as confirm_email
@@ -29,8 +31,9 @@ from views.repository import list_repository
 def setup_routes(app):
     app.router.add_static("/static", "static")
 
-    # home
-    app.router.add_get("/home/", home, name="home")
+    # accounts
+    app.router.add_get("/account/list/", list_account, name="list_account")
+    app.router.add_get("/account/delete/{id:\d+}/", delete_account, name="delete_account")
 
     # auth
     app.router.add_route('*', "/", login, name="login")
@@ -48,6 +51,9 @@ def setup_routes(app):
     app.router.add_get("/batch/delete/{id:\d+}/", delete_batch, name="delete_batch")
     app.router.add_route("*", "/batch/edit/{id:\d+}/", edit_batch, name="edit_batch")
     app.router.add_get("/batch/list/", list_batch, name="list_batch")
+
+    # home
+    app.router.add_get("/home/", home, name="home")
 
     # products
     app.router.add_route("*", "/product/create/", create_product, name="create_product")

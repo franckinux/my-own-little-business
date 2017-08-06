@@ -10,14 +10,13 @@
 {% endblock %}
 
 {% block page_content %}
-<h3>Fournée</h3>
-
 <form method="POST" action="{{ url("plan") }}" class="form-inline" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group">
+        {{ form.batch_id.label }}
         {{ form.batch_id(class="form-control") }}
         {{ form.submit(class="btn btn-primary") }}
     </div>

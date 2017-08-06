@@ -1,8 +1,3 @@
-from datetime import datetime
-from datetime import timedelta
-
-from aiohttp_security import authorized_userid
-from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash

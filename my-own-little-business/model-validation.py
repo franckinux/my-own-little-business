@@ -127,6 +127,7 @@ async def main(config, loop=None):
         "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
         datetime(2018, 12, 31, 8, 0, 0), 20, True
     )
+    batch_3_id
 
     # link basic object between them
 

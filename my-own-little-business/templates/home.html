@@ -10,11 +10,23 @@
 <p>Bonjour {{ client.first_name }} ! Ravi de vous revoir à nouveau.</p>
 
 {% if client.super_user %}
+<h3>Éléments de base</h3>
 <ul>
     <li><a href="{{ url("list_batch") }}">Fournées</a></li>
     <li><a href="{{ url("list_product") }}">Produits</a></li>
     <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
+</ul>
+
+<h3>Production</h3>
+
+<ul>
     <li><a href="{{ url("plan") }}">Plan de fournée</a></li>
+</ul>
+
+<h3>Comptes</h3>
+
+<ul>
+    <li><a href="{{ url("list_account") }}">Comptes</a></li>
 </ul>
 {% endif %}
 
