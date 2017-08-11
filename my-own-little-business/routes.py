@@ -14,6 +14,7 @@ from views.batch import edit_batch
 from views.batch import delete_batch
 from views.batch import list_batch
 from views.home import home
+from views.invoice import invoice
 from views.order import create_order
 from views.order import edit_order
 from views.order import delete_order
@@ -54,6 +55,9 @@ def setup_routes(app):
 
     # home
     app.router.add_get("/home/", home, name="home")
+
+    # invoices
+    app.router.add_route('*', "/invoice/", invoice, name="invoice")
 
     # products
     app.router.add_route("*", "/product/create/", create_product, name="create_product")

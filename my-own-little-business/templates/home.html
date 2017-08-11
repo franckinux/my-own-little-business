@@ -17,22 +17,33 @@
     <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
 </ul>
 
+<h3>Comptes</h3>
+
+<ul>
+    <li><a href="{{ url("list_account") }}">Comptes</a></li>
+</ul>
+
 <h3>Production</h3>
 
 <ul>
     <li><a href="{{ url("plan") }}">Plan de fournée</a></li>
 </ul>
 
-<h3>Comptes</h3>
+<h3>Paiements</h3>
 
 <ul>
-    <li><a href="{{ url("list_account") }}">Comptes</a></li>
+    <li><a href="{{ url("invoice") }}">Envoi des factures</a></li>
 </ul>
+
 {% endif %}
+
+<h3>Commandes</h3>
 
 <ul>
     <li><a href="{{ url("list_order") }}">Commandes</a></li>
 </ul>
+
+<h3>Profil</h3>
 
 <ul>
     <li><a href="{{ url("profile") }}">Modifier votre profil</a></li>

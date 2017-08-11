@@ -1,7 +1,13 @@
 CREATE TYPE payedstatusenum AS ENUM (
     'not_payed',
     'payed_by_check',
-    'payed_inline'
+    'payed_by_paypal',
+    'payed_in_cash'
+);
+
+
+CREATE TABLE storage (
+    last_invoice_date timestamp without time zone DEFAULT NOW()
 );
 
 
@@ -57,6 +63,8 @@ CREATE TABLE order_ (
     batch_id integer REFERENCES batch(id) NOT NULL,
     payment_id integer REFERENCES payment(id) DEFAULT NULL
 );
+
+CREATE INDEX order_placed_at_index ON order_(placed_at);
 
 
 CREATE TABLE product (

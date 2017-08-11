@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link href="/static/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Édition et envoi des factures{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Edition et envoi des factures</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("invoice") }}" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group{% if form.date.errors %} has-error{% endif %}">
+        <label for="date">{{ form.date.label }}</label>
+        {{ form.date(class="invisible") }}
+        <div class="input-group date form_date" data-date="" data-date-format="d MM yyyy hh:ii" data-link-field="date" data-link-format="yyyy-mm-dd hh:ii:00">
+            <input class="form-control" size="16" type="text" value="" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url("home") }}" class="btn btn-default">Annuler</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/static/bootstrap-datepicker/js//locales/bootstrap-datetimepicker.fr.js"></script>
+<script>
+
+// When the document is ready
+$(document).ready(function () {
+    $('.form_date').datetimepicker({
+        language:  'fr',
+        weekStart: 1,
+        todayBtn:  0,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        minuteStep: 15,
+    });
+    $('.form_date').datetimepicker('update', $('#date').val());
+});
+</script>
+{% endblock %}

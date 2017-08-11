@@ -464,8 +464,10 @@ def translate_mode(value):
         return "Non payée"
     elif value == "payed_by_check":
         return "Payée par chèque"
-    elif value == "payed_inline":
-        return "Payée en ligne"
+    elif value == "payed_by_paypal":
+        return "Payée par Paypal"
+    elif value == "payed_in_cash":
+        return "Payée en liquide"
 
 
 @require("client")

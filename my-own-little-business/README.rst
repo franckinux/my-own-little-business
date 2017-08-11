@@ -36,6 +36,7 @@ Downloads
 
 - `JQuery <https://code.jquery.com/jquery/>`_
 - `Bootstrap <http://getbootstrap.com/>`_
+- `DateTime Picker - Bootstrap <https://github.com/smalot/bootstrap-datetimepicker/>`_
 
 Necessary packages
 ==================

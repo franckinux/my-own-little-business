@@ -1,0 +1,36 @@
+<html>
+<body>
+    <p>Bonjour {{ first_name }},</p>
+    Ceci est votre facture du {{ invoice_date.strftime("%d-%m-%Y") }}.
+    Le montant dû est de <b>{{ total }}</b> €.
+    Nous vous prions de bien vouloir joindre à votre règlement le numéro
+    de facture suivant : <b>{{ payment_id }}</b>.</p>
+
+    {% for batch_date, batch_date_group in payment_details|groupby("batch_date") -%}
+    {% for order_total, group_list in batch_date_group|groupby("order_total") -%}
+    <h3>Fournée du {{ batch_date.strftime("%d-%m-%Y à %H:%M") }}</h3>
+
+    <p>Montant de la commande : {{ order_total }} €</p>
+
+    <table border="1" >
+        <thead>
+            <th>Nom du produit</th>
+            <th>Quantité</th>
+        </thead>
+        <tbody>
+            {% for line in group_list -%}
+            <tr>
+                <td>{{ line.product_name }}</td>
+                <td>{{ line.quantity }}</td>
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+
+    {%- endfor %}
+    {%- endfor %}
+
+    <p>Nous vous remercions de votre confiance et espérons vous revoir
+    prochainement.</p>
+</body>
+</html>

@@ -1,11 +1,12 @@
-from aiohttp_jinja2 import get_env
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_jinja2 import get_env
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from passlib.hash import sha256_crypt
 from wtforms import PasswordField
 from wtforms import SubmitField
