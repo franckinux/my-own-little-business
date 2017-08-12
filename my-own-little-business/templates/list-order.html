@@ -8,7 +8,11 @@
 {% endblock %}
 
 {% block page_content %}
+{% if disabled %}
+<p>Vous n'avez pas la possibilité de passer une commande.</p>
+{% else %}
 <div class="form-group"><a href="{{ url("create_order") }}" class="btn btn-default">Passer une commande</a></div>
+{% endif %}
 
 <table class="table table-hover">
    <thead>

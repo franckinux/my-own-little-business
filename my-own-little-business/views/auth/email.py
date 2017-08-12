@@ -76,7 +76,7 @@ async def confirm(request):
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
-        q = "UPDATE client SET email_address = $1 WHERE id = $2 AND NOT disabled"
+        q = "UPDATE client SET email_address = $1 WHERE id = $2"
         try:
             await conn.execute(q, email_address, id_)
         except:

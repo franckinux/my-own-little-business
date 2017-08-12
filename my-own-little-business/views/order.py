@@ -30,9 +30,14 @@ async def create_order(request):
     login = await authorized_userid(request)
 
     async with request.app["db-pool"].acquire() as conn:
-        client_id = await conn.fetchval(
-            "SELECT id FROM client WHERE login = $1", login
+        client = await conn.fetchrow(
+            "SELECT id, disabled FROM client WHERE login = $1", login
         )
+        client_id = client["id"]
+
+        if client["disabled"]:
+            flash(request, "warning", "Vous ne pouvez pas passer de commande.")
+            return HTTPFound(request.app.router["list_order"].url_for())
 
         # select opened batches whose date is 12 hours in the future and
         # load is inferior to its capacity
@@ -476,8 +481,8 @@ async def list_order(request):
     login = await authorized_userid(request)
 
     async with request.app["db-pool"].acquire() as conn:
-        client_id = await conn.fetchval(
-            "SELECT id FROM client WHERE login = $1", login
+        client = await conn.fetchrow(
+            "SELECT id, disabled FROM client WHERE login = $1", login
         )
 
         q = (
@@ -488,5 +493,5 @@ async def list_order(request):
             "LEFT JOIN payment AS p ON o.payment_id = p.id "
             "WHERE o.client_id = $1 ORDER BY o.placed_at DESC"
         )
-        orders = await conn.fetch(q, client_id)
-    return {"orders": orders, "now": datetime.now()}
+        orders = await conn.fetch(q, client["id"])
+    return {"disabled": client["disabled"], "orders": orders, "now": datetime.now()}

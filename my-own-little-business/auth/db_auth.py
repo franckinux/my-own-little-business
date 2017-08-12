@@ -8,7 +8,7 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
 
     async def authorized_userid(self, identity):
         async with self.db_pool.acquire() as conn:
-            q = "SELECT COUNT(*) FROM client WHERE login = $1 AND confirmed AND NOT disabled"
+            q = "SELECT COUNT(*) FROM client WHERE login = $1 AND confirmed"
             res = await conn.fetchval(q, identity, column=0)
             if res:
                 return identity
@@ -20,7 +20,7 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
             return False
 
         async with self.db_pool.acquire() as conn:
-            q = "SELECT super_user FROM client WHERE login = $1 AND confirmed AND NOT disabled"
+            q = "SELECT super_user FROM client WHERE login = $1 AND confirmed"
             client = await conn.fetchrow(q, identity)
             if client is not None:
                 if client["super_user"]:
@@ -32,7 +32,7 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
 
 async def check_credentials(db_pool, username, password):
     async with db_pool.acquire() as conn:
-        q = "SELECT password_hash FROM client WHERE login = $1 AND confirmed AND NOT disabled"
+        q = "SELECT password_hash FROM client WHERE login = $1 AND confirmed"
         client = await conn.fetchrow(q, username)
     if client is not None:
         hash_ = client["password_hash"]

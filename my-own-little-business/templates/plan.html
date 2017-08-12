@@ -49,33 +49,37 @@
 {% if products_by_repository %}
 <h3>Produits de la fournée par point de livraison</h3>
 
+{% for repository_name, repository_products in products_by_repository|groupby("repository_name") -%}
+<h4>{{ repository_name }}</h4>
+
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Nom du Point de livraison</th>
             <th>Nom du produit</th>
             <th>Quantité</th>
         </tr>
     </thead>
     <tbody>
-        {% for pbr in products_by_repository %}
+        {% for product in repository_products -%}
         <tr>
-            <td>{{ pbr.repository_name }}</td>
-            <td>{{ pbr.product_name }}</td>
-            <td>{{ pbr.quantity }}</td>
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.quantity }}</td>
         </tr>
-        {% endfor %}
+        {%- endfor %}
     <tbody>
 </table>
+{%- endfor %}
 {% endif %}
 
 {% if products_by_repository_by_client %}
 <h3>Produits de la fournée par point de livraison et par client</h3>
 
+{% for repository_name, repository_client_products in products_by_repository_by_client|groupby("repository_name") -%}
+<h4>{{ repository_name }}</h4>
+
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Nom du point de livraison</th>
             <th>Nom du client</th>
             <th>Prénom du client</th>
             <th>Nom du produit</th>
@@ -83,16 +87,16 @@
         </tr>
     </thead>
     <tbody>
-        {% for pbrbc in products_by_repository_by_client %}
+        {% for products_by_client in repository_client_products %}
         <tr>
-            <td>{{ pbrbc.repository_name }}</td>
-            <td>{{ pbrbc.last_name }}</td>
-            <td>{{ pbrbc.first_name }}</td>
-            <td>{{ pbrbc.product_name }}</td>
-            <td>{{ pbrbc.quantity }}</td>
+            <td>{{ products_by_client.last_name }}</td>
+            <td>{{ products_by_client.first_name }}</td>
+            <td>{{ products_by_client.product_name }}</td>
+            <td>{{ products_by_client.quantity }}</td>
         </tr>
-        {% endfor %}
+        {%- endfor %}
     <tbody>
 </table>
+{%- endfor %}
 {% endif %}
 {% endblock %}

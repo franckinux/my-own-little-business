@@ -34,8 +34,8 @@ Create a user and a database : ::
 Downloads
 =========
 
-- `JQuery <https://code.jquery.com/jquery/>`_
-- `Bootstrap <http://getbootstrap.com/>`_
+- `JQuery <https://code.jquery.com/jquery/>`_ - Version 1.12.4 ;
+- `Bootstrap <http://getbootstrap.com/>`_ - Version 3.3.7 ;
 - `DateTime Picker - Bootstrap <https://github.com/smalot/bootstrap-datetimepicker/>`_
 
 Necessary packages

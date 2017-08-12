@@ -96,7 +96,7 @@ async def confirm(request):
             password_hash = sha256_crypt.hash(form.password.data)
 
             async with request.app["db-pool"].acquire() as conn:
-                q = "UPDATE client SET password_hash = $1 WHERE id = $2 AND NOT disabled"
+                q = "UPDATE client SET password_hash = $1 WHERE id = $2"
                 try:
                     await conn.execute(q, password_hash, id_)
                 except:
