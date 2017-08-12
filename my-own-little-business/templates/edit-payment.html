@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Paiement d'une facture{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Paiement d'une facture</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("edit_payment", id=id) }}" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group">
+        <label for="mode">{{ form.mode.label }}</label>
+        {{ form.mode() }}
+    </div>
+    <div class="form-group{% if form.reference.errors %} has-error{% endif %}">
+        <label for="reference">{{ form.reference.label }}</label>
+        {{ form.reference(class="form-control", placeholder="Entrez la référence") }}
+        {% if form.reference.errors %}
+        <div class="help-text">
+            {% for error in form.reference.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url("list_payment") }}" class="btn btn-default">Annuler</a>
+    </div>
+</form>
+{% endblock %}

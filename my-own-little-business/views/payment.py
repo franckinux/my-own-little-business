@@ -1,17 +1,20 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp_jinja2 import get_env
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from wtforms import DateTimeField
+from wtforms import IntegerField
+from wtforms import SelectField
+from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
-from views.auth.send_message import SmtpSendingError
 from views.auth.send_message import send_message
 from views.utils import generate_csrf_meta
 from views.utils import remove_special_data
@@ -173,9 +176,107 @@ async def send_invoice(request, client, total, payment_id, payment_details,
     message["subject"] = "[{}] Votre facture du {}".format(
         config["site_name"], invoice_date.strftime("%d-%m-%Y")
     )
-    # TODO
     message["to"] = client["email_address"]
     message["from"] = config["from"]
     message.attach(text_message)
     message.attach(html_message)
     await send_message(message, config)
+
+
+class PaymentIdForm(CsrfForm):
+    payment_id = IntegerField("Numéro de facture", validators=[Required()])
+    submit = SubmitField("Valider")
+
+
+@require("admin")
+@aiohttp_jinja2.template("list-payment.html")
+async def list_payment(request):
+    if request.method == "POST":
+        form = PaymentIdForm(await request.post(), meta=await generate_csrf_meta(request))
+
+        if form.validate():
+            data = remove_special_data(await request.post())
+            payment_id = int(data["payment_id"])
+
+            async with request.app["db-pool"].acquire() as conn:
+                q = (
+                    "SELECT DISTINCT c.id, c.first_name, c.last_name, c.email_address, "
+                    "       c.phone_number, p.id, p.claimed_at, p.total "
+                    "FROM order_ AS o "
+                    "INNER JOIN client AS c ON o.client_id = c.id "
+                    "LEFT JOIN payment AS p ON o.payment_id = p.id "
+                    "WHERE o.payment_id IS NOT NULL AND p.mode = 'not_payed' AND p.id = $1"
+                )
+                payments = await conn.fetch(q, payment_id)
+
+                if not payments:
+                    flash(request, ("warning", "Ce numéro de facture est invalide."))
+
+            return {"form": form, "payments": payments}
+        else:
+            flash(request, ("danger", "Ce formulaire comporte des erreurs."))
+            return {"form": form}
+
+    elif request.method == "GET":
+        form = PaymentIdForm(meta=await generate_csrf_meta(request))
+
+        # get information on clients that have unpayed orders
+        async with request.app["db-pool"].acquire() as conn:
+            q = (
+                "SELECT DISTINCT c.id, c.first_name, c.last_name, c.email_address, "
+                "       c.phone_number, p.id, p.claimed_at, p.total "
+                "FROM order_ AS o "
+                "INNER JOIN client AS c ON o.client_id = c.id "
+                "LEFT JOIN payment AS p ON o.payment_id = p.id "
+                "WHERE o.payment_id IS NOT NULL AND p.mode = 'not_payed' "
+                "ORDER BY p.claimed_at, p.id, c.last_name, c.first_name"
+            )
+            payments = await conn.fetch(q)
+
+        return {"form": form, "payments": payments}
+    else:
+        raise HTTPMethodNotAllowed()
+
+
+class PaymentForm(CsrfForm):
+    mode = SelectField("Mode de paiement")
+    reference = StringField("Référence")
+    submit = SubmitField("Valider")
+
+
+@require("admin")
+@aiohttp_jinja2.template("edit-payment.html")
+async def edit_payment(request):
+    payment_id = int(request.match_info["id"])
+
+    payment_choices = [
+        ("payed_by_check", "Par chèque"),
+        ("payed_in_cash", "En espèces"),
+    ]
+
+    if request.method == "POST":
+        form = PaymentForm(await request.post(), meta=await generate_csrf_meta(request))
+        form.mode.choices = payment_choices
+
+        if form.validate():
+            data = remove_special_data(await request.post())
+            mode = data["mode"]
+            reference = data["reference"]
+
+            # update payment mode and reference
+            async with request.app["db-pool"].acquire() as conn:
+                await conn.execute(
+                    "UPDATE payment SET mode = $1, reference = $2, payed_at = NOW() "
+                    "WHERE id = $3",
+                    mode, reference, payment_id
+                )
+            return HTTPFound(request.app.router["list_payment"].url_for())
+        else:
+            flash(request, ("danger", "Ce formulaire comporte des erreurs."))
+            return {"form": form, "id": payment_id}
+    elif request.method == "GET":
+        form = PaymentForm(meta=await generate_csrf_meta(request))
+        form.mode.choices = payment_choices
+        return {"form": form, "id": payment_id}
+    else:
+        raise HTTPMethodNotAllowed()

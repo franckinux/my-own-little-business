@@ -1,3 +1,4 @@
+from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
@@ -41,6 +42,7 @@ async def plan(request):
             # just for csrf !
             if not form.validate():
                 flash(request, ("danger", "Ce formulaire comporte des erreurs."))
+                return HTTPFound(request.app.router["plan"].url_for())
 
             # get the number of products to make from the batch
             q = (
@@ -82,7 +84,7 @@ async def plan(request):
             )
             products_by_repository = await conn.fetch(q, batch_id)
 
-            # get the number of products by repository to make from the batch
+            # get the number of products by repository by clients to make from the batch
             q = (
                 "SELECT r.name AS repository_name, c.last_name, c.first_name,"
                 "       p.name AS product_name, SUM(opa.quantity) AS quantity "

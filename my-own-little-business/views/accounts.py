@@ -12,7 +12,7 @@ async def list_account(request):
             "SELECT id, first_name, last_name, email_address, phone_number, created_at "
             "FROM client  "
             "WHERE NOT confirmed "
-            "ORDER BY created_at"
+            "ORDER BY created_at, last_name, first_name"
         )
         clients = await conn.fetch(q)
 
