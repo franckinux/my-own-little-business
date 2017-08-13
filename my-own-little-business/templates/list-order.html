@@ -25,7 +25,7 @@
       </tr>
    </thead>
    <tbody>
-      {% for order in orders %}
+      {% for order in orders -%}
       <tr>
          {% if now < order.cancellation_date and not order.payment_id %}
          <td><a href="{{ url("edit_order", id=order.id) }}">{{ order.placed_at.strftime("%Y-%m-%d %H:%M") }}</a></td>
@@ -34,10 +34,14 @@
          {% endif %}
          <td>{{ order.batch_date.strftime("%Y-%m-%d %H:%M") }}</td>
          <td>{{ order.total }}</td>
-         <td>{{ order.payment_mode|translate_mode() }}</td>
+         {% if order.payment_id %}
+         <td><a href="{{ url("show_payment", id=order.payment_id) }}">{{ order.payment_mode|translate_mode() }}</a></td>
+         {% else %}
+         <td>Non payée</td>
+         {% endif %}
          <td>{% if now < order.cancellation_date and not order.payment_id  %}<a href="{{ url("delete_order", id=order.id) }}">Supprimer</a>{% endif%}</td>
       </tr>
-      {% endfor %}
+      {%- endfor %}
    </tbody>
 </table>
 {% endblock %}

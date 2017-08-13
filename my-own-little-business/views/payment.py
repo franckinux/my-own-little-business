@@ -5,6 +5,7 @@ from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp_jinja2 import get_env
 import aiohttp_jinja2
+from aiohttp_security import authorized_userid
 from aiohttp_session_flash import flash
 from wtforms import DateTimeField
 from wtforms import IntegerField
@@ -229,7 +230,7 @@ async def list_payment(request):
                 "INNER JOIN client AS c ON o.client_id = c.id "
                 "LEFT JOIN payment AS p ON o.payment_id = p.id "
                 "WHERE o.payment_id IS NOT NULL AND p.mode = 'not_payed' "
-                "ORDER BY p.claimed_at, p.id, c.last_name, c.first_name"
+                "ORDER BY p.claimed_at DESC, p.id, c.last_name, c.first_name"
             )
             payments = await conn.fetch(q)
 
@@ -280,3 +281,38 @@ async def edit_payment(request):
         return {"form": form, "id": payment_id}
     else:
         raise HTTPMethodNotAllowed()
+
+
+@require("client")
+@aiohttp_jinja2.template("show-payment.html")
+async def show_payment(request):
+    payment_id = int(request.match_info["id"])
+    login = await authorized_userid(request)
+
+    async with request.app["db-pool"].acquire() as conn:
+        q = (
+            "SELECT DISTINCT p.id, p.total, p.mode, p.reference, p.payed_at "
+            "FROM order_ AS o "
+            "INNER JOIN client AS c ON o.client_id = c.id "
+            "LEFT JOIN payment AS p ON o.payment_id = p.id "
+            "WHERE o.payment_id = $1 AND c.login = $2"
+        )
+        payment = await conn.fetchrow(q, payment_id, login)
+        if not payment:
+            flash(request, ("warning", "Votre requête ne peut être satisfaite."))
+            return HTTPFound(request.app.router["list_order"].url_for())
+
+        # retrieve all orders of the client
+        q = (
+            "SELECT b.date AS batch_date, o.total AS order_total, "
+            "       p.name AS product_name, opa.quantity "
+            "FROM order_product_association AS opa "
+            "INNER JOIN product AS p ON opa.product_id = p.id "
+            "INNER JOIN order_ AS o ON opa.order_id = o.id "
+            "INNER JOIN batch AS b ON o.batch_id = b.id "
+            "WHERE o.payment_id = $1 "
+            "ORDER BY o.id, p.id"
+        )
+        payment_details = await conn.fetch(q, payment_id)
+
+    return {"payment": payment, "payment_details": payment_details}

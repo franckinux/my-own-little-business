@@ -21,6 +21,7 @@ from views.order import list_order
 from views.payment import invoice
 from views.payment import list_payment
 from views.payment import edit_payment
+from views.payment import show_payment
 from views.plan import plan
 from views.product import create_product
 from views.product import edit_product
@@ -67,7 +68,8 @@ def setup_routes(app):
     # payments
     app.router.add_route('*', "/payment/invoice/", invoice, name="invoice")
     app.router.add_route('*', "/payment/list/", list_payment, name="list_payment")
-    app.router.add_route('*', "/payment/pay/{id:\d+}/", edit_payment, name="edit_payment")
+    app.router.add_route('*', "/payment/edit/{id:\d+}/", edit_payment, name="edit_payment")
+    app.router.add_get("/payment/show/{id:\d+}/", show_payment, name="show_payment")
 
     # plan
     app.router.add_route('*', "/plan/", plan, name="plan")

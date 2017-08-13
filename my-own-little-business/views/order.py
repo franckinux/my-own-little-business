@@ -486,8 +486,9 @@ async def list_order(request):
         )
 
         q = (
-            "SELECT o.id, o.placed_at, o.total, o.payment_id, p.mode AS payment_mode, "
-            "       b.date AS batch_date, b.date - INTERVAL '12 hour' AS cancellation_date "
+            "SELECT o.id, o.placed_at, o.total, o.payment_id, "
+            "       p.id AS payment_id, p.mode AS payment_mode, b.date AS batch_date, "
+            "       b.date - INTERVAL '12 hour' AS cancellation_date "
             "FROM order_ AS o "
             "INNER JOIN batch AS b ON o.batch_id = b.id "
             "LEFT JOIN payment AS p ON o.payment_id = p.id "
