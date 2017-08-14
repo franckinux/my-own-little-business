@@ -32,9 +32,21 @@ async def login(request):
             db_pool = request.app["db-pool"]
             if await check_credentials(db_pool, login, password):
                 async with request.app["db-pool"].acquire() as conn:
-                    q = "UPDATE client SET last_seen = NOW() WHERE login = $1"
-                    await conn.execute(q, login)
+                    q = (
+                        "UPDATE client SET last_seen = NOW() WHERE login = $1 "
+                        "RETURNING first_name, super_user"
+                    )
+                    client = await conn.fetchrow(q, login)
                 await remember(request, response, login)
+                if not client["super_user"]:
+                    flash(
+                        request,
+                        (
+                            "info",
+                            "Bonjour {} ! Ravi de vous revoir à nouveau".format(
+                                client["first_name"])
+                        )
+                    )
                 return response
         flash(request, ("danger", "La combinaison identifiant/mot de passe est invalide"))
         return {"form": form}
