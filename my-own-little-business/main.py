@@ -29,10 +29,7 @@ def setup_session(app):
     session_setup(app, EncryptedCookieStorage(secret_key))
 
 
-async def attach_db(config, loop=None):
-    if loop is None:
-        loop = asyncio.get_event_loop()
-
+async def attach_db(config):
     config["database"]["password"] = os.getenv("PG_PASS", "") or config["database"]["password"]
 
     dsn = "postgres://{}:{}@{}:{}/{}".format(
@@ -53,7 +50,7 @@ async def authorized_userid_context_processor(request):
     }
 
 
-async def create_app(loop):
+async def create_app():
     config = read_configuration_file()
     db_pool = await attach_db(config)
 
@@ -86,10 +83,10 @@ async def create_app(loop):
     return app
 
 
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    app = loop.run_until_complete(create_app(loop))
+loop = asyncio.get_event_loop()
+app = loop.run_until_complete(create_app())
 
+if __name__ == "__main__":
     web.run_app(
         app,
         host=app["config"]["http_server"]["host"],
