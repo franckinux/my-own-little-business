@@ -13,7 +13,6 @@ from aiohttp_security import SessionIdentityPolicy
 from aiohttp_security import setup as setup_security
 import aiohttp_session_flash
 from asyncpg import create_pool
-from cryptography import fernet
 from jinja2 import FileSystemLoader
 
 from auth.db_auth import DBAuthorizationPolicy
@@ -24,9 +23,8 @@ from utils import read_configuration_file
 
 
 def setup_session(app):
-    # fernet_key = fernet.Fernet.generate_key()
-    # use the same key for all instances of the application as gunicorn can
-    # create more than one
+    # use the same session key for all instances of the application
+    # as gunicorn can create more than one
     fernet_key = app["config"]["application"]["session_secret_key"]
     secret_key = base64.urlsafe_b64decode(fernet_key)
     session_setup(app, EncryptedCookieStorage(secret_key))

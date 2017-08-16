@@ -20,11 +20,6 @@ async def main(config, loop=None):
     )
     conn = await asyncpg.connect(dsn)
 
-    # super user
-    await conn.execute(
-        ("INSERT INTO storage(last_invoice_date) VALUES ($1)"),
-         datetime(2017, 7, 1, 8, 0, 0)
-    )
     # create basic objects
 
     # repo_1
@@ -37,22 +32,6 @@ async def main(config, loop=None):
     repo_2_id  = await conn.fetchval(
         "INSERT INTO repository (name) VALUES ($1) RETURNING id",
         "Bas village"
-    )
-
-    # super user
-    await conn.execute(
-        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
-        "first_name, last_name, email_address, phone_number, repository_id) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
-            "admin",
-            sha256_crypt.hash("admin"),
-            True,
-            True,
-            "Tom",
-            "Sawyer",
-            "tom@literature.net",
-            "06-88-77-66-55",
-            repo_1_id
     )
 
     # client 1

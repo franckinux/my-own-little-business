@@ -4,9 +4,13 @@ import os
 import sys
 
 
-def read_configuration_file():
+def get_config_filename():
     directory = os.path.dirname(os.path.abspath(__file__))
-    default_config_file = os.path.join(directory, "config", "my-own-little-business.ini"),
+    return os.path.join(directory, "config", "my-own-little-business.ini")
+
+
+def read_configuration_file():
+    default_config_file = get_config_filename()
 
     # # when used with Gunicorn, it gets the arguments from the gunicorn command
     # parser = argparse.ArgumentParser(description="my-own-little-business configuration")
@@ -25,3 +29,10 @@ def read_configuration_file():
         return None
 
     return config
+
+
+def write_configuration_file(config):
+    default_config_file = get_config_filename()
+
+    with open(default_config_file, "w") as f:
+        config.write(f)
