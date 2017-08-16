@@ -24,7 +24,10 @@ from utils import read_configuration_file
 
 
 def setup_session(app):
-    fernet_key = fernet.Fernet.generate_key()
+    # fernet_key = fernet.Fernet.generate_key()
+    # use the same key for all instances of the application as gunicorn can
+    # create more than one
+    fernet_key = app["config"]["application"]["session_secret_key"]
     secret_key = base64.urlsafe_b64decode(fernet_key)
     session_setup(app, EncryptedCookieStorage(secret_key))
 

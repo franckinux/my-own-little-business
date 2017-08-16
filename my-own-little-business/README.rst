@@ -1,3 +1,6 @@
+Settings
+========
+
 Create a virtual env : ::
 
     $ virtualenv --python=/usr/bin/python3.5 venv
@@ -30,6 +33,11 @@ Create a user and a database : ::
     Type "help" for help.
 
     molb=> \q
+
+Launching the application with Gunicor
+=======================================
+
+/path/my-own-little-business/venv/bin/gunicorn main:app --bind 127.0.0.1:8080 --workers 3 --reload --worker-class aiohttp.GunicornWebWorker
 
 Downloads
 =========
