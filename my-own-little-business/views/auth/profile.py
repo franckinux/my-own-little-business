@@ -37,7 +37,7 @@ class ProfileForm(CsrfForm):
 @aiohttp_jinja2.template("auth/profile.html")
 async def profile(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name FROM repository")
+        rows = await conn.fetch("SELECT id, name FROM repository WHERE opened")
         repository_choices = [(row["id"], row["name"]) for row in rows]
 
         login = await authorized_userid(request)
