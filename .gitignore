@@ -2,3 +2,5 @@ tmp/
 *~
 __pycache__/
 venv/
+my-own-little-business~*.ini
+my-own-little-business.ini
