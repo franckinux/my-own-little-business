@@ -5,7 +5,7 @@ import sys
 
 import asyncpg
 from passlib.hash import sha256_crypt
-from passlib import pwd
+from passlib.pwd import genword
 
 from utils import read_configuration_file
 
@@ -34,7 +34,7 @@ async def main(config, loop=None):
     )
 
     # TODO : use the right password generator !
-    # admin_password = pwd.genword(length=8, charset="ascii_50")
+    # admin_password = genword(length=8, charset="ascii_50")
     admin_password = "admin"
     print("Admin password = {}".format(admin_password ))
 
