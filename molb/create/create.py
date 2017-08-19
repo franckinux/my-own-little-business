@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import asyncio
 from datetime import datetime
 import os
@@ -33,24 +34,21 @@ async def main(config, loop=None):
         "Dummy", False
     )
 
-    # TODO : use the right password generator !
-    # admin_password = genword(length=8, charset="ascii_50")
-    admin_password = "admin"
-    print("Admin password = {}".format(admin_password ))
+    admin_password = genword(length=8, charset="ascii_50")
+    print("Admin password = {}".format(admin_password))
 
     # super user
     await conn.execute(
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
-        "first_name, last_name, email_address, phone_number, repository_id) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"),
+        "first_name, last_name, email_address, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"),
             "admin",
             sha256_crypt.hash(admin_password),
             True,
             True,
-            "Tom",
-            "Sawyer",
-            "tom@literature.net",
-            "06-88-77-66-55",
+            "Admin",
+            "Admin",
+            "admin@molb.net",
             repo_id
     )
 

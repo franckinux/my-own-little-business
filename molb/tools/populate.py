@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import asyncio
 from datetime import datetime
 import os

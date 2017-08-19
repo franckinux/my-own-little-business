@@ -59,7 +59,7 @@ async def create_order(request):
             "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
             "    WHERE b.opened AND o.batch_id IS NULL"
-            ") AS sq  "
+            ") AS sq "
             "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
             "ORDER BY batch_date"
         )
@@ -241,7 +241,7 @@ async def edit_order(request):
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
             "           b.date AS batch_date "
-            "FROM batch AS b "
+            "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
             "    WHERE b.opened AND (o.batch_id IS NULL OR b.id = $1)"
             ") AS sq "

@@ -25,7 +25,7 @@ Install the Python packages : ::
 
 Install the database and secret keys : ::
 
-    $ make install
+    $ make create
 
 Run the server : ::
 
@@ -50,6 +50,10 @@ Downloads
 
 Necessary packages
 ==================
+
+For creating the virtual environment : ::
+
+    # apt install python3-venv
 
 For cryptography : ::
 
