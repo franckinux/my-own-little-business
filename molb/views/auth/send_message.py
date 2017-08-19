@@ -6,10 +6,10 @@ class SmtpSendingError(Exception):
 
 
 async def send_message(message, config):
-    host = config["smtp"]["url"]
-    port = int(config["smtp"]["port"])
-    username = config["smtp"]["ssername"]
-    password = config["smtp"]["password"]
+    host = config["url"]
+    port = int(config["port"])
+    username = config["username"]
+    password = config["password"]
     use_tls = False if port == 587 else True
     try:
         # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python

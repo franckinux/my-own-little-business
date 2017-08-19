@@ -84,7 +84,9 @@ class PasswordForm(CsrfForm):
 async def confirm(request):
     token = request.match_info["token"]
     try:
-        token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
+        token_data = get_token_data(
+            token, request.app["config"]["application"]["secret_key"]
+        )
         id_ = token_data["id"]
     except:
         flash(request, ("danger", "Le lien est invalide ou a expiré"))
@@ -103,7 +105,16 @@ async def confirm(request):
                     flash(request, ("danger", "Votre mot de passe ne peut être modifié"))
                     return {"form": form, "token": token}
                 else:
-                    flash(request, ("info", "Votre mot de passe a bien été modifié, vous pouvez vous connecter"))
+                    flash(
+                        request,
+                        (
+                            "info",
+                            (
+                                "Votre mot de passe a bien été modifié, "
+                                "vous pouvez vous connecter"
+                            )
+                        )
+                    )
                     return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "there are some fields in error"))
@@ -116,10 +127,11 @@ async def confirm(request):
 
 
 async def send_confirmation(request, id_, email_address):
-    config = request.app["config"]["application"]
+    config = request.app["config"]
 
-    token = generate_token(config["secret_key"], id=id_)
-    url = config["url"] + str(request.app.router["confirm_password"].url_for(token=token))
+    token = generate_token(config["application"]["secret_key"], id=id_)
+    url = config["application"]["url"] + \
+        str(request.app.router["confirm_password"].url_for(token=token))
 
     env = get_env(request.app)
     template = env.get_template("auth/password-confirmation.txt")
@@ -130,9 +142,10 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Modification de mot de passe".format(config["site_name"])
+    message["subject"] = "[{}] Modification de mot de passe".format(
+        config["application"]["site_name"])
     message["to"] = email_address
-    message["from"] = config["from"]
+    message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await send_message(message, config)
+    await send_message(message, config["smtp"])

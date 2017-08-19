@@ -126,7 +126,6 @@ async def handler(request):
             raise HTTPMethodNotAllowed()
 
 
-@aiohttp_jinja2.template("auth/confirmation.html")
 async def confirm(request):
     token = request.match_info["token"]
 
@@ -138,22 +137,31 @@ async def confirm(request):
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
-        q = "UPDATE client SET confirmed = true WHERE id = $1"
+        q = "UPDATE client SET confirmed = true WHERE id = $1 RETURNING id"
         try:
-            await conn.execute(q, id_)
+            updated = await conn.fetchval(q, id_)
+            if updated is None:
+                raise
         except:
-            flash(request, ("danger", "Vous ne pouvez pas être enregistré"))
+            flash(request, ("danger", "Vous ne pouvez pas être enregistré."))
             return HTTPFound(request.app.router["register"].url_for())
         else:
-            flash(request, ("info", "Votre enregistrement est confirmé, vous pouvez vous connecter"))
+            flash(
+                request,
+                (
+                    "info",
+                    "Votre enregistrement est confirmé, vous pouvez vous connecter."
+                )
+            )
             return HTTPFound(request.app.router["login"].url_for())
 
 
 async def send_confirmation(request, id_, email_address):
-    config = request.app["config"]["application"]
+    config = request.app["config"]
 
-    token = generate_token(config["secret_key"], id=id_)
-    url = config["url"] + str(request.app.router["confirm_register"].url_for(token=token))
+    token = generate_token(config["application"]["secret_key"], id=id_)
+    url = config["application"]["url"] + \
+        str(request.app.router["confirm_register"].url_for(token=token))
 
     env = get_env(request.app)
     template = env.get_template("auth/register-confirmation.txt")
@@ -164,9 +172,10 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Confirmation de votre enregistrement".format(config["site_name"])
+    message["subject"] = "[{}] Confirmation de votre enregistrement".format(
+        config["application"]["site_name"])
     message["to"] = email_address
-    message["from"] = config["from"]
+    message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await send_message(message, config)
+    await send_message(message, config["smtp"])

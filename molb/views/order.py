@@ -36,7 +36,7 @@ async def create_order(request):
         client_id = client["id"]
 
         if client["disabled"]:
-            flash(request, "warning", "Vous ne pouvez pas passer de commande.")
+            flash(request, ("warning", "Vous ne pouvez pas passer de commande."))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # select opened batches whose date is 12 hours in the future and

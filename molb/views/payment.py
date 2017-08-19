@@ -157,7 +157,7 @@ async def invoice(request):
 
 async def send_invoice(request, client, total, payment_id, payment_details,
                        invoice_date):
-    config = request.app["config"]["application"]
+    config = request.app["config"]
 
     env = get_env(request.app)
     template = env.get_template("invoice-details.txt")
@@ -175,13 +175,13 @@ async def send_invoice(request, client, total, payment_id, payment_details,
 
     message = MIMEMultipart("alternative")
     message["subject"] = "[{}] Votre facture du {}".format(
-        config["site_name"], invoice_date.strftime("%d-%m-%Y")
+        config["application"]["site_name"], invoice_date.strftime("%d-%m-%Y")
     )
     message["to"] = client["email_address"]
-    message["from"] = config["from"]
+    message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await send_message(message, config)
+    await send_message(message, config["smtp"])
 
 
 class PaymentIdForm(CsrfForm):

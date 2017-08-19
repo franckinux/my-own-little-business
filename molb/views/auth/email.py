@@ -87,10 +87,11 @@ async def confirm(request):
 
 
 async def send_confirmation(request, id_, email_address):
-    config = request.app["config"]["application"]
+    config = request.app["config"]
 
-    token = generate_token(config["secret_key"], id=id_, email_address=email_address)
-    url = config["url"] + str(request.app.router["confirm_email"].url_for(token=token))
+    token = generate_token(config["application"]["secret_key"], id=id_, email_address=email_address)
+    url = config["application"]["url"] + \
+        str(request.app.router["confirm_email"].url_for(token=token))
 
     env = get_env(request.app)
     template = env.get_template("auth/email-confirmation.txt")
@@ -101,9 +102,10 @@ async def send_confirmation(request, id_, email_address):
     html_message = MIMEText(html_part, "html")
 
     message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Changement d'adresse mail".format(config["site_name"])
+    message["subject"] = "[{}] Changement d'adresse mail".format(
+        config["application"]["site_name"])
     message["to"] = email_address
-    message["from"] = config["from"]
+    message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await send_message(message, config)
+    await send_message(message, config["smtp"])
