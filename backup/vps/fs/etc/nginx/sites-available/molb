@@ -21,7 +21,7 @@ server {
 	keepalive_timeout 5;
 
 	# path for static files
-	root /home/franck/my-own-little-business/my-own-little-business/static;
+	root /home/franck/my-own-little-business/molb/static;
 
 	location / {
 		# checks for static file, if not found proxy to app

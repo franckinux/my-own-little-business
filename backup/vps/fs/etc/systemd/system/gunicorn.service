@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=franck
 Group=www-data
-WorkingDirectory=/home/franck/my-own-little-business/my-own-little-business/
-ExecStart=/home/franck/my-own-little-business/venv/bin/gunicorn main:app --workers 3 --bind 127.0.0.1:8080 --worker-class aiohttp.GunicornWebWorker
+WorkingDirectory=/home/franck/my-own-little-business/molb/
+ExecStart=/home/franck/my-own-little-business/molb/venv/bin/gunicorn main:app --workers 3 --bind 127.0.0.1:8080 --worker-class aiohttp.GunicornWebWorker
 
 [Install]
 WantedBy=multi-user.target
