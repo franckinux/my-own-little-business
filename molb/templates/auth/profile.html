@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block page_content %}
-<form method="POST" action="{{ url("profile") }}" role="form">
+<form method="POST" action="{{ url("edit_profile") }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>

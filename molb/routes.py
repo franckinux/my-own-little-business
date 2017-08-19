@@ -6,7 +6,8 @@ from views.auth.email import confirm as confirm_email
 from views.auth.email import handler as email
 from views.auth.password import confirm as confirm_password
 from views.auth.password import handler as password
-from views.auth.profile import profile
+from views.auth.profile import delete_profile
+from views.auth.profile import edit_profile
 from views.auth.register import confirm as confirm_register
 from views.auth.register import handler as register
 from views.batch import create_batch
@@ -46,7 +47,8 @@ def setup_routes(app):
     app.router.add_get("/email/{token}/", confirm_email, name="confirm_email")
     app.router.add_route('*', "/password/", password, name="password")
     app.router.add_route('*', "/password/{token}/", confirm_password, name="confirm_password")
-    app.router.add_route('*', "/profile/", profile, name="profile")
+    app.router.add_route('*', "/profile/delete/", delete_profile, name="delete_profile")
+    app.router.add_route('*', "/profile/edit/", edit_profile, name="edit_profile")
     app.router.add_route('*', "/register/", register, name="register")
     app.router.add_get("/register/{token}/", confirm_register, name="confirm_register")
 

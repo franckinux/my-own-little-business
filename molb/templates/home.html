@@ -33,7 +33,6 @@
     <li><a href="{{ url("invoice") }}">Envoi des factures</a></li>
     <li><a href="{{ url("list_payment") }}">Factures non payées</a></li>
 </ul>
-
 {% endif %}
 
 <h3>Commandes</h3>
@@ -45,7 +44,10 @@
 <h3>Profil</h3>
 
 <ul>
-    <li><a href="{{ url("profile") }}">Modifier votre profil</a></li>
+{% if not client.super_user %}
+    <li><a href="{{ url("delete_profile") }}">Supprimer votre profil</a></li>
+{% endif %}
+    <li><a href="{{ url("edit_profile") }}">Modifier votre profil</a></li>
     <li><a href="{{ url("email") }}">Changer d'email</a></li>
 </ul>
 
