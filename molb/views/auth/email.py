@@ -1,18 +1,14 @@
-from aiohttp_jinja2 import get_env
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from aiohttp_session_flash import flash
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 from auth import require
 from views.auth.email_form import EmailForm
+from views.auth.send_message import send_confirmation
 from views.auth.send_message import SmtpSendingError
-from views.auth.send_message import send_message
-from views.auth.token import generate_token
 from views.auth.token import get_token_data
 from views.utils import generate_csrf_meta
 
@@ -33,7 +29,14 @@ async def handler(request):
                 q = "SELECT id, email_address FROM client WHERE login = $1"
                 client = await conn.fetchrow(q, login)
             try:
-                await send_confirmation(request, client["id"], email_address)
+                await send_confirmation(
+                    request,
+                    email_address,
+                    {"id": client["id"], "email_address": email_address},
+                    "confirm_email",
+                    "Changement d'adresse mail",
+                    "email-confirmation"
+                )
             except SmtpSendingError:
                 flash(
                     request,
@@ -84,28 +87,3 @@ async def confirm(request):
         else:
             flash(request, ("info", "Votre adresse mail a bien été modifiée"))
         return HTTPFound(request.app.router["login"].url_for())
-
-
-async def send_confirmation(request, id_, email_address):
-    config = request.app["config"]
-
-    token = generate_token(config["application"]["secret_key"], id=id_, email_address=email_address)
-    url = config["application"]["url"] + \
-        str(request.app.router["confirm_email"].url_for(token=token))
-
-    env = get_env(request.app)
-    template = env.get_template("auth/email-confirmation.txt")
-    text_part = template.render(url=url)
-    text_message = MIMEText(text_part, "plain")
-    template = env.get_template("auth/email-confirmation.html")
-    html_part = template.render(url=url)
-    html_message = MIMEText(html_part, "html")
-
-    message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Changement d'adresse mail".format(
-        config["application"]["site_name"])
-    message["to"] = email_address
-    message["from"] = config["application"]["from"]
-    message.attach(text_message)
-    message.attach(html_message)
-    await send_message(message, config["smtp"])

@@ -1,10 +1,6 @@
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
-from aiohttp_jinja2 import get_env
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from passlib.hash import sha256_crypt
@@ -15,9 +11,8 @@ from wtforms.validators import Length
 from wtforms.validators import Required
 
 from views.auth.email_form import EmailForm
+from views.auth.send_message import send_confirmation
 from views.auth.send_message import SmtpSendingError
-from views.auth.send_message import send_message
-from views.auth.token import generate_token
 from views.auth.token import get_token_data
 from views.csrf_form import CsrfForm
 from views.utils import generate_csrf_meta
@@ -38,7 +33,14 @@ async def handler(request):
                                             email_address)))
             else:
                 try:
-                    await send_confirmation(request, client["id"], client["email_address"])
+                    await send_confirmation(
+                        request,
+                        client["email_address"],
+                        {"id": client["id"]},
+                        "confirm_password",
+                        "Modification de mot de passe",
+                        "password-confirmation"
+                    )
                 except SmtpSendingError:
                     flash(
                         request,
@@ -124,28 +126,3 @@ async def confirm(request):
         return {"form": form, "token": token}
     else:
         raise HTTPMethodNotAllowed()
-
-
-async def send_confirmation(request, id_, email_address):
-    config = request.app["config"]
-
-    token = generate_token(config["application"]["secret_key"], id=id_)
-    url = config["application"]["url"] + \
-        str(request.app.router["confirm_password"].url_for(token=token))
-
-    env = get_env(request.app)
-    template = env.get_template("auth/password-confirmation.txt")
-    text_part = template.render(url=url)
-    text_message = MIMEText(text_part, "plain")
-    template = env.get_template("auth/password-confirmation.html")
-    html_part = template.render(url=url)
-    html_message = MIMEText(html_part, "html")
-
-    message = MIMEMultipart("alternative")
-    message["subject"] = "[{}] Modification de mot de passe".format(
-        config["application"]["site_name"])
-    message["to"] = email_address
-    message["from"] = config["application"]["from"]
-    message.attach(text_message)
-    message.attach(html_message)
-    await send_message(message, config["smtp"])

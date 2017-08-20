@@ -46,9 +46,7 @@ async def detach_db(app):
 
 
 async def authorized_userid_context_processor(request):
-    return {
-        "authorized_userid": await authorized_userid(request)
-    }
+    return {"authorized_userid": await authorized_userid(request)}
 
 
 async def create_app():
