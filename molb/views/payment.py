@@ -16,7 +16,6 @@ from wtforms.validators import Required
 
 from auth import require
 from .csrf_form import CsrfForm
-from views.auth.send_message import send_message
 from views.utils import generate_csrf_meta
 from views.utils import remove_special_data
 
@@ -181,7 +180,7 @@ async def send_invoice(request, client, total, payment_id, payment_details,
     message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await send_message(message, config["smtp"])
+    await request.app["mailer"].send_message(message)
 
 
 class PaymentIdForm(CsrfForm):

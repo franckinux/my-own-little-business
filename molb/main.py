@@ -19,6 +19,7 @@ from auth.db_auth import DBAuthorizationPolicy
 from error import error_middleware
 from routes import setup_routes
 from views.order import translate_mode
+from views.send_message import MassMailer
 from utils import read_configuration_file
 
 
@@ -41,8 +42,9 @@ async def attach_db(config):
     return await create_pool(dsn=dsn, loop=loop)
 
 
-async def detach_db(app):
+async def cleanup(app):
     await app["db-pool"].close()
+    await app["mailer"].close()
 
 
 async def authorized_userid_context_processor(request):
@@ -56,6 +58,8 @@ async def create_app():
     app = web.Application(middlewares=[error_middleware])
     app["config"] = config
     app["db-pool"] = db_pool
+
+    app["mailer"] = MassMailer(config["smtp"])
 
     # beware of order !
     setup_session(app)
@@ -77,7 +81,7 @@ async def create_app():
 
     setup_routes(app)
 
-    app.on_cleanup.append(detach_db)
+    app.on_cleanup.append(cleanup)
 
     return app
 

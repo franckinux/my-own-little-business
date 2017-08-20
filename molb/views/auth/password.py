@@ -11,10 +11,9 @@ from wtforms.validators import Length
 from wtforms.validators import Required
 
 from views.auth.email_form import EmailForm
-from views.auth.send_message import send_confirmation
-from views.auth.send_message import SmtpSendingError
 from views.auth.token import get_token_data
 from views.csrf_form import CsrfForm
+from views.send_message import send_confirmation
 from views.utils import generate_csrf_meta
 
 
@@ -32,35 +31,23 @@ async def handler(request):
                 flash(request, ("danger", "Il n'y a pas de compte dont l'adresse email est {}".format(
                                             email_address)))
             else:
-                try:
-                    await send_confirmation(
-                        request,
-                        client["email_address"],
-                        {"id": client["id"]},
-                        "confirm_password",
-                        "Modification de mot de passe",
-                        "password-confirmation"
-                    )
-                except SmtpSendingError:
-                    flash(
-                        request,
-                        (
-                            "danger",
-                            "Le message de confirmation ne peut être envoyé à {}".format(
-                                email_address
-                            )
+                await send_confirmation(
+                    request,
+                    client["email_address"],
+                    {"id": client["id"]},
+                    "confirm_password",
+                    "Modification de mot de passe",
+                    "password-confirmation"
+                )
+                flash(
+                    request,
+                    (
+                        "info",
+                        "Un message de confirmation a été envoyé à {}".format(
+                            email_address
                         )
                     )
-                else:
-                    flash(
-                        request,
-                        (
-                            "info",
-                            "Un message de confirmation a été envoyé à {}".format(
-                                email_address
-                            )
-                        )
-                    )
+                )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
             flash(request, ("danger", "Le formulaire comporte des erreurs"))

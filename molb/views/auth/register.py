@@ -15,10 +15,9 @@ from wtforms.validators import Length
 from wtforms.validators import Regexp
 from wtforms.validators import Required
 
-from views.auth.send_message import send_confirmation
-from views.auth.send_message import SmtpSendingError
 from views.auth.token import get_token_data
 from views.csrf_form import CsrfForm
+from views.send_message import send_confirmation
 from views.utils import field_list
 from views.utils import generate_csrf_meta
 from views.utils import place_holders
@@ -86,26 +85,14 @@ async def handler(request):
                                 )
                             )
                             raise  # rollback the transaction : client not created
-                        try:
-                            await send_confirmation(
-                                request,
-                                client["email_address"],
-                                {"id": client["id"]},
-                                "confirm_register",
-                                "Confirmation de votre enregistrement",
-                                "register-confirmation"
-                            )
-                        except SmtpSendingError:
-                            flash(
-                                request,
-                                (
-                                    "danger",
-                                    "Le message de confirmation n'a pu être envoyé à {}".format(
-                                        client["email_address"]
-                                    )
-                                )
-                            )
-                            raise  # rollback the transaction : client not created
+                        await send_confirmation(
+                            request,
+                            client["email_address"],
+                            {"id": client["id"]},
+                            "confirm_register",
+                            "Confirmation de votre enregistrement",
+                            "register-confirmation"
+                        )
                         flash(
                             request,
                             (
@@ -116,7 +103,7 @@ async def handler(request):
                             )
                         )
                         return HTTPFound(request.app.router["login"].url_for())
-                except (UniqueViolationError, SmtpSendingError):
+                except:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire comporte des erreurs"))
