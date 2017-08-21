@@ -34,23 +34,40 @@ async def send_confirmation(
     await request.app["mailer"].send_urgent_message(message)
 
 
-class MassMailer:
-    def __init__(self, config, nbr_tasks=5, delay=30, loop=None):
-        self.loop = loop if loop is not None else asyncio.get_event_loop()
+class PriorityWrapper:
+    def __init__(self, priority, obj):
+        self.obj = obj
+        self.priority = priority
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+    def __repr__(self):
+        return "<PriorityWrapper priority={}, obj={}>".format(self.priority, repr(self.obj))
+
+
+class SmtpMailer:
+    def __init__(self, config, queue, delay, loop):
+        self.loop = loop
         self.delay = delay
-        self.queue = asyncio.PriorityQueue(maxsize=1024)
-        self.timer = None
+        self.queue = queue
+
         self.host = config["host"]
         self.port = int(config["port"])
         self.username = config["username"]
         self.password = config["password"]
+
         use_tls = not self.port == 587
         self.smtp = SMTP(hostname=self.host, port=self.port, use_tls=use_tls)
-        self.tasks = [asyncio.ensure_future(self.process_queue())] * nbr_tasks
-        # self.tasks = [asyncio.ensure_future(self.process_queue()) for _ in range(nbr_tasks)]
+
+        self.timer = None
+        self.task = asyncio.ensure_future(self.process_queue())
 
     async def connect(self):
         await self.smtp.connect()
+
+        await self.smtp.starttls()
+        await self.smtp.login(self.username, self.password)
 
     def deconnect(self):
         self.smtp.close()
@@ -59,13 +76,11 @@ class MassMailer:
     async def smtp_send(self, msg):
         if self.port == 587:
             await self.smtp.ehlo()
-            await self.smtp.starttls()
-            await self.smtp.login(self.username, self.password)
         await self.smtp.send_message(msg)
 
     async def process_queue(self):
         while True:
-            msg = await self.queue.get()
+            item = await self.queue.get()
 
             if self.timer:
                 self.timer.cancel()
@@ -74,16 +89,30 @@ class MassMailer:
                 self.timer = self.loop.call_later(self.delay, self.deconnect)
                 await self.connect()
 
-            await self.smtp_send(msg[1])
+            await self.smtp_send(item.obj)
 
-    async def send_urgent_message(self, msg):
-        await self.queue.put((0, msg))
-
-    async def send_message(self, msg):
-        await self.queue.put((1, msg))
-
-    async def close(self):
+    def close(self):
         if self.timer is not None:
             self.timer.cancel()
-        for task in self.tasks:
-            task.cancel()
+        self.task.cancel()
+
+
+class MassMailer:
+    def __init__(self, config, nbr_tasks=5, delay=30, loop=None):
+        loop = loop if loop is not None else asyncio.get_event_loop()
+
+        self.queue = asyncio.PriorityQueue(maxsize=1024)
+
+        self.mailers = []
+        for _ in range(nbr_tasks):
+            self.mailers.append(SmtpMailer(config, self.queue, delay, loop))
+
+    async def send_urgent_message(self, msg):
+        await self.queue.put(PriorityWrapper(0, msg))
+
+    async def send_message(self, msg):
+        await self.queue.put(PriorityWrapper(1, msg))
+
+    def close(self):
+        for mailer in self.mailers:
+            mailer.close()

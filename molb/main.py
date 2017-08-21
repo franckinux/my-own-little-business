@@ -44,7 +44,7 @@ async def attach_db(config):
 
 async def cleanup(app):
     await app["db-pool"].close()
-    await app["mailer"].close()
+    app["mailer"].close()
 
 
 async def authorized_userid_context_processor(request):
