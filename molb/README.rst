@@ -58,3 +58,8 @@ For creating the virtual environment : ::
 For cryptography : ::
 
     # apt install libssl-dev
+
+For printing the sources : ::
+
+   # apt install enscript
+   # apt install psutils

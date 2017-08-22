@@ -5,3 +5,4 @@ venv/
 *.pdf
 my-own-little-business~*.ini
 my-own-little-business.ini
+build/
