@@ -1,0 +1,19 @@
+# https://stackoverflow.com/questions/7526996/how-to-get-nginx-to-always-return-a-custom-404-for-the-default-host
+# The default server.
+server {
+	listen 80 default_server;
+	server_name everythingelse;
+
+	root /var/www/html;
+
+	error_page 404 /404.html;
+
+	# Everything is a 404
+	location / {
+		return 404;
+	}
+
+	location = /404.html {
+		internal;
+	}
+}

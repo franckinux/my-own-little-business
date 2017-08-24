@@ -21,11 +21,20 @@ server {
 	keepalive_timeout 5;
 
 	# path for static files
-	root /home/franck/my-own-little-business/molb/static;
+	root /home/molb/venv/lib/python3.5/site-packages/molb/static;
+
+	location = /favico.ico {
+		root /home/molb/venv/lib/python3.5/site-packages/molb/static/favico.ico;
+	}
 
 	location / {
 		# checks for static file, if not found proxy to app
 		try_files $uri @proxy_to_app;
+
+		# limit the types of http requests the server accepts
+		limit_except GET POST {
+			deny all;
+		}
 	}
 
 	location @proxy_to_app {
@@ -39,8 +48,5 @@ server {
 		proxy_pass http://app_server;
 	}
 
-	#error_page 500 502 503 504 /500.html;
-	# location = /500.html {
-	# 	root /path/to/app/current/public;
-	# }
+	include /etc/nginx/badbot.conf;
 }

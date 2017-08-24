@@ -1,0 +1,204 @@
+let mapleader="\<Space>"
+let maplocalleader="\<Space>"
+set nocompatible
+set backup
+set noswapfile
+set nowrap
+set number
+set backspace=indent,eol,start
+set background=dark
+set showcmd
+set timeoutlen=3000
+set mouse=a
+set noshowmode
+set shortmess+=I
+set wildignore=*.swp,*.pyc,*~,*.o,*.o.d
+set visualbell
+set noerrorbells
+syntax on
+
+" colorscheme argonaut
+" colorscheme blackboard
+" colorscheme vividchalk
+" colorscheme pychimp
+
+filetype off
+filetype plugin on
+set textwidth=80
+set cc=+1
+
+" Folding
+set foldmethod=indent
+set nofoldenable
+set foldlevel=0
+set foldcolumn=1
+
+set pastetoggle=<F2>
+
+set listchars=tab:▷⋅,trail:⋅,nbsp:⋅
+noremap <F3> :set list!<CR>
+
+" Press F4 to toggle highlighting on/off, and show current value.
+:noremap <F4> :set hlsearch! hlsearch?<CR>
+
+" Remove trailing spaces
+autocmd BufWritePre * :%s/\s\+$//e
+
+" don't insert TWO spaces after '.', '?' etc. when joining lines
+set nojoinspaces
+
+"Templates based on file types
+autocmd BufNewFile *.py 0r ~/.vim/templates/skel.py | let IndentStyle = "python"
+autocmd BufNewFile *.c 0r ~/.vim/templates/skel.c | let IndentStyle = "c"
+autocmd BufNewFile *.sh 0r ~/.vim/templates/skel.sh
+
+" Vundle setup
+" required!
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" Brief help
+" :BundleList - list configured bundles
+" :BundleInstall(!) - install(update) bundles
+" :BundleSearch(!) foo - search(or refresh cache first) for foo
+" :BundleClean(!) - confirm(or auto-approve) removal of unused bundles
+"
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle command are not allowed..
+
+" let Vundle manage Vundle
+" required!
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
+"
+" original repos on github
+Bundle 'scrooloose/syntastic'
+Bundle 'bling/vim-airline'
+Bundle 'tpope/vim-fugitive'
+Bundle 'gregsexton/gitv'
+Bundle 'vim-scripts/vimwiki'
+Bundle 'tpope/vim-surround'
+Bundle 'vim-scripts/loremipsum'
+Bundle 'vim-scripts/tComment'
+Bundle 'kien/ctrlp.vim'
+Bundle 'mileszs/ack.vim'
+Bundle 'davidhalter/jedi'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'vim-voom/VOoM'
+Bundle 'jmcantrell/vim-virtualenv'
+Bundle 'hynek/vim-python-pep8-indent'
+Bundle 'scrooloose/nerdtree'
+Bundle 'jlanzarotta/bufexplorer'
+Bundle 'nvie/vim-togglemouse'
+
+" For vim-airline to work
+set laststatus=2
+set t_Co=256
+let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" Settings depending on file types
+filetype indent plugin on
+set autoindent
+autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=0
+autocmd FileType h setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=0
+autocmd FileType c setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=0
+autocmd FileType sh setlocal tabstop=3 expandtab shiftwidth=3 softtabstop=0
+autocmd FileType javascript setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=0
+autocmd FileType make set noexpandtab
+
+" Syntastic
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_python_exec = '/usr/bin/python2'
+let g:syntastic_check_on_open = 1
+let g:syntastic_auto_jump = 0
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_flake8_args = "--ignore E101,E121,E122,E123,E128,E501,W191"
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+" Voom
+"let g:voom_tree_placement = "left"
+let g:voom_tree_width = 40
+autocmd FileType python nmap <F8> :Voom python<CR>
+autocmd FileType rst map <F8> :Voom rest<CR>
+
+" vimwiki configuration
+let g:vimwiki_list = [{'path':'~/.vim/vimwiki', 'path_html':'~/.vim/vimwiki/export/html/'}]
+
+" CtrlP
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
+  \ 'file': '\v\.(so|dll|png|jpg||run|deb|stamp)$',
+\}
+let g:ctrlp_by_filename = 1
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_open_multiple_files = '3vj'
+let g:ctrlp_open_new_file = 'v'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:100'
+
+" NerdTree
+map <C-n> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+" Buffer explorer
+noremap <silent> <F11> :BufExplorer<CR>
+
+let g:EoMap = "caret"
+
+" this one is nice:  press '\u' to get the unicode name of the symbol under the cursor
+" CREDITS: mgedmin on sf.net#vim
+" EXAMPLE: go over this symbol: Ω and press \u → it will print 'u'\u03a9' / GREEK CAPITAL LETTER OMEGA'
+if has('python')
+   nmap <silent> <LocalLeader>u :exec('py getUnicodeName()')<Cr>
+python <<PYTHON
+# -*- coding: utf-8 -*-
+import vim, unicodedata
+
+def getUnicodeName():
+  try:
+    ucode = vim.current.line[vim.current.window.cursor[1]:].decode('UTF-8')[0]
+    print( "%s / %s" %(repr(ucode), unicodedata.name(ucode)))
+  except IndexError as inst:
+    print "getUnicodeName():", inst
+
+PYTHON
+endif
+
+" blinking cursor
+let &t_SI = "\<Esc>]50;BlinkingCursorEnabled=1\x7"
+let &t_EI = "\<Esc>]50;BlinkingCursorEnabled=1\x7"
+autocmd VimLeave * silent !konsoleprofile BlinkingCursorEnabled=0
+
+inoremap <F9> import pdb; pdb.set_trace()
+
+" Use Q to intelligently close a window (if there are multiple windows into the
+" same buffer) or kill the buffer entirely if it's the last window looking into
+" that buffer.
+function! CloseWindowOrKillBuffer()
+  let number_of_windows_to_this_buffer = len(filter(range(1, winnr('$')), "winbufnr(v:val) == bufnr('%')"))
+  if matchstr(expand("%"), 'NERD') == 'NERD'
+    wincmd c
+    return
+  endif
+  if number_of_windows_to_this_buffer > 1
+    wincmd c
+  else
+    bdelete
+  endif
+endfunction
+nnoremap <silent> Q :call CloseWindowOrKillBuffer()<CR>
+
+:highlight CursorLine   cterm=NONE ctermbg=darkgrey ctermfg=white guibg=darkgray guifg=white
+:highlight CursorColumn cterm=NONE ctermbg=darkgrey  ctermfg=white guibg=darkgray guifg=white
+:nnoremap <F6> :set cursorline! cursorcolumn!<CR>
+
+highlight LineNr ctermfg=lightgrey

@@ -1,2 +1,2 @@
 #!/bin/bash
-su - franck -c "pg_dump molb | gzip > /home/franck/backup/db/molb-$(date +%Y-%m-%d).gz"
+su - molb -c "pg_dump molb | gzip > /home/molb/backup/db/molb-$(date +%Y-%m-%d).gz"

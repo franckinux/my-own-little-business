@@ -1,0 +1,19 @@
+server {
+        listen 80;
+        server_name backup.dupainetdesjoies.bio;
+
+	root /home/molb/backup;
+
+	location / {
+		autoindex on;
+		try_files $uri $uri/ =404;
+		auth_basic "Restricted Content";
+		auth_basic_user_file /etc/nginx/.htpasswd;
+
+		limit_except GET {
+			deny all;
+		}
+	}
+
+	include /etc/nginx/badbot.conf;
+}

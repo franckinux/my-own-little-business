@@ -1,0 +1,5 @@
+server {
+        listen 80;
+        server_name 37.59.104.157;
+        return 500;
+}
