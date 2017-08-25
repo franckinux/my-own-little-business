@@ -1,6 +1,7 @@
-from auth import require
 from aiohttp.web import HTTPFound
 import aiohttp_jinja2
+
+from molb.auth import require
 
 
 @require("admin")

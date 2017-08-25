@@ -10,11 +10,11 @@ from wtforms.validators import EqualTo
 from wtforms.validators import Length
 from wtforms.validators import Required
 
-from views.auth.email_form import EmailForm
-from views.auth.token import get_token_data
-from views.csrf_form import CsrfForm
-from views.send_message import send_confirmation
-from views.utils import generate_csrf_meta
+from molb.views.auth.email_form import EmailForm
+from molb.views.auth.token import get_token_data
+from molb.views.csrf_form import CsrfForm
+from molb.views.send_message import send_confirmation
+from molb.views.utils import generate_csrf_meta
 
 
 @aiohttp_jinja2.template("auth/email-password.html")

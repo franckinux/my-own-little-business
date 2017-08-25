@@ -15,13 +15,13 @@ from wtforms.validators import Length
 from wtforms.validators import Regexp
 from wtforms.validators import Required
 
-from views.auth.token import get_token_data
-from views.csrf_form import CsrfForm
-from views.send_message import send_confirmation
-from views.utils import field_list
-from views.utils import generate_csrf_meta
-from views.utils import place_holders
-from views.utils import remove_special_data
+from molb.views.auth.token import get_token_data
+from molb.views.csrf_form import CsrfForm
+from molb.views.send_message import send_confirmation
+from molb.views.utils import field_list
+from molb.views.utils import generate_csrf_meta
+from molb.views.utils import place_holders
+from molb.views.utils import remove_special_data
 
 
 class RegisterForm(CsrfForm):
@@ -66,6 +66,7 @@ async def handler(request):
                 data = remove_special_data(form.data.items())
                 del data["password2"]
                 data["password_hash"] = sha256_crypt.hash(data.pop("password"))
+                import pdb; pdb.set_trace()
                 try:
                     async with conn.transaction():
                         q = "INSERT INTO client ({}) VALUES ({}) RETURNING *".format(
@@ -103,7 +104,8 @@ async def handler(request):
                             )
                         )
                         return HTTPFound(request.app.router["login"].url_for())
-                except:
+                except Exception as e:
+                    print(str(e))
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire comporte des erreurs"))

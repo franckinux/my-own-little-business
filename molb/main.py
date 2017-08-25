@@ -3,6 +3,7 @@
 import asyncio
 import base64
 import os
+import os.path as op
 
 from aiohttp import web
 from aiohttp_jinja2 import setup as setup_jinja
@@ -15,12 +16,12 @@ import aiohttp_session_flash
 from asyncpg import create_pool
 from jinja2 import FileSystemLoader
 
-from auth.db_auth import DBAuthorizationPolicy
-from error import error_middleware
-from routes import setup_routes
-from views.order import translate_mode
-from views.send_message import MassMailer
-from utils import read_configuration_file
+from molb.auth.db_auth import DBAuthorizationPolicy
+from molb.error import error_middleware
+from molb.routes import setup_routes
+from molb.views.order import translate_mode
+from molb.views.send_message import MassMailer
+from molb.utils import read_configuration_file
 
 
 def setup_session(app):
@@ -69,9 +70,11 @@ async def create_app():
         DBAuthorizationPolicy(db_pool)
     )
     app.middlewares.append(aiohttp_session_flash.middleware)
+
+    template_dir = op.join(op.dirname(op.abspath(__file__)), "templates")
     setup_jinja(
         app,
-        loader=FileSystemLoader("templates"),
+        loader=FileSystemLoader(template_dir),
         filters={"translate_mode": translate_mode},
         context_processors=(
             aiohttp_session_flash.context_processor,

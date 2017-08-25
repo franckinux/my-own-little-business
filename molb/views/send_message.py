@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from aiohttp_jinja2 import get_env
 from aiosmtplib import SMTP
 
-from views.auth.token import generate_token
+from molb.views.auth.token import generate_token
 
 
 async def send_confirmation(

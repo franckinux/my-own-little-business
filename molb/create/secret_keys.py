@@ -3,8 +3,8 @@ import sys
 
 from cryptography import fernet
 from passlib.pwd import genword
-from utils import read_configuration_file
-from utils import write_configuration_file
+from molb.utils import read_configuration_file
+from molb.utils import write_configuration_file
 
 
 if __name__ == "__main__":

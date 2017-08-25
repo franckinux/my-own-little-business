@@ -3,7 +3,8 @@ from wtforms import SubmitField
 from wtforms.validators import Email
 from wtforms.validators import Length
 from wtforms.validators import Required
-from views.csrf_form import CsrfForm
+
+from molb.views.csrf_form import CsrfForm
 
 
 class EmailForm(CsrfForm):

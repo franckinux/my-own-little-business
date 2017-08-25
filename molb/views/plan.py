@@ -5,10 +5,10 @@ from aiohttp_session_flash import flash
 from wtforms import SelectField
 from wtforms import SubmitField
 
-from auth import require
-from .csrf_form import CsrfForm
-from views.utils import generate_csrf_meta
-from views.utils import remove_special_data
+from molb.auth import require
+from molb.views.csrf_form import CsrfForm
+from molb.views.utils import generate_csrf_meta
+from molb.views.utils import remove_special_data
 
 
 class PlanForm(CsrfForm):

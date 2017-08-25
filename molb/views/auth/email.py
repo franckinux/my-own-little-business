@@ -5,11 +5,11 @@ import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from aiohttp_session_flash import flash
 
-from auth import require
-from views.auth.email_form import EmailForm
-from views.auth.token import get_token_data
-from views.send_message import send_confirmation
-from views.utils import generate_csrf_meta
+from molb.auth import require
+from molb.views.auth.email_form import EmailForm
+from molb.views.auth.token import get_token_data
+from molb.views.send_message import send_confirmation
+from molb.views.utils import generate_csrf_meta
 
 
 @require("client")

@@ -9,10 +9,10 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Required
 
-from auth import require
-from auth.db_auth import check_credentials
-from views.csrf_form import CsrfForm
-from views.utils import generate_csrf_meta
+from molb.auth import require
+from molb.auth.db_auth import check_credentials
+from molb.views.csrf_form import CsrfForm
+from molb.views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):

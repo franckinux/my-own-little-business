@@ -13,11 +13,11 @@ from wtforms import SubmitField
 from wtforms.validators import EqualTo
 from wtforms.validators import Regexp
 
-from auth import require
-from views.csrf_form import CsrfForm
-from views.utils import generate_csrf_meta
-from views.utils import remove_special_data
-from views.utils import settings
+from molb.auth import require
+from molb.views.csrf_form import CsrfForm
+from molb.views.utils import generate_csrf_meta
+from molb.views.utils import remove_special_data
+from molb.views.utils import settings
 
 
 class ProfileForm(CsrfForm):

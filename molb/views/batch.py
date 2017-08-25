@@ -9,13 +9,13 @@ from wtforms import IntegerField
 from wtforms import SubmitField
 from wtforms.validators import Required
 
-from auth import require
-from .csrf_form import CsrfForm
-from views.utils import field_list
-from views.utils import generate_csrf_meta
-from views.utils import place_holders
-from views.utils import remove_special_data
-from views.utils import settings
+from molb.auth import require
+from molb.views.csrf_form import CsrfForm
+from molb.views.utils import field_list
+from molb.views.utils import generate_csrf_meta
+from molb.views.utils import place_holders
+from molb.views.utils import remove_special_data
+from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):

@@ -1,40 +1,43 @@
-from views.accounts import list_account
-from views.accounts import delete_account
-from views.auth import login
-from views.auth import logout
-from views.auth.email import confirm as confirm_email
-from views.auth.email import handler as email
-from views.auth.password import confirm as confirm_password
-from views.auth.password import handler as password
-from views.auth.profile import delete_profile
-from views.auth.profile import edit_profile
-from views.auth.register import confirm as confirm_register
-from views.auth.register import handler as register
-from views.batch import create_batch
-from views.batch import edit_batch
-from views.batch import delete_batch
-from views.batch import list_batch
-from views.home import home
-from views.order import create_order
-from views.order import edit_order
-from views.order import delete_order
-from views.order import list_order
-from views.payment import invoice
-from views.payment import list_payment
-from views.payment import edit_payment
-from views.payment import show_payment
-from views.plan import plan
-from views.product import create_product
-from views.product import edit_product
-from views.product import delete_product
-from views.product import list_product
-from views.repository import create_repository
-from views.repository import edit_repository
-from views.repository import delete_repository
-from views.repository import list_repository
+import os.path as op
+
+from molb.views.accounts import list_account
+from molb.views.accounts import delete_account
+from molb.views.auth import login
+from molb.views.auth import logout
+from molb.views.auth.email import confirm as confirm_email
+from molb.views.auth.email import handler as email
+from molb.views.auth.password import confirm as confirm_password
+from molb.views.auth.password import handler as password
+from molb.views.auth.profile import delete_profile
+from molb.views.auth.profile import edit_profile
+from molb.views.auth.register import confirm as confirm_register
+from molb.views.auth.register import handler as register
+from molb.views.batch import create_batch
+from molb.views.batch import edit_batch
+from molb.views.batch import delete_batch
+from molb.views.batch import list_batch
+from molb.views.home import home
+from molb.views.order import create_order
+from molb.views.order import edit_order
+from molb.views.order import delete_order
+from molb.views.order import list_order
+from molb.views.payment import invoice
+from molb.views.payment import list_payment
+from molb.views.payment import edit_payment
+from molb.views.payment import show_payment
+from molb.views.plan import plan
+from molb.views.product import create_product
+from molb.views.product import edit_product
+from molb.views.product import delete_product
+from molb.views.product import list_product
+from molb.views.repository import create_repository
+from molb.views.repository import edit_repository
+from molb.views.repository import delete_repository
+from molb.views.repository import list_repository
 
 def setup_routes(app):
-    app.router.add_static("/static", "static")
+    static_dir = op.join(op.dirname(op.abspath(__file__)), "static")
+    app.router.add_static("/static", static_dir)
 
     # accounts
     app.router.add_get("/account/list/", list_account, name="list_account")

@@ -1,4 +1,2 @@
-recursive-include molb/create *
-recursive-include molb/templates *
-recursive-include molb/sql *
+recursive-include molb/templates *.html
 recursive-include molb/static *

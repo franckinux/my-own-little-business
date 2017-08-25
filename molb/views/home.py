@@ -1,6 +1,7 @@
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
-from auth import require
+
+from molb.auth import require
 
 
 @require("client")
