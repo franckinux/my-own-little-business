@@ -66,7 +66,6 @@ async def handler(request):
                 data = remove_special_data(form.data.items())
                 del data["password2"]
                 data["password_hash"] = sha256_crypt.hash(data.pop("password"))
-                import pdb; pdb.set_trace()
                 try:
                     async with conn.transaction():
                         q = "INSERT INTO client ({}) VALUES ({}) RETURNING *".format(
@@ -104,8 +103,7 @@ async def handler(request):
                             )
                         )
                         return HTTPFound(request.app.router["login"].url_for())
-                except Exception as e:
-                    print(str(e))
+                except:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire comporte des erreurs"))
