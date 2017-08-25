@@ -1,0 +1,14 @@
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	br = branch
+[user]
+	email = contact@franck-barbenoire.fr
+	name = franckinux
+[core]
+	editor = vim
+[color "status"]
+        changed = red white
+        untracked = red white

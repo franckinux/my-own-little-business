@@ -1,0 +1,8 @@
+# change configuration as desccribed here :
+# http://www.laintimes.com/configurer-postfix-en-relay-avec-ovh/
+myhostname = <hostname>
+relayhost = [<smtp_server_hostname]>:<smtp_server_port>
+
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+smtp_sasl_security_options = noanonymous

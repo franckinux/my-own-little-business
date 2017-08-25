@@ -1,0 +1,3 @@
+# change configuration as desccribed here :
+# http://www.laintimes.com/configurer-postfix-en-relay-avec-ovh/
+# comand to run after updating the file : postmap /etc/postfix/sasl/sasl_passwd
