@@ -1,0 +1,21 @@
+[DEFAULT]
+bantime = 86400
+destmail = admin@dupainetdesjoies.pro
+
+[sshd]
+enabled = true
+port = 48724
+
+[nginx-http-auth]
+enabled = true
+
+[pam-generic]
+enabled = true
+
+[nginx-w00tw00t]
+enabled  = true
+port = http
+filter = nginx-w00tw00t
+logpath = /var/log/nginx/access.log
+maxretry = 1
+bantime  = 172800
