@@ -3,10 +3,10 @@ upstream app_server {
 	# to return a good HTTP response
 
 	# for UNIX domain socket setups
-	# server unix:/tmp/gunicorn.sock fail_timeout=0;
+	server unix:/home/molb/molb.sock fail_timeout=0;
 
 	# for a TCP configuration
-	server 127.0.0.1:8080 fail_timeout=0;
+	# server 127.0.0.1:8080 fail_timeout=0;
 }
 
 server {

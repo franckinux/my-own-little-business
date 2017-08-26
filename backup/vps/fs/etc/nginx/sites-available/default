@@ -1,9 +1,5 @@
 # The default server.
 server {
 	listen 80 default_server;
-	server_name "";
-
-	location / {
-		return 404;
-	}
+	return 444;
 }

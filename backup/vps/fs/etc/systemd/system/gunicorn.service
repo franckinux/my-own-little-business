@@ -1,5 +1,5 @@
 [Unit]
-Description=gunicorn daemon
+Description=gunicorn instance to serve molb
 After=network.target
 
 [Service]
@@ -8,7 +8,7 @@ Group=www-data
 Environment=MOLB_CONFIG=/home/molb/molb.conf
 Restart=on-failure
 WorkingDirectory=/home/molb
-ExecStart=/home/molb/venv/bin/gunicorn molb.main:app --workers 3 --bind 127.0.0.1:8080 --worker-class aiohttp.GunicornWebWorker
+ExecStart=/home/molb/venv/bin/gunicorn molb.main:app --workers 3 --bind unix:/home/molb/molb.sock --worker-class aiohttp.GunicornWebWorker
 
 [Install]
 WantedBy=multi-user.target

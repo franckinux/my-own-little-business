@@ -1,3 +1,5 @@
+# https://www.how-to.ovh/viewtopic.php?t=19
+
 [DEFAULT]
 bantime = 86400
 destmail = admin@dupainetdesjoies.pro
@@ -19,3 +21,4 @@ filter = nginx-w00tw00t
 logpath = /var/log/nginx/access.log
 maxretry = 1
 bantime  = 172800
+action = %(action_mwl)s
