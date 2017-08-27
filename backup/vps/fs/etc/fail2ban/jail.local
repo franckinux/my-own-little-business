@@ -1,24 +1,49 @@
 # https://www.how-to.ovh/viewtopic.php?t=19
 
 [DEFAULT]
-bantime = 86400
+action = %(action_mwl)s
+bantime  = 3600
 destmail = admin@dupainetdesjoies.pro
+mta = mail
+sender = admin@dupainetdesjoies.pro
+sendername = Fail2BanAlerts
 
 [sshd]
 enabled = true
 port = 48724
 
+[sshd-ddos]
+enabled = true
+port = 48724
+
+[nginx-botsearch]
+enabled = true
+
 [nginx-http-auth]
 enabled = true
 
-[pam-generic]
-enabled = true
+[nginx-noproxy]
+enabled  = true
+port = http,https
+logpath = %(nginx_access_log)s
+maxretry = 2
+
+[nginx-noscript]
+enabled  = true
+port = http,https
+logpath = %(nginx_access_log)s
+maxretry = 6
+
+[nginx-phpmyadmin]
+enabled  = true
+logpath = %(nginx_access_log)s
 
 [nginx-w00tw00t]
 enabled  = true
 port = http
-filter = nginx-w00tw00t
-logpath = /var/log/nginx/access.log
+logpath = %(nginx_access_log)s
 maxretry = 1
-bantime  = 172800
-action = %(action_mwl)s
+bantime = 172800
+
+[pam-generic]
+enabled = true

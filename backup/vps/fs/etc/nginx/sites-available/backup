@@ -1,6 +1,6 @@
 server {
         listen 80;
-        server_name backup.dupainetdesjoies.bio;
+        server_name backup.molb.pro;
 
 	root /home/molb/backup;
 

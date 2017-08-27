@@ -5,8 +5,8 @@
 	st = status
 	br = branch
 [user]
-	email = contact@franck-barbenoire.fr
-	name = franckinux
+	email = contact@molb.com
+	name = molb
 [core]
 	editor = vim
 [color "status"]

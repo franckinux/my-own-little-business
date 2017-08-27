@@ -2,7 +2,7 @@ server {
 	listen 80;
 	listen [::]:80;
 
-	server_name www.dupainetdesjoies.bio dupainetdesjoies.bio;
+	server_name www.molb.com www.molb.com;
 
 	root /home/molb/www;
 	index index.html;
