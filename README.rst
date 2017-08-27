@@ -41,7 +41,7 @@ Install molb and its requirements : ::
     $ pip install -r requirements.txt
     $ pip install /path/to/my-own-little-business
 
-Drop the database iif it exists : ::
+Drop the database if it exists : ::
 
     $ dropdb molb
 
@@ -80,22 +80,21 @@ Compute password hash : ::
     > password = password_to_hash
     > password hash = $5$rounds=535000$q7pFcl1ZjQFRTcGs$snCKG7xVBiV.vPFRmqQQWUwGCjCFp.h6/9N.ejUpMrA
 
-Copy the hash in admin-dev-password.sh or admin-prod-password.sh. As the create
-script launcged above generates a new password each time, these scripts enables
-to use always the same.
+Copy the hash in admin-dev-password.sh or admin-prod-password.sh. As the
+create.py script launched above generates a new admin password each time, these
+scripts enable to use always the same.
 
-For formatting the sources in a unique pdf document having 2 pages per sheet :
-::
+For formatting the source files in a unique pdf document having 2 pages per
+sheet : ::
 
-    $ cd /path/to/my-own-lilttle-business/molb
-    $ tools/print.sh
+    $ make print_sources
     > Pages printed in sources.pdf
 
 Downloads
 =========
 
 These softwares are already present in molb, this is just a reminder on where they
-have been townloaded from :
+have been downloaded from :
 
 - `JQuery <https://code.jquery.com/jquery/>`_ - Version 1.12.4 ;
 - `Bootstrap <http://getbootstrap.com/>`_ - Version 3.3.7 ;
