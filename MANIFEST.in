@@ -1,2 +1,2 @@
-recursive-include molb/templates *.html *.txt
+recursive-include molb/templates *
 recursive-include molb/static *

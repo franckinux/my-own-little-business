@@ -34,17 +34,21 @@ from molb.views.repository import create_repository
 from molb.views.repository import edit_repository
 from molb.views.repository import delete_repository
 from molb.views.repository import list_repository
+from molb.views.start import start
 
 def setup_routes(app):
     static_dir = op.join(op.dirname(op.abspath(__file__)), "static")
     app.router.add_static("/static", static_dir)
+
+    # starting page
+    app.router.add_get("/", start, name="start")
 
     # accounts
     app.router.add_get("/account/list/", list_account, name="list_account")
     app.router.add_get("/account/delete/{id:\d+}/", delete_account, name="delete_account")
 
     # auth
-    app.router.add_route('*', "/", login, name="login")
+    app.router.add_route('*', "/login", login, name="login")
     app.router.add_route('*', "/logout/", logout, name="logout")
     app.router.add_route('*', "/email/", email, name="email")
     app.router.add_get("/email/{token}/", confirm_email, name="confirm_email")
