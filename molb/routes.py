@@ -48,7 +48,7 @@ def setup_routes(app):
     app.router.add_get("/account/delete/{id:\d+}/", delete_account, name="delete_account")
 
     # auth
-    app.router.add_route('*', "/login", login, name="login")
+    app.router.add_route('*', "/login/", login, name="login")
     app.router.add_route('*', "/logout/", logout, name="logout")
     app.router.add_route('*', "/email/", email, name="email")
     app.router.add_get("/email/{token}/", confirm_email, name="confirm_email")
