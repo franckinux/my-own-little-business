@@ -37,8 +37,10 @@ from molb.views.repository import list_repository
 from molb.views.start import start
 
 def setup_routes(app):
-    static_dir = op.join(op.dirname(op.abspath(__file__)), "static")
-    app.router.add_static("/static", static_dir)
+    development_mode = app["config"]["application"].get("development", False)
+    if development_mode:
+        static_dir = op.join(op.dirname(op.abspath(__file__)), "static")
+        app.router.add_static("/static", static_dir)
 
     # starting page
     app.router.add_get("/", start, name="start")
