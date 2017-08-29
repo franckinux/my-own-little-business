@@ -45,10 +45,39 @@
 
 <ul>
 {% if not client.super_user %}
-    <li><a href="{{ url("delete_profile") }}">Supprimer votre profil</a></li>
+    <li><a href="#" data-href="{{ url("delete_profile") }}" data-toggle="modal" data-target="#confirm-delete">Supprimez votre profil</a></li>
 {% endif %}
     <li><a href="{{ url("edit_profile") }}">Modifier votre profil</a></li>
     <li><a href="{{ url("email") }}">Changer d'email</a></li>
 </ul>
 
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Suppression de votre profil
+            </div>
+            <div class="modal-body">
+                Attention, si vous supprimez votre profil, vous perdrez toutes
+		vos commandes et factures passées.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                <a class="btn btn-danger btn-ok">Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+$('#confirm-delete').on(
+    'show.bs.modal',
+    function(e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    }
+);
+</script>
 {% endblock %}
