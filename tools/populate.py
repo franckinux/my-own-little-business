@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import asyncio
-from datetime import datetime
+import datetime
 import os
 import sys
 
@@ -8,6 +8,14 @@ import asyncpg
 from passlib.hash import sha256_crypt
 
 from molb.utils import read_configuration_file
+
+
+# https://stackoverflow.com/questions/6558535/find-the-date-for-the-first-monday-after-a-given-a-date
+def next_weekday(d, weekday):
+    days_ahead = weekday - d.weekday()
+    if days_ahead <= 0:  # Target day already happened this week
+        days_ahead += 7
+    return d + datetime.timedelta(days=days_ahead)
 
 
 async def main(config, loop=None):
@@ -23,32 +31,38 @@ async def main(config, loop=None):
 
     # create basic objects
 
+    # repositories
+    # ============
+
     # repo_1
     repo_1_id = await conn.fetchval(
-        "INSERT INTO repository (name) VALUES ($1) RETURNING id",
-        "Haut village"
-    )
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Legrand")
 
     # repo_2
-    repo_2_id  = await conn.fetchval(
-        "INSERT INTO repository (name) VALUES ($1) RETURNING id",
-        "Bas village"
-    )
+    repo_2_id = await conn.fetchval(
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Madrange")
+
+    # repo_2
+    repo_2_id = await conn.fetchval(
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Valea")
+
+    # clients
+    # =======
 
     # client 1
     client_1_id = await conn.fetchval(
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
-            "rabid",
-            sha256_crypt.hash("abcdef"),
-            True,
-            False,
-            "Raymonde",
-            "Bidochon",
-            "franck@barbenoi.re",
-            "01-40-50-50-01",
-            repo_1_id
+        "rabid",
+        sha256_crypt.hash("abcdef"),
+        True,
+        False,
+        "Raymonde",
+        "Bidochon",
+        "franck@barbenoi.re",
+        "01-40-50-50-01",
+        repo_1_id
     )
 
     # client 2
@@ -56,15 +70,15 @@ async def main(config, loop=None):
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
-            "robid",
-            sha256_crypt.hash("ABCDEF"),
-            True,
-            False,
-            "Robert",
-            "Bidochon",
-            "contact@franck-barbenoire.fr",
-            "01-40-50-50-02",
-            repo_1_id
+        "robid",
+        sha256_crypt.hash("ABCDEF"),
+        True,
+        False,
+        "Robert",
+        "Bidochon",
+        "contact@franck-barbenoire.fr",
+        "01-40-50-50-02",
+        repo_1_id
     )
 
     # client 3
@@ -72,109 +86,122 @@ async def main(config, loop=None):
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
-            "kbid",
-            sha256_crypt.hash("123456"),
-            True,
-            False,
-            "Kador",
-            "Bidochon",
-            "fbarbenoire@yahoo.fr",
-            "01-40-50-50-03",
-            repo_2_id
+        "kbid",
+        sha256_crypt.hash("123456"),
+        True,
+        False,
+        "Kador",
+        "Bidochon",
+        "fbarbenoire@yahoo.fr",
+        "01-40-50-50-03",
+        repo_2_id
     )
 
+    # products
+    # ========
+
     # product_1
-    product_1_id = await conn.fetchval(
-        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
-        "Pain au sarrasin", "Pain avec de la faine de sarrasin dedans", 5
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Semi-complet 1kg (façonné)", "", 4.5, 1
+    )
+
+    # product_1bis
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Semi-complet 1kg (moulé)", "", 4.5, 0.9
     )
 
     # product_2
-    product_2_id = await conn.fetchval(
-        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
-        "Pain de seigle", "Pain avec de la faine de seigle dedans", 4
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Semi-complet 650g (façonné)", "", 3, 0.7
     )
 
-    # batch_1
-    batch_1_id = await conn.fetchval(
-        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-        datetime(2017, 8, 18, 8, 0, 0), 50, True
+    # product_3
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Lin-sésame-tournesol 1kg (façonné)", "", 6, 1
     )
 
-    # batch_2
-    batch_2_id = await conn.fetchval(
-        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-        datetime(2017, 8, 19, 8, 0, 0), 50, True
+    # product_3bis
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Lin-sésame-tournesol 1kg (moulé)", "", 6, 0.9
     )
 
-    # batch_3
-    batch_3_id = await conn.fetchval(
-        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-        datetime(2017, 12, 31, 8, 0, 0), 20, True
-    )
-    batch_3_id
-
-    # link basic object between them
-
-    # ORDER 1
-
-    # order-1 to client and batch
-    order_1_id = await conn.fetchval(
-        "INSERT INTO order_ (total, client_id, batch_id, placed_at) VALUES ($1, $2, $3, $4) RETURNING id",
-        20, client_1_id, batch_1_id, datetime(2017, 8, 8, 8, 0, 0)
+    # product_4
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Lin-sésame-tournesol 650g (façonné)", "", 4.5, 0.7
     )
 
-    # order-1 to products
-    await conn.execute(
-        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-        order_1_id, product_1_id, 2
-    )
-    await conn.execute(
-        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-        order_1_id, product_2_id, 3
+    # product_5
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Petit épautre 500g (moulé)", "", 4.8, 0.5
     )
 
-    # ORDER 2
-
-    # order-2 to client and batch
-    order_2_id = await conn.fetchval(
-        "INSERT INTO order_ (total, client_id, batch_id, placed_at) VALUES ($1, $2, $3, $4) RETURNING id",
-        26, client_1_id, batch_2_id, datetime(2017, 8, 10, 8, 0, 0)
+    # product_6
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Raisins-noisettes 1kg (moulé)", "", 8, 0.9
     )
 
-    # order-2 to products
-    await conn.execute(
-        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-        order_2_id, product_1_id, 3
+    # product_7
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Raisins-noisettes 500g (moulé)", "", 4, 0.5
     )
 
-    # ORDER 3
-
-    # order-3 to client and batch
-    order_3_id = await conn.fetchval(
-        "INSERT INTO order_ (total, client_id, batch_id, placed_at) VALUES ($1, $2, $3, $4) RETURNING id",
-        30, client_2_id, batch_1_id, datetime(2017, 8, 10, 8, 0, 0)
+    # product_8
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Noix 500g (moulé)", "", 4.5, 0.5
     )
 
-    # order-3 to products
-    await conn.execute(
-        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-        order_3_id, product_1_id, 3
+    # product_9
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Figues-noix 500g (moulé)", "", 4.5, 0.5
     )
 
-    # ORDER 4
-
-    # order-4 to client and batch
-    order_4_id = await conn.fetchval(
-        "INSERT INTO order_ (total, client_id, batch_id, placed_at) VALUES ($1, $2, $3, $4) RETURNING id",
-        50, client_3_id, batch_1_id, datetime(2017, 8, 10, 8, 0, 0)
+    # product_10
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Pavot 500g (moulé)", "", 4.5, 0.5
     )
 
-    # order-4 to products
-    await conn.execute(
-        "INSERT INTO order_product_association (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-        order_4_id, product_2_id, 7
+    # product_11
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Chocolat-orange 500g (moulé)", "", 4.5, 0.5
     )
+
+    # product_12
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Seigle 1kg (moulé)", "", 5.4, 0.9
+    )
+
+    # product_13
+    await conn.fetchval(
+        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
+        "Seigle 500g (moulé)", "", 2.8, 0.5
+    )
+
+    # batches
+    # =======
+
+    # create 5 batches on next week begining from monday 10:00am
+    start_day = datetime.datetime.now().replace(hour=8, minute=0, second=0, microsecond=0)
+    next_day = next_weekday(start_day, 0)
+    for _ in range(5):
+        await conn.fetchval(
+            "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
+            next_day, 50, True
+        )
+        next_day += datetime.timedelta(days=1)
 
 
 if __name__ == "__main__":
