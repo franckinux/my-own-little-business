@@ -44,7 +44,7 @@ async def main(config, loop=None):
 
     # repo_2
     repo_2_id = await conn.fetchval(
-        "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Valea")
+        "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Valeo")
 
     # clients
     # =======

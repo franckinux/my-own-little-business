@@ -1,0 +1,6 @@
+{% if app.config.application.repository_map %}
+<p class="row top-margin-25">Choisissez votre point de livraison dans la carte ci-dessous :</p>
+
+<iframe height="480" width="640px" src="{{ app.config.application.repository_map }}" title="La carte des points de livraison">
+</iframe>
+{% endif %}
