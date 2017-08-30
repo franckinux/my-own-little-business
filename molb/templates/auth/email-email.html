@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block page_content %}
+<p>Adresse mail actuelle : <strong>{{ email }}</strong>.</p>
+
 <form method="POST" action="{{ url("email") }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}

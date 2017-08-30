@@ -15,44 +15,49 @@ from molb.views.utils import generate_csrf_meta
 @require("client")
 @aiohttp_jinja2.template("auth/email-email.html")
 async def handler(request):
-    if request.method == "POST":
+    login = await authorized_userid(request)
+    async with request.app["db-pool"].acquire() as conn:
+        q = "SELECT id, email_address FROM client WHERE login = $1"
+        client = await conn.fetchrow(q, login)
 
-        form = EmailForm(await request.post(), meta=await generate_csrf_meta(request))
+        if request.method == "POST":
+            form = EmailForm(await request.post(), meta=await generate_csrf_meta(request))
 
-        if form.validate():
-            data = dict(form.data.items())
-            email_address = data["email_address"]
+            if form.validate():
+                data = dict(form.data.items())
+                email_address = data["email_address"]
 
-            login = await authorized_userid(request)
-            async with request.app["db-pool"].acquire() as conn:
-                q = "SELECT id, email_address FROM client WHERE login = $1"
-                client = await conn.fetchrow(q, login)
-            await send_confirmation(
-                request,
-                email_address,
-                {"id": client["id"], "email_address": email_address},
-                "confirm_email",
-                "Changement d'adresse mail",
-                "email-confirmation"
-            )
-            flash(
-                request,
-                (
-                    "info",
-                    "Un mail de confirmation a été envoyé à {}".format(
-                        email_address
+                q = "SELECT COUNT(*) FROM client WHERE email_address = $1"
+                if await conn.fetchval(q, email_address) != 0:
+                    flash(request, ("danger", "Veuillez choisir une autre addresse mail"))
+                    return {"form": form, "email": client["email_address"]}
+
+                await send_confirmation(
+                    request,
+                    email_address,
+                    {"id": client["id"], "email_address": email_address},
+                    "confirm_email",
+                    "Changement d'adresse mail",
+                    "email-confirmation"
+                )
+                flash(
+                    request,
+                    (
+                        "info",
+                        "Un mail de confirmation a été envoyé à {}".format(
+                            email_address
+                        )
                     )
                 )
-            )
-            return HTTPFound(request.app.router["home"].url_for())
+                return HTTPFound(request.app.router["home"].url_for())
+            else:
+                flash(request, ("danger", "Le formulaire comporte des erreurs"))
+            return {"form": form, "email": client["email_address"]}
+        elif request.method == "GET":
+            form = EmailForm(meta=await generate_csrf_meta(request))
+            return {"form": form, "email": client["email_address"]}
         else:
-            flash(request, ("danger", "Le formulaire comporte des erreurs"))
-        return {"form": form}
-    elif request.method == "GET":
-        form = EmailForm(meta=await generate_csrf_meta(request))
-        return {"form": form}
-    else:
-        raise HTTPMethodNotAllowed()
+            raise HTTPMethodNotAllowed()
 
 
 async def confirm(request):
@@ -73,4 +78,8 @@ async def confirm(request):
             flash(request, ("danger", "Votre adresse mail ne peut pas être modifiée"))
         else:
             flash(request, ("info", "Votre adresse mail a bien été modifiée"))
-        return HTTPFound(request.app.router["login"].url_for())
+        login = await authorized_userid(request)
+        if login:
+            return HTTPFound(request.app.router["home"].url_for())
+        else:
+            return HTTPFound(request.app.router["login"].url_for())
