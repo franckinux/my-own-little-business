@@ -75,14 +75,15 @@
         </div>
         {% endif %}
     </div>
-    <div class="form-group{% if form.repository_id.errors %} has-error{% endif %}">
+    <div class="form-group">
         <label for="repository_id">{{ form.repository_id.label }}</label>
         {{ form.repository_id(class="form-control") }}
-        {% if form.repository_id.errors %}
-        <div class="help-text">
-            {% for error in form.repository_id.errors %}<p>{{ error }}</p>{% endfor %}
-        </div>
-        {% endif %}
+    </div>
+    <div class="checkbox">
+        <label>
+            {{ form.mailing() }}
+            <strong>{{ form.mailing.label.text }}</strong>
+        </label>
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}

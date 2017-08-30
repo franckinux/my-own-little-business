@@ -6,6 +6,7 @@ from aiohttp_security import forget
 from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
 from passlib.hash import sha256_crypt
+from wtforms import BooleanField
 from wtforms import PasswordField
 from wtforms import SelectField
 from wtforms import StringField
@@ -31,6 +32,7 @@ class ProfileForm(CsrfForm):
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
     repository_id = SelectField("Point de livraison", coerce=int)
+    mailing = BooleanField("Réception de messages")
     submit = SubmitField("Soumettre")
 
 

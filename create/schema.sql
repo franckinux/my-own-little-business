@@ -25,6 +25,7 @@ CREATE TABLE client (
     confirmed boolean DEFAULT FALSE,
     disabled boolean DEFAULT FALSE,
     super_user boolean DEFAULT FALSE,
+    mailing boolean DEFAULT TRUE,
     first_name character varying NOT NULL,
     last_name character varying NOT NULL,
     email_address character varying UNIQUE NOT NULL,

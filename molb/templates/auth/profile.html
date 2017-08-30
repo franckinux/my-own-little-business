@@ -62,6 +62,12 @@
         <label for="repository_id">{{ form.repository_id.label }}</label>
         {{ form.repository_id(class="form-control") }}
     </div>
+    <div class="checkbox">
+        <label>
+            {{ form.mailing() }}
+            <strong>{{ form.mailing.label.text }}</strong>
+        </label>
+    </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
         <a href="{{ url("home") }}" class="btn btn-default">Annulation</a>
