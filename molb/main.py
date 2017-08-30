@@ -60,7 +60,7 @@ async def create_app():
     app["config"] = config
     app["db-pool"] = db_pool
 
-    app["mailer"] = MassMailer(config["smtp"])
+    app["mailer"] = MassMailer()
 
     # beware of order !
     setup_session(app)

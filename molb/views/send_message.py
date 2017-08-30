@@ -47,18 +47,12 @@ class PriorityWrapper:
 
 
 class SmtpMailer:
-    def __init__(self, config, queue, delay, loop):
+    def __init__(self, queue, delay, loop):
         self.loop = loop
         self.delay = delay
         self.queue = queue
 
-        self.host = config["host"]
-        self.port = int(config["port"])
-        self.username = config["username"]
-        self.password = config["password"]
-
-        use_tls = not self.port == 587
-        self.smtp = SMTP(hostname=self.host, port=self.port, use_tls=use_tls)
+        self.smtp = SMTP(hostname="127.0.0.1", port=25)
 
         self.timer = None
         self.task = asyncio.ensure_future(self.process_queue())
@@ -66,16 +60,11 @@ class SmtpMailer:
     async def connect(self):
         await self.smtp.connect()
 
-        await self.smtp.starttls()
-        await self.smtp.login(self.username, self.password)
-
     def deconnect(self):
         self.smtp.close()
         self.timer = None
 
     async def smtp_send(self, msg):
-        if self.port == 587:
-            await self.smtp.ehlo()
         await self.smtp.send_message(msg)
 
     async def process_queue(self):
@@ -98,14 +87,14 @@ class SmtpMailer:
 
 
 class MassMailer:
-    def __init__(self, config, nbr_tasks=5, delay=30, loop=None):
+    def __init__(self, nbr_tasks=5, delay=30, loop=None):
         loop = loop if loop is not None else asyncio.get_event_loop()
 
-        self.queue = asyncio.PriorityQueue(maxsize=1024)
+        self.queue = asyncio.PriorityQueue(maxsize=4096)
 
         self.mailers = []
         for _ in range(nbr_tasks):
-            self.mailers.append(SmtpMailer(config, self.queue, delay, loop))
+            self.mailers.append(SmtpMailer(self.queue, delay, loop))
 
     async def send_urgent_message(self, msg):
         await self.queue.put(PriorityWrapper(0, msg))
