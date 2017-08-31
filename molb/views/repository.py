@@ -20,7 +20,7 @@ from molb.views.utils import settings
 
 class RepositoryForm(CsrfForm):
     name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
-    opened = BooleanField("Ouvert")
+    opened = BooleanField("Ouvert", default=True)
     submit = SubmitField("Soumettre")
 
 

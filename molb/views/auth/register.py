@@ -51,7 +51,7 @@ class RegisterForm(CsrfForm):
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
     repository_id = SelectField("Point de livraison", coerce=int)
-    mailing = BooleanField("Réception de messages")
+    mailing = BooleanField("Réception de messages", default=True)
     submit = SubmitField("Soumettre")
 
 

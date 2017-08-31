@@ -21,7 +21,7 @@ from molb.views.utils import settings
 class BatchForm(CsrfForm):
     date = DateTimeField("Date", validators=[Required()])
     capacity = IntegerField("Capacité", validators=[Required()])
-    opened = BooleanField("Ouverte")
+    opened = BooleanField("Ouverte", default=True)
     submit = SubmitField("Soumettre")
 
 

@@ -24,7 +24,7 @@ class ProductForm(CsrfForm):
     description = StringField("Description")
     price = DecimalField("Prix", validators=[Required()])
     load = DecimalField("Charge", validators=[Required()])
-    available = BooleanField("Disponible")
+    available = BooleanField("Disponible", default=True)
     submit = SubmitField("Soumettre")
 
 
