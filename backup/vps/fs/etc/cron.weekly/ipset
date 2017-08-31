@@ -1,0 +1,20 @@
+#!/bin/bash
+
+rm -f /tmp/fr.zone
+
+wget -q -O /tmp/fr.zone http://www.ipdeny.com/ipblocks/data/countries/fr.zone
+if [ $? -ne 0 ] ; then
+    exit 1
+fi
+if [ ! -s /tmp/fr.zone ] ; then
+    exit 1
+fi
+
+echo "create fr.zone hash:net family inet hashsize 1024 maxelem 65536" > /etc/iptables/rules.ipset
+while read IP; do
+   echo "add fr.zone $IP" >> /etc/iptables//rules.ipset
+done < /tmp/fr.zone
+
+systemctl restart netfilter-persistent
+
+exit 0
