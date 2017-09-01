@@ -16,5 +16,6 @@ while read IP; do
 done < /tmp/fr.zone
 
 systemctl restart netfilter-persistent
+systemctl reload fail2ban
 
 exit 0
