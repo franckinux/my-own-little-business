@@ -15,7 +15,7 @@
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
-        <label for="name">{{ form.name.label }}</label>
+        {{ form.name.label(for="name") }}
         {{ form.name(class="form-control", placeholder="Entrez le nom") }}
         {% if form.name.errors %}
         <div class="help-text">
@@ -24,7 +24,7 @@
         {% endif %}
     </div>
     <div class="form-group{% if form.description.errors %} has-error{% endif %}">
-        <label for="description">{{ form.description.label }}</label>
+        {{ form.description.label(for="description") }}
         {{ form.description(class="form-control", placeholder="Entrez la description") }}
         {% if form.description.errors %}
         <div class="help-text">
@@ -33,7 +33,7 @@
         {% endif %}
     </div>
     <div class="form-group{% if form.price.errors %} has-error{% endif %}">
-        <label for="price">{{ form.price.label }}</label>
+        {{ form.price.label(for="price") }}
         {{ form.price(class="form-control", placeholder="Entrez le  prix") }}
         {% if form.price.errors %}
         <div class="help-text">
@@ -42,7 +42,7 @@
         {% endif %}
     </div>
     <div class="form-group{% if form.load.errors %} has-error{% endif %}">
-        <label for="load">{{ form.load.label }}</label>
+        {{ form.load.label(for="load") }}
         {{ form.load(class="form-control", placeholder="Entrez la charge") }}
         {% if form.load.errors %}
         <div class="help-text">
@@ -51,8 +51,8 @@
         {% endif %}
     </div>
     <div class="form-group">
-        <label for="available">{{ form.available.label }}</label>
         {{ form.available() }}
+        {{ form.available.label(for="available") }}
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}

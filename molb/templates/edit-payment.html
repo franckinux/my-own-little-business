@@ -14,11 +14,11 @@
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group">
-        <label for="mode">{{ form.mode.label }}</label>
+        {{ form.mode.label(for="mode") }}
         {{ form.mode() }}
     </div>
     <div class="form-group{% if form.reference.errors %} has-error{% endif %}">
-        <label for="reference">{{ form.reference.label }}</label>
+        {{ form.reference.label(for="reference") }}
         {{ form.reference(class="form-control", placeholder="Entrez la référence") }}
         {% if form.reference.errors %}
         <div class="help-text">

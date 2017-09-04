@@ -16,7 +16,7 @@
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
-        <label for="email_address">{{ form.email_address.label }}</label>
+        {{ form.email_address.label(for="email_address") }}
         {{ form.email_address(class="form-control", placeholder="Entrez votre adresse mail") }}
         {% if form.email_address.errors %}
         <div class="help-text">

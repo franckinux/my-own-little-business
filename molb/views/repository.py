@@ -11,6 +11,8 @@ from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import array_to_days
+from molb.views.utils import days_to_array
 from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
@@ -19,8 +21,15 @@ from molb.views.utils import settings
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
+    name = StringField("Nom", validators=[Required(), Length(min=5, max=128)])
     opened = BooleanField("Ouvert", default=True)
+    monday = BooleanField("Lundi")
+    tuesday = BooleanField("Mardi")
+    wednesday = BooleanField("Mercredi")
+    thursday = BooleanField("Jeudi")
+    friday = BooleanField("Vendredi")
+    saturday = BooleanField("Samedi")
+    sunday = BooleanField("Dimanche")
     submit = SubmitField("Soumettre")
 
 
@@ -31,6 +40,7 @@ async def create_repository(request):
         form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
             data = remove_special_data(form.data.items())
+            data = days_to_array(data)
             async with request.app["db-pool"].acquire() as conn:
                 q = "INSERT INTO repository ({}) VALUES ({})".format(
                     field_list(data), place_holders(data)
@@ -72,6 +82,7 @@ async def edit_repository(request):
     async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         data = dict(await conn.fetchrow("SELECT * FROM repository WHERE id = $1", id_))
+        data = array_to_days(data)
         if request.method == "POST":
             form = RepositoryForm(
                 await request.post(),
@@ -80,6 +91,7 @@ async def edit_repository(request):
             )
             if form.validate():
                 data = remove_special_data(form.data.items())
+                data = days_to_array(data)
                 q = "UPDATE repository SET {} WHERE id = ${:d}".format(
                     settings(data), len(data) + 1
                 )

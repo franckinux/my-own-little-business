@@ -15,7 +15,7 @@
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
-        <label for="name">{{ form.name.label }}</label>
+        {{ form.name.label(for="name") }}
         {{ form.name(class="form-control", placeholder="Entrez le nom") }}
         {% if form.name.errors %}
         <div class="help-text">
@@ -24,8 +24,46 @@
         {% endif %}
     </div>
     <div class="form-group">
-        <label for="opened">{{ form.opened.label }}</label>
         {{ form.opened() }}
+        {{ form.opened.label(for="opened") }}
+    </div>
+    <div class="form-group">
+        <p><strong>Jours de livraison</strong></p>
+
+        <label class="checkbox-inline">
+        {{ form.monday() }}
+        {{ form.monday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.tuesday() }}
+        {{ form.tuesday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.wednesday() }}
+        {{ form.wednesday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.thursday() }}
+        {{ form.thursday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.friday() }}
+        {{ form.friday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.saturday() }}
+        {{ form.saturday.label.text }}
+	</label>
+
+        <label class="checkbox-inline">
+        {{ form.sunday() }}
+        {{ form.sunday.label.text }}
+	</label>
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}

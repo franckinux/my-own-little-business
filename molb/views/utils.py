@@ -1,11 +1,28 @@
 from aiohttp_session import get_session
 
 
+DAYS = ("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")
+
+
 def remove_special_data(items):
     dico = dict(items)
     del dico["csrf_token"]
     del dico["submit"]
     return dico
+
+
+def array_to_days(data):
+    days = data.pop("days", [False] * 7)
+    data.update(dict(zip(DAYS, days)))
+    return data
+
+
+def days_to_array(data):
+    days = []
+    for d in DAYS:
+        days.append(data.pop(d, False))
+    data["days"] = days
+    return data
 
 
 async def generate_csrf_meta(request):

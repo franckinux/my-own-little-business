@@ -24,7 +24,7 @@ $(document).ready(function(){
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
     <div class="form-group">
-        <label for="batch_id">{{ form.batch_id.label }}</label>
+        {{ form.batch_id.label(for="batch_id") }}
         {{ form.batch_id(class="form-control") }}
     </div>
     <table class="table table-hover">

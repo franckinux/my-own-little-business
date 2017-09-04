@@ -30,9 +30,13 @@ async def create_order(request):
     login = await authorized_userid(request)
 
     async with request.app["db-pool"].acquire() as conn:
-        client = await conn.fetchrow(
-            "SELECT id, disabled FROM client WHERE login = $1", login
+        q = (
+            "SELECT c.id, c.disabled, r.days "
+            "FROM client AS c "
+            "INNER JOIN repository AS r ON c.repository_id = r.id "
+            "WHERE c.login = $1 "
         )
+        client = await conn.fetchrow(q, login)
         client_id = client["id"]
 
         if client["disabled"]:
@@ -61,15 +65,20 @@ async def create_order(request):
             "    WHERE b.opened AND o.batch_id IS NULL"
             ") AS sq "
             "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
+            "      AND (string_to_array($1, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
-        rows = await conn.fetch(q)
+        rows = await conn.fetch(q, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         # select all available products
-        rows = await conn.fetch(
-            "SELECT id, name, description, price FROM product WHERE available"
+        q = (
+            "SELECT id, name, description, price "
+            "FROM product "
+            "WHERE available "
+            "ORDER BY name"
         )
+        rows = await conn.fetch(q)
         products = [dict(p) for p in rows]
 
         if request.method == "POST":
@@ -207,9 +216,14 @@ async def edit_order(request):
     login = await authorized_userid(request)
 
     async with request.app["db-pool"].acquire() as conn:
-        client_id = await conn.fetchval(
-            "SELECT id FROM client WHERE login = $1", login
+        q = (
+            "SELECT c.id, c.disabled, r.days "
+            "FROM client AS c "
+            "INNER JOIN repository AS r ON c.repository_id = r.id "
+            "WHERE c.login = $1 "
         )
+        client = await conn.fetchrow(q, login)
+        client_id = client["id"]
 
         batch_date = await conn.fetchval(
             "SELECT b.date FROM order_ AS o "
@@ -246,9 +260,10 @@ async def edit_order(request):
             "    WHERE b.opened AND (o.batch_id IS NULL OR b.id = $1)"
             ") AS sq "
             "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
+            "      AND (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
-        rows = await conn.fetch(q, batch_id)
+        rows = await conn.fetch(q, batch_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         # select all available products
