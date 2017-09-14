@@ -1,24 +1,25 @@
-Bonjour {{ first_name }},
+Bonjour {{ client.first_name }},
 
-Nous vous prions de bien trouver ci-dessous votre facture, à payer dans
-les meilleurs délais, s'il vous plait.
+Nous vous prions de bien trouver ci-dessous votre appel de fonds. Merci de
+joindre votre numéro de client à votre  règlement.
 
-Merci de joindre le numéro de facture à votre règlement.
+Éléments de l'appel de fonds
+============================
 
-Éléments de la facture
-======================
+Numéro de client :      {{ client.id }}
+Montant des commandes : {{ total }} €
+Porte-monnaie :         {{ client.wallet }}
+Au :                    {{ invoice_date.strftime("%d-%m-%Y") }}
 
-Numéro de facture  {{ payment_id }}
-Montant            {{ total }} €.
-Date               {{ invoice_date.strftime("%d-%m-%Y") }}
+Montant dû : {{ total - client.wallet }} €
 
-Récapitulatif de la facture par fournée
-=======================================
+Récapitulatif des commandes
+===========================
 
-{% for batch_date, batch_date_group in payment_details|groupby("batch_date") -%}
-{% for order_total, group_list in batch_date_group|groupby("order_total") -%}
-Fournée du {{ batch_date.strftime("%d-%m-%Y à %H:%M") }}
------------------------------
+{% for order_date, order_date_group in payment_details|groupby("order_date") -%}
+{% for order_total, group_list in order_date_group|groupby("order_total") -%}
+Commande du {{ order_date.strftime("%d-%m-%Y à %H:%M") }}
+------------------------------
 
 Montant de la commande : {{ order_total }} €
 
@@ -31,5 +32,4 @@ Nom du produit                           Quantité
 {%- endfor %}
 {%- endfor %}
 
-Nous vous remercions de votre confiance et espérons vous revoir
-prochainement.
+Nous vous remercions de votre confiance et espérons vous revoir prochainement.

@@ -5,37 +5,43 @@
     </style>
 </head>
 <body>
-    <p>Bonjour {{ first_name }},</p>
+    <p>Bonjour {{ client.first_name }},</p>
 
-    <p>Nous vous prions de bien trouver ci-dessous votre facture, à payer dans
-    les meilleurs délais, s'il vous plait.</p>
+    <p>Nous vous prions de bien trouver ci-dessous votre appel de fonds. Merci
+    de joindre vore numéro de client à votre règlement.</p>
 
-    <p>Merci de joindre le numéro de facture à votre règlement.</p>
-
-    <h3>Éléments de la facture</h3>
+    <h3>Éléments de l'appel de fonds</h3>
 
     <table>
         <tbody>
             <tr>
-                <td><b>Numéro de facture</b></td>
-                <td>{{ payment_id }}</td>
+                <td><b>Numéro de client</b></td>
+                <td>{{ client.id }} €</td>
             </tr>
             <tr>
-                <td><b>Montant</b></td>
+                <td><b>Montant des commandes</b></td>
                 <td>{{ total }} €</td>
             </tr>
             <tr>
-                <td><b>Date</b></td>
+                <td><b>Porte-monnaie</b></td>
+                <td>{{ client.wallet }} €</td>
+            </tr>
+            <tr>
+                <td><b>Au</b></td>
                 <td>{{ invoice_date.strftime("%d-%m-%Y") }}</td>
+            </tr>
+            <tr>
+                <td><b>Montant dû</b></td>
+                <td><b>{{ total - client.wallet }} €</b></td>
             </tr>
         </tbody>
     </table>
 
-    <h3>Récapitulatif de la facture par fournée</h3>
+    <h3>Récapitulatif des commandes</h3>
 
-    {% for batch_date, batch_date_group in payment_details|groupby("batch_date") -%}
-    {% for order_total, group_list in batch_date_group|groupby("order_total") -%}
-    <h4>Fournée du {{ batch_date.strftime("%d-%m-%Y à %H:%M") }}</h4>
+    {% for order_date, order_date_group in payment_details|groupby("order_date") -%}
+    {% for order_total, group_list in order_date_group|groupby("order_total") -%}
+    <h4>Commande du {{ order_date.strftime("%d-%m-%Y à %H:%M") }}</h4>
 
     <p>Montant de la commande : {{ order_total }} €</p>
 
@@ -57,7 +63,6 @@
     {%- endfor %}
     {%- endfor %}
 
-    <p>Nous vous remercions de votre confiance et espérons vous revoir
-    prochainement.</p>
+    <p>Nous vous remercions de votre confiance et espérons vous revoir prochainement.</p>
 </body>
 </html>

@@ -66,7 +66,7 @@ class PasswordForm(CsrfForm):
         Length(min=6)
     ])
     password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @aiohttp_jinja2.template("auth/password.html")

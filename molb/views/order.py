@@ -44,9 +44,9 @@ async def create_order(request):
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # select opened batches whose date is 12 hours in the future and
-        # load is inferior to its capacity
+        # load is inferior to their capacity
         # select opened batches whose date is 12 hours in the future and
-        # that have no order on it
+        # that have no order on them
         q = (
             "SELECT batch_id, batch_date FROM ("
             "    SELECT o.batch_id, SUM(opa.quantity * p.load) AS batch_load, "
@@ -54,9 +54,10 @@ async def create_order(request):
             "    FROM order_product_association AS opa "
             "    INNER JOIN product AS p ON opa.product_id = p.id "
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
+            "    INNER JOIN client AS c ON o.client_id = c.id "
             "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened "
-            "    GROUP BY o.batch_id, b.capacity, b.date"
+            "    WHERE b.opened AND c.id != $1 "
+            "    GROUP BY o.batch_id, b.capacity, b.date "
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
             "           b.date AS batch_date "
@@ -65,10 +66,10 @@ async def create_order(request):
             "    WHERE b.opened AND o.batch_id IS NULL"
             ") AS sq "
             "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
-            "      AND (string_to_array($1, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
+            "      AND (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
-        rows = await conn.fetch(q, str(client["days"]).strip("[]"))
+        rows = await conn.fetch(q, client_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         # select all available products
@@ -95,20 +96,7 @@ async def create_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Ce formulaire comporte des erreurs."))
-                return {"form": form, "products": products}
-
-            q = "SELECT COUNT(*) FROM order_ WHERE client_id = $1 AND batch_id = $2"
-            ret = await conn.fetchval(q, client_id, batch_id)
-            if ret:
-                flash(
-                    request,
-                    (
-                        "warning",
-                        "Vous avez déjà passé une commande sur cette même fournée, "
-                        "veuillez modifier cette dernière."
-                    )
-                )
+                flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return {"form": form, "products": products}
 
             # 2 separate loops for correct form rendering
@@ -238,9 +226,9 @@ async def edit_order(request):
         batch_id = await conn.fetchval(q, order_id)
 
         # select opened batches whose date is 12 hours in the future and
-        # load is inferior to its capacity
+        # load is inferior to their capacity
         # select opened batches whose date is 12 hours in the future and
-        # that have no order on it
+        # that have no order on them
         # select the batch id of the order
         q = (
             "SELECT batch_id, batch_date FROM ("
@@ -249,21 +237,22 @@ async def edit_order(request):
             "    FROM order_product_association AS opa "
             "    INNER JOIN product AS p ON opa.product_id = p.id "
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
+            "    INNER JOIN client AS c ON o.client_id = c.id "
             "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened AND b.id != $1"
-            "    GROUP BY o.batch_id, b.capacity, b.date"
+            "    WHERE b.opened AND c.id != $1 AND b.id != $2 "
+            "    GROUP BY o.batch_id, b.capacity, b.date "
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
             "           b.date AS batch_date "
             "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
-            "    WHERE b.opened AND (o.batch_id IS NULL OR b.id = $1)"
+            "    WHERE b.opened AND (o.batch_id IS NULL OR b.id = $2)"
             ") AS sq "
             "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
-            "      AND (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
+            "      AND (string_to_array($3, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
-        rows = await conn.fetch(q, batch_id, str(client["days"]).strip("[]"))
+        rows = await conn.fetch(q, client_id, batch_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         # select all available products
@@ -286,7 +275,7 @@ async def edit_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Ce formulaire comporte des erreurs."))
+                flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return {"form": form, "products": products}
 
             # 2 separate loops for correct form rendering
@@ -478,10 +467,8 @@ async def delete_order(request):
 
 
 def translate_mode(value):
-    if value is None:
-        return "Non payée"
-    elif value == "not_payed":
-        return "Non payée"
+    if value == "order":
+        return "Commande"
     elif value == "payed_by_check":
         return "Payée par chèque"
     elif value == "payed_by_paypal":
@@ -501,13 +488,13 @@ async def list_order(request):
         )
 
         q = (
-            "SELECT o.id, o.placed_at, o.total, o.payment_id, "
+            "SELECT o.id, o.date AS order_date, o.total, o.payment_id, "
             "       p.id AS payment_id, p.mode AS payment_mode, b.date AS batch_date, "
             "       b.date - INTERVAL '12 hour' AS cancellation_date "
             "FROM order_ AS o "
             "INNER JOIN batch AS b ON o.batch_id = b.id "
             "LEFT JOIN payment AS p ON o.payment_id = p.id "
-            "WHERE o.client_id = $1 ORDER BY o.placed_at DESC"
+            "WHERE o.client_id = $1 ORDER BY batch_date DESC"
         )
         orders = await conn.fetch(q, client["id"])
     return {"disabled": client["disabled"], "orders": orders, "now": datetime.now()}

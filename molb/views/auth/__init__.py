@@ -18,7 +18,7 @@ from molb.views.utils import generate_csrf_meta
 class LoginForm(CsrfForm):
     login = StringField("Identifiant", [Required()])
     password = PasswordField("Mot de passe", [Required()])
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @aiohttp_jinja2.template("auth/login.html")

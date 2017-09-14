@@ -33,7 +33,7 @@ class ProfileForm(CsrfForm):
     ])
     repository_id = SelectField("Point de livraison", coerce=int)
     mailing = BooleanField("Réception de messages")
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @require("client")
@@ -108,8 +108,7 @@ async def delete_profile(request):
             "SELECT COUNT(*) "
             "FROM order_ AS o "
             "INNER JOIN client AS c ON o.client_id = c.id "
-            "LEFT JOIN payment AS p ON o.payment_id = p.id "
-            "WHERE (o.payment_id IS NULL OR p.mode = 'not_payed') AND c.id = $1"
+            "WHERE o.payment_id IS NULL AND c.id = $1"
         )
         payment_count = await conn.fetchval(q, client_id)
         if payment_count != 0:
@@ -125,6 +124,22 @@ async def delete_profile(request):
             )
             return HTTPFound(request.app.router["home"].url_for())
 
+        # check client's wallet
+        q = "SELECT wallet FROM client WHERE id = $1"
+        wallet = await conn.fetchval(q, client_id)
+        if wallet != 0:
+            flash(
+                request,
+                (
+                    "warning",
+                    (
+                        "Vous ne pouvez pas supprimer vote profil : "
+                        "votre porte-monnaie n'est pas vide."
+                    )
+                )
+            )
+            return HTTPFound(request.app.router["home"].url_for())
+
         try:
             async with conn.transaction():
                 # delete associations between orders and products
@@ -135,21 +150,13 @@ async def delete_profile(request):
                 q = "DELETE FROM order_product_association WHERE order_id = any($1::int[])"
                 await conn.execute(q, order_ids)
 
-                # fetch payment ids
-                q = (
-                    "SELECT DISTINCT payment_id FROM order_ "
-                    "WHERE payment_id IS NOT NULL AND client_id = $1"
-                )
-                payments = await conn.fetch(q, client_id)
-                payment_ids = [payment["payment_id"] for payment in payments]
-
                 # delete orders
                 q = "DELETE FROM order_ WHERE client_id = $1"
                 await conn.execute(q, client_id)
 
                 # delete payments
-                q = "DELETE FROM payment WHERE id = any($1::int[])"
-                await conn.execute(q, payment_ids)
+                q = "DELETE FROM payment WHERE client_id = $1"
+                await conn.execute(q, client_id)
 
                 # delete client
                 q = "DELETE FROM client WHERE id = $1"

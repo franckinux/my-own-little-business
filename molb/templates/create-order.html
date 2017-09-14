@@ -38,7 +38,11 @@ $(document).ready(function(){
         <tbody>
             {% for product in products %}
             <tr>
+		{% if product.description %}
                 <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
+		{% else %}
+                <td>{{ product.name }}</td>
+		{% endif %}
                 <td>{{ product.price }}</a></td>
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="text" value="{{ product.quantity }}">

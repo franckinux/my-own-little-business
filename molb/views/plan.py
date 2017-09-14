@@ -41,7 +41,7 @@ async def plan(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Ce formulaire comporte des erreurs."))
+                flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return HTTPFound(request.app.router["plan"].url_for())
 
             # get the number of products to make from the batch

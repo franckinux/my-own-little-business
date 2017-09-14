@@ -13,4 +13,4 @@ class EmailForm(CsrfForm):
         Length(min=5, max=64),
         Email()
     ])
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")

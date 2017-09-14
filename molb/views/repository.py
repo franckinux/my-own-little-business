@@ -30,7 +30,7 @@ class RepositoryForm(CsrfForm):
     friday = BooleanField("Vendredi")
     saturday = BooleanField("Samedi")
     sunday = BooleanField("Dimanche")
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @require("admin")

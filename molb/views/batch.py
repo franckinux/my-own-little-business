@@ -22,7 +22,7 @@ class BatchForm(CsrfForm):
     date = DateTimeField("Date", validators=[Required()])
     capacity = IntegerField("Capacité", validators=[Required()])
     opened = BooleanField("Ouverte", default=True)
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @require("admin")
@@ -105,7 +105,12 @@ async def edit_batch(request):
 @aiohttp_jinja2.template("list-batch.html")
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch(
-            "SELECT id, date, capacity, opened FROM batch ORDER BY date DESC LIMIT 30"
+        q = (
+            "SELECT id, date, capacity, opened "
+            "FROM batch "
+            "WHERE date > NOW() "
+            "ORDER BY date DESC"
+            "LIMIT 30"
         )
+        rows = await conn.fetch(q)
     return {"batches": rows}

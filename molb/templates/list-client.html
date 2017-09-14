@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Clients{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="active">Clients</li>
+</ol>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("list_client") }}" class="form-inline" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+       <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    <div class="form-group">
+        {{ form.client_id.label }}
+        {{ form.client_id(class="form-control") }}
+        {{ form.client_last_name.label }}
+        {{ form.client_last_name(class="form-control") }}
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+
+{% if clients %}
+<h3>Clients</h3>
+
+<table class="table table-hover">
+   <thead>
+      <tr>
+         <th>Id</th>
+         <th>Prénom</th>
+         <th>Nom</th>
+         <th>En cours</th>
+         <th>Porte-monnaie</th>
+         <th>Statut</th>
+         <th></th>
+         <th></th>
+      </tr>
+   </thead>
+   <tbody>
+      {% for client in clients -%}
+      <tr>
+         <td>{{ client.id }}</td>
+         <td>{{ client.first_name }}</td>
+         <td>{{ client.last_name }}</td>
+         <td>{{ client.total }}</td>
+         <td>{{ client.wallet }}</td>
+	 <td>{% if client.disabled %}Inactif{% else %}Actif{% endif %}</td>
+         <td><a href="{{ url("toggle_client", id=client.id) }}">Changer statut</a></td>
+         <td><a href="{{ url("create_payment", id=client.id) }}">Paiement</a></td>
+      </tr>
+      {%- endfor %}
+   </tbody>
+</table>
+{% endif %}
+{% endblock %}

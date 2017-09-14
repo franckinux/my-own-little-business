@@ -52,7 +52,7 @@ class RegisterForm(CsrfForm):
     ])
     repository_id = SelectField("Point de livraison", coerce=int)
     mailing = BooleanField("Réception de messages", default=True)
-    submit = SubmitField("Soumettre")
+    submit = SubmitField("Valider")
 
 
 @aiohttp_jinja2.template("auth/register.html")

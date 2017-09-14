@@ -20,7 +20,7 @@
          <th>Date de la commande</th>
          <th>Date de la fournée</th>
          <th>Total</th>
-         <th>Paiement</th>
+         <th>Statut</th>
          <th></th>
       </tr>
    </thead>
@@ -28,14 +28,14 @@
       {% for order in orders -%}
       <tr>
          {% if now < order.cancellation_date and not order.payment_id %}
-         <td><a href="{{ url("edit_order", id=order.id) }}">{{ order.placed_at.strftime("%Y-%m-%d %H:%M") }}</a></td>
+         <td><a href="{{ url("edit_order", id=order.id) }}">{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</a></td>
          {% else %}
-         <td>{{ order.placed_at.strftime("%Y-%m-%d %H:%M") }}</td>
+         <td>{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</td>
          {% endif %}
          <td>{{ order.batch_date.strftime("%Y-%m-%d %H:%M") }}</td>
          <td>{{ order.total }}</td>
          {% if order.payment_id %}
-         <td><a href="{{ url("show_payment", id=order.payment_id) }}">{{ order.payment_mode|translate_mode() }}</a></td>
+         <td>Payée</td>
          {% else %}
          <td>Non payée</td>
          {% endif %}

@@ -1,5 +1,5 @@
 CREATE TYPE payedstatusenum AS ENUM (
-    'not_payed',
+    'order',
     'payed_by_check',
     'payed_by_paypal',
     'payed_in_cash'
@@ -49,24 +49,25 @@ CREATE TABLE batch (
 
 CREATE TABLE payment (
     id SERIAL PRIMARY KEY NOT NULL,
-    total numeric(8,2) NOT NULL CHECK (total > 0),
-    claimed_at timestamp without time zone DEFAULT NOW(),
-    payed_at timestamp without time zone DEFAULT NULL,
-    mode payedstatusenum DEFAULT 'not_payed',
-    reference character varying
+    amount numeric(8,2) NOT NULL CHECK (amount != 0),
+    date timestamp without time zone DEFAULT NOW(),
+    mode payedstatusenum,
+    reference character varying,
+    client_id integer REFERENCES client(id) NOT NULL
 );
 
 
 CREATE TABLE order_ (
     id SERIAL PRIMARY KEY NOT NULL,
     total numeric(8,2) NOT NULL CHECK (total >= 0),
-    placed_at timestamp without time zone DEFAULT NOW(),
+    date timestamp without time zone DEFAULT NOW(),
+    disabled boolean DEFAULT false,
     client_id integer REFERENCES client(id) NOT NULL,
     batch_id integer REFERENCES batch(id) NOT NULL,
     payment_id integer REFERENCES payment(id) DEFAULT NULL
 );
 
-CREATE INDEX order_placed_at_index ON order_(placed_at);
+CREATE INDEX order_date_index ON order_(date);
 
 
 CREATE TABLE product (

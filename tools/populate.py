@@ -42,15 +42,15 @@ async def main(config, loop=None):
     repo_2_id = await conn.fetchval(
         "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Madrange")
 
-    # repo_2
-    repo_2_id = await conn.fetchval(
+    # repo_3
+    repo_3_id = await conn.fetchval(
         "INSERT INTO repository (name) VALUES ($1) RETURNING id", "Valeo")
 
     # clients
     # =======
 
     # client 1
-    client_1_id = await conn.fetchval(
+    await conn.fetchval(
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
@@ -66,7 +66,7 @@ async def main(config, loop=None):
     )
 
     # client 2
-    client_2_id = await conn.fetchval(
+    await conn.fetchval(
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
@@ -82,7 +82,7 @@ async def main(config, loop=None):
     )
 
     # client 3
-    client_3_id = await conn.fetchval(
+    await conn.fetchval(
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
@@ -95,6 +95,22 @@ async def main(config, loop=None):
         "fbarbenoire@yahoo.fr",
         "01-40-50-50-03",
         repo_2_id
+    )
+
+    # client 4
+    await conn.fetchval(
+        ("INSERT INTO client (login, password_hash, confirmed, super_user, "
+        "first_name, last_name, email_address, phone_number, repository_id) "
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
+        "mariethébat",
+        sha256_crypt.hash("888888"),
+        True,
+        False,
+        "Marie-Thérèse",
+        "Des Batignoles",
+        "fbarbenoire@gmail.com",
+        "01-40-50-50-03",
+        repo_3_id
     )
 
     # products

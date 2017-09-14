@@ -16,15 +16,16 @@ from molb.views.batch import create_batch
 from molb.views.batch import edit_batch
 from molb.views.batch import delete_batch
 from molb.views.batch import list_batch
+from molb.views.client import toggle_client
+from molb.views.client import list_client
 from molb.views.home import home
 from molb.views.order import create_order
 from molb.views.order import edit_order
 from molb.views.order import delete_order
 from molb.views.order import list_order
 from molb.views.payment import invoice
+from molb.views.payment import create_payment
 from molb.views.payment import list_payment
-from molb.views.payment import edit_payment
-from molb.views.payment import show_payment
 from molb.views.plan import plan
 from molb.views.product import create_product
 from molb.views.product import edit_product
@@ -67,6 +68,10 @@ def setup_routes(app):
     app.router.add_route('*', "/batch/edit/{id:\d+}/", edit_batch, name="edit_batch")
     app.router.add_get("/batch/list/", list_batch, name="list_batch")
 
+    # client
+    app.router.add_get("/client/toggle/{id:\d+}/", toggle_client, name="toggle_client")
+    app.router.add_route('*', "/client/list/", list_client, name="list_client")
+
     # home
     app.router.add_get("/home/", home, name="home")
 
@@ -77,10 +82,9 @@ def setup_routes(app):
     app.router.add_get("/order/list/", list_order, name="list_order")
 
     # payments
+    app.router.add_route('*', "/payment/create/{id:\d+}/", create_payment, name="create_payment")
     app.router.add_route('*', "/payment/invoice/", invoice, name="invoice")
     app.router.add_route('*', "/payment/list/", list_payment, name="list_payment")
-    app.router.add_route('*', "/payment/edit/{id:\d+}/", edit_payment, name="edit_payment")
-    app.router.add_get("/payment/show/{id:\d+}/", show_payment, name="show_payment")
 
     # plan
     app.router.add_route('*', "/plan/", plan, name="plan")
