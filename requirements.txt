@@ -1,9 +1,9 @@
 aiohttp==2.2.5
--e git://github.com/aio-libs/aiohttp-jinja2.git#egg=aiohttp_jinja2
+aiohttp-jinja2==0.14.0
 -e git://github.com/aio-libs/aiohttp-security.git#egg=aiohttp_security
-aiohttp-session==1.0.0
+aiohttp-session==1.0.1
 aiohttp-session-flash==0.0.4
-aiosmtplib==1.0.1
+aiosmtplib==1.0.2
 asn1crypto==0.22.0
 async-timeout==1.2.1
 asyncpg==0.12.0
