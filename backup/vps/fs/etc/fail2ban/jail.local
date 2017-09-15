@@ -26,24 +26,28 @@ enabled = true
 enabled  = true
 port = http,https
 logpath = %(nginx_access_log)s
-maxretry = 2
+maxretry = 1
+bantime = 86400
 
 [nginx-noscript]
 enabled  = true
 port = http,https
 logpath = %(nginx_access_log)s
-maxretry = 6
+maxretry = 1
+bantime = 86400
 
 [nginx-phpmyadmin]
 enabled  = true
 logpath = %(nginx_access_log)s
+maxretry = 1
+bantime = 86400
 
 [nginx-w00tw00t]
 enabled  = true
-port = http
+port = http,https
 logpath = %(nginx_access_log)s
 maxretry = 1
-bantime = 172800
+bantime = 86400
 
 [pam-generic]
 enabled = true

@@ -109,7 +109,7 @@ async def list_batch(request):
             "SELECT id, date, capacity, opened "
             "FROM batch "
             "WHERE date > NOW() "
-            "ORDER BY date DESC"
+            "ORDER BY date DESC "
             "LIMIT 30"
         )
         rows = await conn.fetch(q)

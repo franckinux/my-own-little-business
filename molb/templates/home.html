@@ -35,16 +35,14 @@
 </ul>
 {% endif %}
 
+{% if not client.super_user %}
 <h3>Commandes</h3>
 
 <ul>
-{% if client.super_user %}
-    <li><a href="">Commandes non payées</a></li>
-{% else %}
     <li><a href="{{ url("list_order") }}">Commandes</a></li>
     <li><a href="{{ url("list_payment") }}">Paiements</a></li>
-{% endif %}
 </ul>
+{% endif %}
 
 <h3>Profil</h3>
 

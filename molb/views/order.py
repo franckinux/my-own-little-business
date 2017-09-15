@@ -56,7 +56,12 @@ async def create_order(request):
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
             "    INNER JOIN client AS c ON o.client_id = c.id "
             "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened AND c.id != $1 "
+            "    WHERE b.opened AND b.id NOT IN ( "
+            "          SELECT b_.id FROM order_ AS o_ "
+            "          INNER JOIN batch AS b_ ON o_.batch_id = b_.id "
+            "          INNER JOIN client AS c_ ON o_.client_id = c_.id "
+            "          WHERE c_.id = $1 "
+            "    ) "
             "    GROUP BY o.batch_id, b.capacity, b.date "
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
@@ -239,7 +244,12 @@ async def edit_order(request):
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
             "    INNER JOIN client AS c ON o.client_id = c.id "
             "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened AND c.id != $1 AND b.id != $2 "
+            "    WHERE b.opened AND b.id != $1 AND b.id NOT IN ( "
+            "          SELECT b_.id FROM order_ AS o_ "
+            "          INNER JOIN batch AS b_ ON o_.batch_id = b_.id "
+            "          INNER JOIN client AS c_ ON o_.client_id = c_.id "
+            "          WHERE c_.id = $2 "
+            "    ) "
             "    GROUP BY o.batch_id, b.capacity, b.date "
             "    UNION "
             "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
@@ -252,7 +262,7 @@ async def edit_order(request):
             "      AND (string_to_array($3, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
-        rows = await conn.fetch(q, client_id, batch_id, str(client["days"]).strip("[]"))
+        rows = await conn.fetch(q, batch_id, client_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         # select all available products

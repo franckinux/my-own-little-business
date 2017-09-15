@@ -60,7 +60,7 @@ async def main(config, loop=None):
         False,
         "Raymonde",
         "Bidochon",
-        "franck@barbenoi.re",
+        "rabid@franck-barbenoire.fr",
         "01-40-50-50-01",
         repo_1_id
     )
@@ -76,7 +76,7 @@ async def main(config, loop=None):
         False,
         "Robert",
         "Bidochon",
-        "contact@franck-barbenoire.fr",
+        "robid@franck-barbenoire.fr",
         "01-40-50-50-02",
         repo_1_id
     )
@@ -92,7 +92,7 @@ async def main(config, loop=None):
         False,
         "Kador",
         "Bidochon",
-        "fbarbenoire@yahoo.fr",
+        "kbid@franck-barbenoire.fr",
         "01-40-50-50-03",
         repo_2_id
     )
@@ -102,13 +102,13 @@ async def main(config, loop=None):
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, phone_number, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"),
-        "mariethébat",
+        "mariethe",
         sha256_crypt.hash("888888"),
         True,
         False,
         "Marie-Thérèse",
         "Des Batignoles",
-        "fbarbenoire@gmail.com",
+        "mariethe@franck-barbenoire.fr",
         "01-40-50-50-03",
         repo_3_id
     )

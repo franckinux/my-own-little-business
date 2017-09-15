@@ -25,7 +25,7 @@ async def delete_account(request):
     client_id = int(request.match_info["id"])
 
     async with request.app["db-pool"].acquire() as conn:
-        q = "DELETE FROM client WHERE id = $1"
+        q = "DELETE FROM client WHERE id = $1 AND NOT confirmed"
         await conn.execute(q, client_id)
 
     return HTTPFound(request.app.router["list_account"].url_for())
