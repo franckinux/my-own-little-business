@@ -11,7 +11,7 @@ async def list_account(request):
         # select unconfirmed clients
         q = (
             "SELECT id, first_name, last_name, email_address, phone_number, created_at "
-            "FROM client  "
+            "FROM client "
             "WHERE NOT confirmed "
             "ORDER BY created_at, last_name, first_name"
         )

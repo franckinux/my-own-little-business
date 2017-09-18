@@ -224,7 +224,7 @@ async def edit_order(request):
             "WHERE o.id = $1", order_id
         )
         if datetime.now() > batch_date - timedelta(hours=12):
-            flash( request, ("warning", ("Il est trop tard pour modifier votre commande.")))
+            flash(request, ("warning", "Il est trop tard pour modifier votre commande."))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         q = "SELECT batch_id FROM order_ WHERE id = $1"
@@ -395,7 +395,7 @@ async def edit_order(request):
             )
             await conn.execute(q, new_order_id)
 
-            flash(request, ("success", ("Votre commande a bien été modifiée.")))
+            flash(request, ("success", "Votre commande a bien été modifiée."))
             return HTTPFound(request.app.router["list_order"].url_for())
         elif request.method == "GET":
             data = {"batch_id": batch_id}
@@ -451,7 +451,7 @@ async def delete_order(request):
             "WHERE o.id = $1", order_id
         )
         if datetime.now() > batch_date - timedelta(hours=12):
-            flash( request, ("warning", ("Il est trop tard pour annuler votre commande.")))
+            flash(request, ("warning", "Il est trop tard pour annuler votre commande."))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         try:
@@ -470,9 +470,9 @@ async def delete_order(request):
                 if not deleted:
                     raise RollbackTransactionException()
 
-                flash( request, ("success", ("Votre commande a bien été supprimée.")))
+                flash(request, ("success", "Votre commande a bien été supprimée."))
         except RollbackTransactionException:
-            flash( request, ("warning", ("Votre commande ne peut pas être supprimée.")))
+            flash(request, ("warning", "Votre commande ne peut pas être supprimée."))
     return HTTPFound(request.app.router["list_order"].url_for())
 
 

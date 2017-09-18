@@ -33,9 +33,7 @@
 <ul>
     <li><a href="{{ url("invoice") }}">Envoi des appels de fonds</a></li>
 </ul>
-{% endif %}
-
-{% if not client.super_user %}
+{% else %}
 <h3>Commandes</h3>
 
 <ul>

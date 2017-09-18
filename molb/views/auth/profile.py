@@ -162,11 +162,11 @@ async def delete_profile(request):
                 q = "DELETE FROM client WHERE id = $1"
                 await conn.execute(q, client_id)
         except:
-            flash( request, ("warning", ("Votre profil ne peut être détruit")))
+            flash(request, ("warning", "Votre profil ne peut être détruit"))
         else:
             response = HTTPFound(request.app.router["login"].url_for())
             await forget(request, response)
-            flash( request, ("success", ("Votre profil a été détruit")))
+            flash(request, ("success", "Votre profil a été détruit"))
             return response
 
         return HTTPFound(request.app.router["home"].url_for())
