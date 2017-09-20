@@ -11,7 +11,7 @@ rc=0
 
 load_rules()
 {
-    if [ ! -f /etc/iptables/rules.ipset ] || [ ! -f /etc/iptables/rules.ipset ]; then
+    if [ ! -f /etc/iptables/rules.ipset ]; then
         echo "Warning: skipping IPSet (missing rules file)"
     else
         grep ^create /etc/iptables/rules.ipset | ipset restore 2>/dev/null || true

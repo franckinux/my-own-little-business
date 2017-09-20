@@ -2,7 +2,7 @@
 
 [DEFAULT]
 action = %(action_mwl)s
-bantime  = 3600
+bantime = 3600
 destmail = admin@dupainetdesjoies.pro
 mta = mail
 sender = admin@dupainetdesjoies.pro
@@ -10,11 +10,11 @@ sendername = Fail2BanAlerts
 
 [sshd]
 enabled = true
-port = 48724
+port = XXXXX
 
 [sshd-ddos]
 enabled = true
-port = 48724
+port = XXXXX
 
 [nginx-botsearch]
 enabled = true
@@ -23,27 +23,27 @@ enabled = true
 enabled = true
 
 [nginx-noproxy]
-enabled  = true
+enabled = true
 port = http,https
 logpath = %(nginx_access_log)s
 maxretry = 1
 bantime = 86400
 
 [nginx-noscript]
-enabled  = true
+enabled = true
 port = http,https
 logpath = %(nginx_access_log)s
 maxretry = 1
 bantime = 86400
 
 [nginx-phpmyadmin]
-enabled  = true
+enabled = true
 logpath = %(nginx_access_log)s
 maxretry = 1
 bantime = 86400
 
 [nginx-w00tw00t]
-enabled  = true
+enabled = true
 port = http,https
 logpath = %(nginx_access_log)s
 maxretry = 1
