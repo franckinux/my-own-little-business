@@ -1,11 +1,11 @@
-aiohttp==3.0.5
+aiohttp==3.1.1
 aiohttp-jinja2==0.14.0
 aiohttp-security==0.1.2
 aiohttp-session==2.3.0
 aiohttp-session-flash==0.0.4
 aiosmtplib==1.0.2
 asn1crypto==0.24.0
-async-timeout==2.0.0
+async-timeout==2.0.1
 asyncpg==0.15.0
 attrs==17.4.0
 cffi==1.11.4
@@ -13,7 +13,7 @@ chardet==3.0.4
 cryptography==2.1.4
 gunicorn==19.7.1
 idna==2.6
-idna-ssl==1.0.0
+idna-ssl==1.0.1
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
