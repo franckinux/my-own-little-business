@@ -17,7 +17,7 @@ idna-ssl==1.0.0
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
-molb==0.5.1
+molb==0.5.2
 multidict==4.1.0
 passlib==1.7.1
 pkg-resources==0.0.0

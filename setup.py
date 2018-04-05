@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='molb',
-	version='0.5.1',
+	version='0.5.2',
 	description='"My Own Little Business" is a story of clients, orders, delivery places and production batches... :)',
 	author='Franck Barbenoire',
 	author_email='contact@franck-barbenoire.fr',
