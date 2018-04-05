@@ -96,10 +96,10 @@ async def edit_product(request):
                     return HTTPFound(request.app.router["list_product"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire contient des erreurs"))
-            return {"id": id_, "form": form}
+            return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = ProductForm(data=data, meta=await generate_csrf_meta(request))
-            return {"id": id_, "form": form}
+            return {"id": str(id_), "form": form}
         else:
             raise HTTPMethodNotAllowed()
 
@@ -108,5 +108,5 @@ async def edit_product(request):
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name, available FROM product ORDER BY name")
+        rows = await conn.fetch("SELECT CAST(id AS TEXT), name, available FROM product ORDER BY name")
     return {"products": rows}

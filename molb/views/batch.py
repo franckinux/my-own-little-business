@@ -93,10 +93,10 @@ async def edit_batch(request):
                     return HTTPFound(request.app.router["list_batch"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire contient des erreurs"))
-            return {"id": id_, "form": form}
+            return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))
-            return {"id": id_, "form": form}
+            return {"id": str(id_), "form": form}
         else:
             raise HTTPMethodNotAllowed()
 
@@ -106,7 +106,7 @@ async def edit_batch(request):
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         q = (
-            "SELECT id, date, capacity, opened "
+            "SELECT CAST(id AS TEXT), date, capacity, opened "
             "FROM batch "
             "WHERE date > NOW() "
             "ORDER BY date DESC "
