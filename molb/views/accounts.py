@@ -10,7 +10,7 @@ async def list_account(request):
     async with request.app["db-pool"].acquire() as conn:
         # select unconfirmed clients
         q = (
-            "SELECT id, first_name, last_name, email_address, phone_number, created_at "
+            "SELECT CAST(id AS TEXT), first_name, last_name, email_address, phone_number, created_at "
             "FROM client "
             "WHERE NOT confirmed "
             "ORDER BY created_at, last_name, first_name"

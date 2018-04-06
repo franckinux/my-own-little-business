@@ -92,7 +92,7 @@ async def invoice(request):
                 )
                 payment_details = await conn.fetch(q, invoice_date, client_id)
 
-                q = "SELECT id, first_name, email_address, wallet FROM client WHERE id = $1"
+                q = "SELECT CAST(id AS TEXT), first_name, email_address, wallet FROM client WHERE id = $1"
                 client = await conn.fetchrow(q, client_id)
 
                 await send_invoice(
@@ -281,7 +281,7 @@ async def create_payment(request):
                                   "Le porte-monnaie n'a pas été {}.".format(operation)
                               )
                         )
-                        return {"form": form, "client_id": client_id}
+                        return {"form": form, "client_id": str(client_id)}
 
                 # get last invoice date
                 q = "SELECT last_invoice_date FROM storage"
@@ -297,10 +297,10 @@ async def create_payment(request):
                 return HTTPFound(request.app.router["list_client"].url_for())
         else:
             flash(request, ("danger", "Le formulaire comporte des erreurs."))
-            return {"form": form, "client_id": client_id}
+            return {"form": form, "client_id": str(client_id)}
     elif request.method == "GET":
         form = PaymentForm(meta=await generate_csrf_meta(request))
         form.mode.choices = payment_choices
-        return {"form": form, "client_id": client_id}
+        return {"form": form, "client_id": str(client_id)}
     else:
         raise HTTPMethodNotAllowed()

@@ -430,7 +430,7 @@ async def edit_order(request):
                 rows = await conn.fetch(q)
                 products = [dict(p) for p in rows]
 
-            return {"id": order_id, "form": form, "products": products}
+            return {"id": str(order_id), "form": form, "products": products}
         else:
             raise HTTPMethodNotAllowed()
 
@@ -498,7 +498,7 @@ async def list_order(request):
         )
 
         q = (
-            "SELECT o.id, o.date AS order_date, o.total, o.payment_id, "
+            "SELECT CAST(o.id AS TEXT), o.date AS order_date, o.total, o.payment_id, "
             "       p.id AS payment_id, p.mode AS payment_mode, b.date AS batch_date, "
             "       b.date - INTERVAL '12 hour' AS cancellation_date "
             "FROM order_ AS o "

@@ -29,7 +29,7 @@ async def list_client(request):
             if form.validate():
                 client_id = int(data["client_id"])
                 q = (
-                    "SELECT c.id, c.first_name, c.last_name, c.wallet, "
+                    "SELECT CAST(c.id AS TEXT), c.first_name, c.last_name, c.wallet, "
                     "       c.disabled, SUM(o.total) AS total "
                     "FROM order_ AS o "
                     "INNER JOIN client AS c ON o.client_id = c.id "
@@ -42,7 +42,7 @@ async def list_client(request):
                 client_last_name = data["client_last_name"]
                 if client_last_name.strip() == "":
                     q = (
-                        "SELECT c.id, c.first_name, c.last_name, c.wallet, "
+                        "SELECT CAST(c.id AS TEXT), c.first_name, c.last_name, c.wallet, "
                         "       c.disabled, SUM(o.total) AS total "
                         "FROM order_ AS o "
                         "INNER JOIN client AS c ON o.client_id = c.id "
@@ -54,7 +54,7 @@ async def list_client(request):
                     clients = await conn.fetch(q)
                 else:
                     q = (
-                        "SELECT c.id, c.first_name, c.last_name, c.wallet, "
+                        "SELECT CAST(c.id AS TEXT), c.first_name, c.last_name, c.wallet, "
                         "       c.disabled, SUM(o.total) AS total "
                         "FROM order_ AS o "
                         "INNER JOIN client AS c ON o.client_id = c.id "
@@ -71,7 +71,7 @@ async def list_client(request):
         form = ClientIdForm(meta=await generate_csrf_meta(request))
         async with request.app["db-pool"].acquire() as conn:
             q = (
-                "SELECT c.id, c.first_name, c.last_name, c.wallet, "
+                "SELECT CAST(c.id AS TEXT), c.first_name, c.last_name, c.wallet, "
                 "       c.disabled, SUM(o.total) AS total "
                 "FROM order_ AS o "
                 "INNER JOIN client AS c ON o.client_id = c.id "
