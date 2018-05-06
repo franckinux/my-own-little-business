@@ -1,23 +1,34 @@
 Packages to install
 ===================
 
-For creating the virtual environment : ::
-
-    # apt install python3-venv
-
 For cryptography python module : ::
 
     # apt install libssl-dev
 
 For printing the sources : ::
 
-   # apt install enscript
-   # apt install psutils
+    # apt install enscript
+    # apt install psutils
+
+Install pipenv in user environment : ::
+
+    $ python3 -m pip install pipenv
+
+and update your PATH environment variable (possibly in your bashrc) :
+
+    $ export PATH=~/.local/bin:$PATH
 
 Install molb
 ============
 
-Create a database user : ::
+**Note** : if your user is not called molb as in the following instructions, add
+"-U user" and "-W" options to dropdb, creatdb and psql commands.
+
+**Note** : in order for the postgresql authentication to work, you may have to
+change the authentication method from *peer* to *md5* in PostgreSQL pg_hba.conf
+configuration file for all users except postgres user.
+
+Create a user database : ::
 
     molb@machine$ sudo -i -u postgres
     [sudo] Mot de passe de molb :
@@ -27,19 +38,13 @@ Create a database user : ::
     postgres@machine:~$ déconnexion
     molb@machine$
 
-Create a virtual env : ::
-
-    $ python3 -m venv /path/to/venv
-    $ source /path/to/venv/bin/activate
-    $ pip install --upgrade pip
-    $ pip install wheel
-
-Install molb and its requirements : ::
+Create a virtual env, install molb and its dependencies : ::
 
     $ git clone https://github.com/franckinux/my-own-little-business.git
     $ cd /path/to/my-own-little-business
-    $ pip install -r requirements.txt
-    $ pip install /path/to/my-own-little-business
+    $ pipenv install
+    $ pipenv update
+    $ pipenv install -e .
 
 Drop the database if it exists : ::
 
@@ -66,7 +71,7 @@ Remove useless directory : ::
 
 Launch the server : ::
 
-    $ /path/to/venv/bin/gunicorn molb.main:app --bind 127.0.0.1:8080 --workers 3 --worker-class aiohttp.GunicornWebWorker
+    $ gunicorn molb.main:app --bind 127.0.0.1:8080 --workers 3 --worker-class aiohttp.GunicornWebWorker
 
 
 Tools

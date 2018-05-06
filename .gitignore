@@ -5,3 +5,5 @@ __pycache__/
 my-own-little-business~*.ini
 my-own-little-business.ini
 build/
+Pipfile.lock
+molb.egg-info/

@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiosmtplib = "==1.0.2"
+asyncpg = "==0.15.0"
+cryptography = "==2.2.2"
+gunicorn = "==19.7.1"
+itsdangerous = "==0.24"
+passlib = "==1.7.1"
+"aiohttp_jinja2" = "==1.0.0"
+aiohttp_security = "==0.1.2"
+aiohttp_session_flash = "==0.0.4"
+WTForms = "==2.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
