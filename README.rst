@@ -1,6 +1,10 @@
 Packages to install
 ===================
 
+Install pip : ::
+
+    # apt install python3-pip
+
 For cryptography python module : ::
 
     # apt install libssl-dev
@@ -30,20 +34,18 @@ configuration file for all users except postgres user.
 
 Create a user database : ::
 
-    molb@machine$ sudo -i -u postgres
+    molb@hostname$ sudo -i -u postgres
     [sudo] Mot de passe de molb :
-    postgres@scarlatti:~$ createuser --pwprompt --createdb molb
+    postgres@hostname:~$ createuser --pwprompt --createdb molb
     Enter password for new role:
     Enter it again:
-    postgres@machine:~$ déconnexion
-    molb@machine$
+    postgres@hostname:~$ déconnexion
+    molb@hostname$
 
 Create a virtual env, install molb and its dependencies : ::
 
     $ git clone https://github.com/franckinux/my-own-little-business.git
     $ cd /path/to/my-own-little-business
-    $ pipenv install
-    $ pipenv update
     $ pipenv install -e .
 
 Drop the database if it exists : ::
