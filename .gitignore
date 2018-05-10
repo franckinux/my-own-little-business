@@ -7,3 +7,4 @@ my-own-little-business.ini
 build/
 Pipfile.lock
 molb.egg-info/
+.env

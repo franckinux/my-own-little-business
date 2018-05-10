@@ -118,92 +118,92 @@ async def main(config, loop=None):
 
     # product_1
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Semi-complet 1kg (façonné)", "", 4.5, 1
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Semi-complet 1kg (façonné)", "", 4.5
     )
 
     # product_1bis
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Semi-complet 1kg (moulé)", "", 4.5, 0.9
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Semi-complet 1kg (moulé)", "", 4.5
     )
 
     # product_2
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Semi-complet 650g (façonné)", "", 3, 0.7
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Semi-complet 650g (façonné)", "", 3
     )
 
     # product_3
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Lin-sésame-tournesol 1kg (façonné)", "", 6, 1
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Lin-sésame-tournesol 1kg (façonné)", "", 6
     )
 
     # product_3bis
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Lin-sésame-tournesol 1kg (moulé)", "", 6, 0.9
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Lin-sésame-tournesol 1kg (moulé)", "", 6
     )
 
     # product_4
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Lin-sésame-tournesol 650g (façonné)", "", 4.5, 0.7
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Lin-sésame-tournesol 650g (façonné)", "", 4.5
     )
 
     # product_5
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Petit épautre 500g (moulé)", "", 4.8, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Petit épautre 500g (moulé)", "", 4.8
     )
 
     # product_6
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Raisins-noisettes 1kg (moulé)", "", 8, 0.9
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Raisins-noisettes 1kg (moulé)", "", 8
     )
 
     # product_7
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Raisins-noisettes 500g (moulé)", "", 4, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Raisins-noisettes 500g (moulé)", "", 4
     )
 
     # product_8
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Noix 500g (moulé)", "", 4.5, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Noix 500g (moulé)", "", 4.5
     )
 
     # product_9
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Figues-noix 500g (moulé)", "", 4.5, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Figues-noix 500g (moulé)", "", 4.5
     )
 
     # product_10
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Pavot 500g (moulé)", "", 4.5, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Pavot 500g (moulé)", "", 4.5
     )
 
     # product_11
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Chocolat-orange 500g (moulé)", "", 4.5, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Chocolat-orange 500g (moulé)", "", 4.5
     )
 
     # product_12
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Seigle 1kg (moulé)", "", 5.4, 0.9
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Seigle 1kg (moulé)", "", 5.4
     )
 
     # product_13
     await conn.fetchval(
-        "INSERT INTO product (name, description, price, load) VALUES ($1, $2, $3, $4) RETURNING id",
-        "Seigle 500g (moulé)", "", 2.8, 0.5
+        "INSERT INTO product (name, description, price) VALUES ($1, $2, $3) RETURNING id",
+        "Seigle 500g (moulé)", "", 2.8
     )
 
     # batches
@@ -214,8 +214,8 @@ async def main(config, loop=None):
     next_day = next_weekday(start_day, 0)
     for _ in range(5):
         await conn.fetchval(
-            "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3) RETURNING id",
-            next_day, 50, True
+            "INSERT INTO batch (date, opened) VALUES ($1, $2) RETURNING id",
+            next_day, True
         )
         next_day += datetime.timedelta(days=1)
 

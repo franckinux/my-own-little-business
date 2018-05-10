@@ -14,6 +14,7 @@ passlib = "==1.7.1"
 aiohttp_security = "==0.1.2"
 aiohttp_session_flash = "==0.0.4"
 WTForms = "==2.1"
+"e1839a8" = {path = ".", editable = true}
 
 [dev-packages]
 

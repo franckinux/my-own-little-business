@@ -56,7 +56,8 @@ Create the database : ::
 
     $ createdb molb
 
-Export the path to the config file in an environment variable : ::
+Export the path to the config file in an environment variable. Put it in your
+~/.bashrc file or better in a .env file in your project's directory : ::
 
     $ export MOLB_CONFIG=/path/to/molb.conf
 

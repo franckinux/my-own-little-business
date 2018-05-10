@@ -42,7 +42,6 @@ CREATE TABLE client (
 CREATE TABLE batch (
     id SERIAL PRIMARY KEY NOT NULL,
     date timestamp without time zone UNIQUE NOT NULL,
-    capacity integer NOT NULL CHECK (capacity > 0),
     opened boolean DEFAULT TRUE
 );
 
@@ -75,10 +74,16 @@ CREATE TABLE product (
     name character varying UNIQUE NOT NULL,
     description character varying,
     price numeric(8,2) NOT NULL CHECK (price > 0),
-    load numeric(8,2) DEFAULT 1 CHECK (load > 0),
     available boolean DEFAULT TRUE
 );
 
+
+CREATE TABLE batch_product_association (
+    quantity integer CHECK (quantity > 0),
+    batch_id integer REFERENCES batch(id) NOT NULL,
+    product_id integer REFERENCES product(id) NOT NULL,
+    PRIMARY KEY (batch_id, product_id)
+);
 
 CREATE TABLE order_product_association (
     quantity integer CHECK (quantity > 0),
