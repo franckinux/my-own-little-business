@@ -4,6 +4,10 @@ from aiohttp_session import get_session
 DAYS = ("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")
 
 
+class RollbackTransactionException(Exception):
+    pass
+
+
 def remove_special_data(items):
     dico = dict(items)
     del dico["csrf_token"]

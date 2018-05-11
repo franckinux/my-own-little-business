@@ -41,15 +41,6 @@
         </div>
         {% endif %}
     </div>
-    <div class="form-group{% if form.load.errors %} has-error{% endif %}">
-        {{ form.load.label(for="load") }}
-        {{ form.load(class="form-control", placeholder="Entrez la charge") }}
-        {% if form.load.errors %}
-        <div class="help-text">
-            {% for error in form.load.errors %}<p>{{ error }}</p>{% endfor %}
-        </div>
-        {% endif %}
-    </div>
     <div class="form-group">
         {{ form.available() }}
         {{ form.available.label(for="available") }}

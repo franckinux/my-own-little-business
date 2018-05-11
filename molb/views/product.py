@@ -23,7 +23,6 @@ class ProductForm(CsrfForm):
     name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
     description = StringField("Description")
     price = DecimalField("Prix", validators=[Required()])
-    load = DecimalField("Charge", validators=[Required()])
     available = BooleanField("Disponible", default=True)
     submit = SubmitField("Valider")
 

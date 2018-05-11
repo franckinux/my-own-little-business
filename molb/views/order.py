@@ -13,10 +13,7 @@ from molb.auth import require
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
-
-
-class RollbackTransactionException(Exception):
-    pass
+from molb.views.utils import RollbackTransactionException
 
 
 class OrderForm(CsrfForm):
@@ -49,8 +46,7 @@ async def create_order(request):
         # that have no order on them
         q = (
             "SELECT batch_id, batch_date FROM ("
-            "    SELECT o.batch_id, SUM(opa.quantity * p.load) AS batch_load, "
-            "           b.capacity, b.date AS batch_date "
+            "    SELECT o.batch_id, b.date AS batch_date "
             "    FROM order_product_association AS opa "
             "    INNER JOIN product AS p ON opa.product_id = p.id "
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
@@ -62,15 +58,14 @@ async def create_order(request):
             "          INNER JOIN client AS c_ ON o_.client_id = c_.id "
             "          WHERE c_.id = $1 "
             "    ) "
-            "    GROUP BY o.batch_id, b.capacity, b.date "
+            "    GROUP BY o.batch_id, b.date "
             "    UNION "
-            "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
-            "           b.date AS batch_date "
+            "    SELECT b.id AS batch_id, b.date AS batch_date "
             "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
             "    WHERE b.opened AND o.batch_id IS NULL"
             ") AS sq "
-            "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
+            "WHERE batch_date > (NOW() + INTERVAL '12 hour') "
             "      AND (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
@@ -161,10 +156,10 @@ async def create_order(request):
                     )
                     batch_load = await conn.fetchval(q, batch_id)
 
-                    # check that the batch is not overloaded
-                    if batch_load > batch_capacity:
-                        # if so, roll back the changes
-                        raise RollbackTransactionException()
+                    # # check that the batch is not overloaded
+                    # if batch_load > batch_capacity:
+                    #     # if so, roll back the changes
+                    #     raise RollbackTransactionException()
 
             except RollbackTransactionException:
                 flash(
@@ -237,8 +232,7 @@ async def edit_order(request):
         # select the batch id of the order
         q = (
             "SELECT batch_id, batch_date FROM ("
-            "    SELECT o.batch_id, SUM(opa.quantity * p.load) AS batch_load, "
-            "           b.capacity, b.date AS batch_date "
+            "    SELECT o.batch_id, b.date AS batch_date "
             "    FROM order_product_association AS opa "
             "    INNER JOIN product AS p ON opa.product_id = p.id "
             "    INNER JOIN order_ AS o ON opa.order_id = o.id "
@@ -250,15 +244,14 @@ async def edit_order(request):
             "          INNER JOIN client AS c_ ON o_.client_id = c_.id "
             "          WHERE c_.id = $2 "
             "    ) "
-            "    GROUP BY o.batch_id, b.capacity, b.date "
+            "    GROUP BY o.batch_id, b.date "
             "    UNION "
-            "    SELECT b.id AS batch_id, 0 as batch_load, b.capacity, "
-            "           b.date AS batch_date "
+            "    SELECT b.id AS batch_id, b.date AS batch_date "
             "    FROM batch AS b "
             "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
             "    WHERE b.opened AND (o.batch_id IS NULL OR b.id = $2)"
             ") AS sq "
-            "WHERE batch_load < capacity AND batch_date > (NOW() + INTERVAL '12 hour') "
+            "WHERE batch_date > (NOW() + INTERVAL '12 hour') "
             "      AND (string_to_array($3, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
             "ORDER BY batch_date"
         )
@@ -267,7 +260,7 @@ async def edit_order(request):
 
         # select all available products
         rows = await conn.fetch(
-            "SELECT id, name, description, price, load FROM product WHERE available"
+            "SELECT id, name, description, price FROM product WHERE available"
         )
         products = [dict(p) for p in rows]
 
@@ -331,10 +324,10 @@ async def edit_order(request):
                     # second step : re-create it
 
                     # lock the batch record in the transaction
-                    q = (
-                        "SELECT capacity FROM batch WHERE id = $1 FOR UPDATE"
-                    )
-                    batch_capacity = await conn.fetchval(q, new_batch_id)
+                    # q = (
+                    #     "SELECT capacity FROM batch WHERE id = $1 FOR UPDATE"
+                    # )
+                    # batch_capacity = await conn.fetchval(q, new_batch_id)
 
                     # create an order, total is set to 0
                     q = (
@@ -354,20 +347,20 @@ async def edit_order(request):
                             )
                             await conn.execute(q, quantity, new_order_id, product_id)
 
-                    # compute batch load
-                    q = (
-                        "SELECT SUM(opa.quantity * p.load) AS load "
-                        "FROM order_product_association AS opa "
-                        "INNER JOIN product AS p ON opa.product_id = p.id "
-                        "INNER JOIN order_ AS o ON opa.order_id = o.id "
-                        "WHERE o.batch_id = $1"
-                    )
-                    batch_load = await conn.fetchval(q, new_batch_id)
-
-                    # check that the batch is not overloaded
-                    if batch_load > batch_capacity:
-                        # if so, roll back the changes
-                        raise RollbackTransactionException()
+                    # # compute batch load
+                    # q = (
+                    #     "SELECT SUM(opa.quantity * p.load) AS load "
+                    #     "FROM order_product_association AS opa "
+                    #     "INNER JOIN product AS p ON opa.product_id = p.id "
+                    #     "INNER JOIN order_ AS o ON opa.order_id = o.id "
+                    #     "WHERE o.batch_id = $1"
+                    # )
+                    # batch_load = await conn.fetchval(q, new_batch_id)
+                    #
+                    # # check that the batch is not overloaded
+                    # if batch_load > batch_capacity:
+                    #     # if so, roll back the changes
+                    #     raise RollbackTransactionException()
 
             except RollbackTransactionException:
                 flash(

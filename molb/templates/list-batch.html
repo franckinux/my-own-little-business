@@ -14,7 +14,6 @@
    <thead>
       <tr>
          <th>Date</th>
-         <th>Capacité</th>
          <th>Ouverte</th>
          <th></th>
       </tr>
@@ -23,7 +22,6 @@
       {% for batch in batches %}
       <tr>
          <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date }}</a></td>
-         <td>{{ batch.capacity }}</td>
          <td>{{ batch.opened }}</td>
          <td><a href="{{ url("delete_batch", id=batch.id) }}">Supprimer</a></td>
       </tr>

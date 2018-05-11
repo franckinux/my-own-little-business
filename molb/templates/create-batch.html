@@ -29,19 +29,33 @@
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
-    <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
-        {{ form.capacity.label(for="capacity") }}
-        {{ form.capacity(class="form-control", placeholder="Entrez la capacité") }}
-        {% if form.capacity.errors %}
-        <div class="help-text">
-            {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
-        </div>
-        {% endif %}
-    </div>
     <div class="form-group">
         {{ form.opened() }}
         {{ form.opened.label(for="opened") }}
     </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+		{% if product.description %}
+                <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
+		{% else %}
+                <td>{{ product.name }}</td>
+		{% endif %}
+                <td>{{ product.price }}</a></td>
+                <td>
+                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="text" value="{{ product.quantity }}">
+	       </td>
+            {% endfor %}
+        </tbody>
+    </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
         <a href="{{ url("list_batch") }}" class="btn btn-default">Annuler</a>
