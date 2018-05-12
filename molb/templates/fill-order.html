@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Saisie d'une commande{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{{ url("home") }}">Accueil</a></li>
+    <li><a href="{{ url("list_order") }}">Commandes</a></li>
+    <li class="active">Saisie d'une commande (2/2)</li>
+</ol>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" action="{{ url("fill_order") }}" role="form">
+    {{ form.csrf_token }}
+    {% if form.csrf_token.errors %}
+        <p>You have submitted an invalid CSRF token</p>
+    {% endif %}
+    {{ form.batch_id(value=batch_id) }}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+		{% if product.description %}
+                <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
+		{% else %}
+                <td>{{ product.name }}</td>
+		{% endif %}
+                <td>{{ product.price }}</a></td>
+                <td>
+                    <input class="form-control" name="product_qty_{{ product.id }}"
+		    placeholder="Entrez la quantité (pas plus de {{ product.quantity }})"
+		    type="text"">
+	       </td>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url("list_order") }}" class="btn btn-default">Annuler</a>
+    </div>
+</form>
+{% endblock %}

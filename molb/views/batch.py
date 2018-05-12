@@ -15,7 +15,6 @@ from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
 from molb.views.utils import remove_special_data
-from molb.views.utils import RollbackTransactionException
 from molb.views.utils import settings
 
 
@@ -90,8 +89,8 @@ async def create_batch(request):
                             )
                             await conn.execute(q, quantity, batch_id, product_id)
 
-                flash(request, ("success", "Fournée a bien été crée"))
-            except RollbackTransactionException:
+                flash(request, ("success", "La fournée a bien été crée"))
+            except:
                 flash(request, ("warning", "La fournée ne peut pas être crée"))
                 return {"form": form, "products": products}
             return HTTPFound(request.app.router["list_batch"].url_for())

@@ -22,6 +22,7 @@ from molb.views.home import home
 from molb.views.order import create_order
 from molb.views.order import edit_order
 from molb.views.order import delete_order
+from molb.views.order import fill_order
 from molb.views.order import list_order
 from molb.views.payment import invoice
 from molb.views.payment import create_payment
@@ -44,7 +45,7 @@ def setup_routes(app):
         app.router.add_static("/static", static_dir)
 
     # starting page
-    app.router.add_get("/", start, name="start")
+    app.router.add_get('/', start, name="start")
 
     # accounts
     app.router.add_get("/account/list/", list_account, name="list_account")
@@ -79,6 +80,7 @@ def setup_routes(app):
     app.router.add_route('*', "/order/create/", create_order, name="create_order")
     app.router.add_get("/order/delete/{id:\d+}/", delete_order, name="delete_order")
     app.router.add_route('*', "/order/edit/{id:\d+}/", edit_order, name="edit_order")
+    app.router.add_route('*', "/order/fill/", fill_order, name="fill_order")
     app.router.add_get("/order/list/", list_order, name="list_order")
 
     # payments
