@@ -18,34 +18,37 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block page_content %}
-<form method="POST" action="{{ url("fill_order") }}" role="form">
+<p><b>Fournée du {{ batch_date.strftime("%d-%m-%Y à %H:%M") }}</b></p>
+
+<form method="POST" action="{{ url("create_fill_order", id=batch_id) }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
-    {{ form.batch_id(value=batch_id) }}
     <table class="table table-hover">
         <thead>
             <tr>
                 <th>Produit</th>
                 <th>Prix unitaire</th>
                 <th>Quantité</th>
+                <th>Disponibilité</th>
             </tr>
         </thead>
         <tbody>
             {% for product in products %}
             <tr>
-		{% if product.description %}
+                {% if product.description %}
                 <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
-		{% else %}
+                {% else %}
                 <td>{{ product.name }}</td>
-		{% endif %}
+                {% endif %}
                 <td>{{ product.price }}</a></td>
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}"
-		    placeholder="Entrez la quantité (pas plus de {{ product.quantity }})"
-		    type="text"">
-	       </td>
+                    placeholder="Entrez la quantité"
+                    type="text"">
+                </td>
+                <td>{{ product.quantity }}</td>
             {% endfor %}
         </tbody>
     </table>

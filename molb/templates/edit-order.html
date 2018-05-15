@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Modification d'une commande{% endblock %}
+{% block title %}Saisie d'une commande{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li><a href="{{ url("home") }}">Accueil</a></li>
@@ -18,35 +18,38 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block page_content %}
-<form method="POST" action="{{ url("edit_order", id=id) }}" role="form">
+<p><b>Fournée du {{ batch_date.strftime("%d-%m-%Y à %H:%M") }}</b></p>
+
+<form method="POST" action="{{ url("edit_fill_order", id=order_id) }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
-    <div class="form-group">
-        {{ form.batch_id.label(for="batch_id") }}
-        {{ form.batch_id(class="form-control") }}
-    </div>
     <table class="table table-hover">
         <thead>
             <tr>
                 <th>Produit</th>
                 <th>Prix unitaire</th>
                 <th>Quantité</th>
+                <th>Disponible</th>
             </tr>
         </thead>
         <tbody>
             {% for product in products %}
             <tr>
-		{% if product.description %}
+                {% if product.description %}
                 <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
-		{% else %}
+                {% else %}
                 <td>{{ product.name }}</td>
-		{% endif %}
+                {% endif %}
                 <td>{{ product.price }}</a></td>
                 <td>
-                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="text" value="{{ product.quantity }}">
-	       </td>
+                    <input class="form-control" name="product_qty_{{ product.id }}"
+                    value="{{ product.ordered }}"
+                    placeholder="Entrez la quantité"
+                    type="text"">
+                </td>
+                <td>{{ product.quantity }} </td>
             {% endfor %}
         </tbody>
     </table>

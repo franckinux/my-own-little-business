@@ -28,7 +28,7 @@
       {% for order in orders -%}
       <tr>
          {% if now < order.cancellation_date and not order.payment_id %}
-         <td><a href="{{ url("edit_order", id=order.id) }}">{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</a></td>
+         <td><a href="{{ url("edit_fill_order", id=order.id) }}">{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</a></td>
          {% else %}
          <td>{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</td>
          {% endif %}

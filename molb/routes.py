@@ -79,8 +79,8 @@ def setup_routes(app):
     # orders
     app.router.add_route('*', "/order/create/", create_order, name="create_order")
     app.router.add_get("/order/delete/{id:\d+}/", delete_order, name="delete_order")
-    app.router.add_route('*', "/order/edit/{id:\d+}/", edit_order, name="edit_order")
-    app.router.add_route('*', "/order/fill/", fill_order, name="fill_order")
+    app.router.add_route('*', "/order/edit/{id:\d+}/", edit_order, name="edit_fill_order")
+    app.router.add_route('*', "/order/fill/{id:\d+}/", fill_order, name="create_fill_order")
     app.router.add_get("/order/list/", list_order, name="list_order")
 
     # payments
