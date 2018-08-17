@@ -5,18 +5,18 @@ name = "pypi"
 
 [packages]
 aiosmtplib = "==1.0.2"
-asyncpg = "==0.15.0"
-cryptography = "==2.2.2"
-gunicorn = "==19.7.1"
+asyncpg = "==0.17.0"
+cryptography = "==2.3.1"
+gunicorn = "==19.9.0"
 itsdangerous = "==0.24"
 passlib = "==1.7.1"
 "aiohttp_jinja2" = "==1.0.0"
-aiohttp_security = "==0.1.2"
+aiohttp_security = "==0.2.0"
 aiohttp_session_flash = "==0.0.4"
-WTForms = "==2.1"
-"e1839a8" = {editable = true, path = "."}
+WTForms = "==2.2.1"
+"e1839a8" = {path = ".", editable = true}
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.5"
