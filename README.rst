@@ -32,7 +32,7 @@ Install molb
 change the authentication method from *peer* to *md5* in PostgreSQL pg_hba.conf
 configuration file for all users except postgres user.
 
-Create a user database : ::
+Create a database user : ::
 
     molb@hostname$ sudo -i -u postgres
     [sudo] Mot de passe de molb :
@@ -64,9 +64,11 @@ Export the path to the config file in an environment variable. Put it in your
 Define the keys and passwords : ::
 
     $ psql molb < /path/to/create/schema.sql
+    $ pipenv shell
     $ python3 create/create.py
     > Admin password = sa2cPKHD
     $ python3 create/secret_keys.py
+    $ exit
 
 Remove useless directory : ::
 
