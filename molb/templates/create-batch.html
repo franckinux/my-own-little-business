@@ -51,7 +51,7 @@
 		{% endif %}
                 <td>{{ product.price }}</a></td>
                 <td>
-                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="text" value="{{ product.quantity }}">
+                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="number" step='1' value="{{ product.quantity }}">
 	       </td>
             {% endfor %}
         </tbody>

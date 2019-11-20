@@ -46,7 +46,7 @@ $(document).ready(function(){
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}"
                     placeholder="Entrez la quantité"
-                    type="text"">
+                    type="number" step="1">
                 </td>
                 <td>{{ product.quantity }}</td>
             {% endfor %}
