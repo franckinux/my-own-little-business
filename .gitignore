@@ -9,3 +9,4 @@ Pipfile.lock
 molb.egg-info/
 .env
 dist/
+tags
