@@ -22,7 +22,6 @@ from molb.views.home import home
 from molb.views.order import create_order
 from molb.views.order import edit_order
 from molb.views.order import delete_order
-from molb.views.order import fill_order
 from molb.views.order import list_order
 from molb.views.payment import invoice
 from molb.views.payment import create_payment
@@ -37,6 +36,7 @@ from molb.views.repository import edit_repository
 from molb.views.repository import delete_repository
 from molb.views.repository import list_repository
 from molb.views.start import start
+
 
 def setup_routes(app):
     development_mode = app["config"]["application"].get("development", False)
@@ -80,7 +80,6 @@ def setup_routes(app):
     app.router.add_route('*', "/order/create/", create_order, name="create_order")
     app.router.add_get("/order/delete/{id:\d+}/", delete_order, name="delete_order")
     app.router.add_route('*', "/order/edit/{id:\d+}/", edit_order, name="edit_fill_order")
-    app.router.add_route('*', "/order/fill/{id:\d+}/", fill_order, name="create_fill_order")
     app.router.add_get("/order/list/", list_order, name="list_order")
 
     # payments

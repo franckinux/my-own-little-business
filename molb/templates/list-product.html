@@ -16,6 +16,7 @@
          <th>Nom</th>
          <th>Disponible</th>
          <th>Prix</th>
+         <th>Poids du pâton</th>
          <th></th>
       </tr>
    </thead>
@@ -24,6 +25,8 @@
       <tr>
          <td><a href="{{ url("edit_product", id=product.id) }}">{{ product.name }}</a></td>
          <td>{{ product.available }}</td>
+         <td>{{ product.price }}</td>
+         <td>{{ product.dough_weight }}</td>
          <td><a href="{{ url("delete_product", id=product.id) }}">Supprimer</a></td>
       </tr>
       {% endfor %}

@@ -42,9 +42,11 @@ CREATE TABLE client (
 CREATE TABLE batch (
     id SERIAL PRIMARY KEY NOT NULL,
     date timestamp without time zone UNIQUE NOT NULL,
+    load numeric(4,2) NOT NULL CHECK (load > 0),
     opened boolean DEFAULT TRUE
 );
 
+CREATE INDEX batch_date_index ON batch(date);
 
 CREATE TABLE payment (
     id SERIAL PRIMARY KEY NOT NULL,
@@ -73,17 +75,11 @@ CREATE TABLE product (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
     description character varying,
+    dough_weight numeric(8,2) NOT NULL CHECK (dough_weight != 0),
     price numeric(8,2) NOT NULL CHECK (price > 0),
     available boolean DEFAULT TRUE
 );
 
-
-CREATE TABLE batch_product_association (
-    quantity integer CHECK (quantity > 0),
-    batch_id integer REFERENCES batch(id) NOT NULL,
-    product_id integer REFERENCES product(id) NOT NULL,
-    PRIMARY KEY (batch_id, product_id)
-);
 
 CREATE TABLE order_product_association (
     quantity integer CHECK (quantity > 0),

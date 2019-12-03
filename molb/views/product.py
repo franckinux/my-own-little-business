@@ -23,6 +23,7 @@ class ProductForm(CsrfForm):
     name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
     description = StringField("Description")
     price = DecimalField("Prix", validators=[Required()])
+    dough_weight = DecimalField("Poids pâton", validators=[Required()])
     available = BooleanField("Disponible", default=True)
     submit = SubmitField("Valider")
 
@@ -107,5 +108,5 @@ async def edit_product(request):
 @aiohttp_jinja2.template("list-product.html")
 async def list_product(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT CAST(id AS TEXT), name, available, price FROM product ORDER BY name")
+        rows = await conn.fetch("SELECT CAST(id AS TEXT), name, available, price , dough_weight FROM product ORDER BY name")
     return {"products": rows}

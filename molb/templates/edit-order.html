@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Saisie d'une commande{% endblock %}
+{% block title %}Modification d'une commande{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li><a href="{{ url("home") }}">Accueil</a></li>
@@ -31,7 +31,6 @@ $(document).ready(function(){
                 <th>Produit</th>
                 <th>Prix unitaire</th>
                 <th>Quantité</th>
-                <th>Disponible</th>
             </tr>
         </thead>
         <tbody>
@@ -47,7 +46,7 @@ $(document).ready(function(){
                     <input class="form-control" name="product_qty_{{ product.id }}"
                     value="{{ product.ordered }}"
                     placeholder="Entrez la quantité"
-                    type="text"">
+                    type="number" step="1">
                 </td>
                 <td>{{ product.quantity }} </td>
             {% endfor %}

@@ -5,21 +5,21 @@ from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
 from wtforms import BooleanField
 from wtforms import DateTimeField
-from wtforms import IntegerField
+from wtforms import DecimalField
 from wtforms import SubmitField
 from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
-from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
-from molb.views.utils import place_holders
+# from molb.views.utils import place_holders
 from molb.views.utils import remove_special_data
 from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
     date = DateTimeField("Date", validators=[Required()])
+    load = DecimalField("Capacité", validators=[Required()])
     opened = BooleanField("Ouverte", default=True)
     submit = SubmitField("Valider")
 
@@ -28,75 +28,37 @@ class BatchForm(CsrfForm):
 @aiohttp_jinja2.template("create-batch.html")
 async def create_batch(request):
     async with request.app["db-pool"].acquire() as conn:
-        # select all available products
-        rows = await conn.fetch(
-            "SELECT id, name, description, price FROM product WHERE available"
-        )
-        products = [dict(p) for p in rows]
-
         if request.method == "POST":
             form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
-            data = remove_special_data(await request.post())
-
-            for product in products:
-                product_id = product["id"]
-                quantity = data["product_qty_{}".format(product_id)]
-                product["quantity"] = quantity
+            data = remove_special_data(form.data.items())
 
             # just for csrf !
             if not form.validate():
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
-                return {"form": form, "products": products}
+                return {"form": form}
 
-            # 2 separate loops for correct form rendering
-            quantities = {}
-            for product in products:
-                product_id = product["id"]
-                qti = product["quantity"].strip()
-                if qti == '':
-                    qti = 0
-                else:
-                    try:
-                        qti = int(qti)
-                        if qti < 0:
-                            raise ValueError("negative quantity")
-                    except ValueError:
-                        flash(request, ("danger", "Quantité(s) invalide(s)."))
-                        return {"form": form, "products": products}
-                quantities[product_id] = qti
-
-            if sum(quantities.values()) == 0:
-                flash(request, ("warning", "Veuillez choisir au moins un produit"))
-                return {"form": form, "products": products}
+            if data["load"] <= 0:
+                flash(request, ("danger", "Capacité de la fournée invalide"))
+                return {"form": form}
 
             try:
                 async with conn.transaction():
                     # create the batch
                     q = (
-                        "INSERT INTO batch (date, opened) "
-                        "VALUES ($1, $2) RETURNING id"
+                        "INSERT INTO batch (date, load, opened) VALUES ($1, $2, $3)"
                     )
-                    batch_id = await conn.fetchval(q, form.data["date"], form.data["opened"])
-
-                    # create batch to products
-                    for product_id, quantity in quantities.items():
-                        if quantity != 0:
-                            q = (
-                                "INSERT INTO batch_product_association ("
-                                "   quantity, batch_id, product_id"
-                                ") "
-                                "VALUES ($1, $2, $3)"
-                            )
-                            await conn.execute(q, quantity, batch_id, product_id)
+                    await conn.execute(
+                        q, form.data["date"], form.data["load"], form.data["opened"]
+                    )
 
                 flash(request, ("success", "La fournée a bien été crée"))
-            except:
+            except Exception:
                 flash(request, ("warning", "La fournée ne peut pas être crée"))
-                return {"form": form, "products": products}
+                return {"form": form}
             return HTTPFound(request.app.router["list_batch"].url_for())
         elif request.method == "GET":
             form = BatchForm(meta=await generate_csrf_meta(request))
-            return {"form": form, "products": products}
+            return {"form": form}
         else:
             raise HTTPMethodNotAllowed()
 
@@ -107,15 +69,11 @@ async def delete_batch(request):
         id_ = int(request.match_info["id"])
         try:
             async with conn.transaction():
-                await conn.execute(
-                    "DELETE FROM batch_product_association WHERE batch_id = $1",
-                    id_
-                )
                 await conn.execute("DELETE FROM batch WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "La fournée ne peux pas être supprimée"))
+            flash(request, ("warning", "La fournée ne peut pas être supprimée"))
         except Exception:
-            flash(request, ("danger", "La fournée ne peux pas être supprimée"))
+            flash(request, ("danger", "La fournée ne peut pas être supprimée"))
         else:
             flash(request, ("success", "La fournée a bien été supprimée"))
         finally:
@@ -128,16 +86,6 @@ async def edit_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         id_ = int(request.match_info["id"])
         data = dict(await conn.fetchrow("SELECT * FROM batch WHERE id = $1", id_))
-
-        # select batch products
-        q = (
-            "SELECT name, description, price, available, quantity "
-            "FROM product AS p "
-            "INNER JOIN batch_product_association AS bpa ON bpa.product_id = p.id "
-            "WHERE bpa.batch_id = $1"
-        )
-        rows = await conn.fetch(q, id_)
-        products = [dict(p) for p in rows]
 
         if request.method == "POST":
             form = BatchForm(
@@ -159,10 +107,10 @@ async def edit_batch(request):
                     return HTTPFound(request.app.router["list_batch"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire contient des erreurs"))
-            return {"id": str(id_), "form": form, "products": products}
+            return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))
-            return {"id": str(id_), "form": form, "products": products}
+            return {"id": str(id_), "form": form}
         else:
             raise HTTPMethodNotAllowed()
 
@@ -172,10 +120,10 @@ async def edit_batch(request):
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         q = (
-            "SELECT CAST(id AS TEXT), date, opened "
+            "SELECT CAST(id AS TEXT), date, load, opened "
             "FROM batch "
             "WHERE date > NOW() "
-            "ORDER BY date DESC "
+            "ORDER BY date ASC "
             "LIMIT 30"
         )
         rows = await conn.fetch(q)

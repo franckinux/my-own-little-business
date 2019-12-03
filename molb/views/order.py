@@ -2,10 +2,8 @@ from datetime import datetime
 from datetime import timedelta
 
 from aiohttp_security import authorized_userid
-from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
-from aiohttp.web import HTTPSeeOther
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from wtforms import SelectField
@@ -15,7 +13,6 @@ from molb.auth import require
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
-from molb.views.utils import RollbackTransactionException
 
 
 class CreateOrderForm(CsrfForm):
@@ -27,50 +24,31 @@ class FillOrderForm(CsrfForm):
     submit = SubmitField("Valider")
 
 
-async def get_available_products_in_batch(conn, batch_id, excluded=None):
-    """Return all the available products in the batch. Available quantities
-    are updates with the already ordered products"""
+async def get_ordered_products_weight(conn, batch_id, excluded=None):
+    """Return the weight of already ordered products"""
 
-    # select all available products in the batch
-    q = (
-        "SELECT p.id, p.name, p.description, p.price, quantity "
-        "FROM batch_product_association AS bpa "
-        "INNER JOIN product AS p ON bpa.product_id = p.id "
-        "WHERE p.available AND bpa.batch_id = $1"
-        "ORDER BY p.name"
-    )
-    rows = await conn.fetch(q, batch_id)
-    products = {p["id"]: dict(p) for p in rows}
-
-    # get summed quantities of all orders by product
+    # get summed quantities of all orders
     if excluded is not None:
         q = (
-            "SELECT product_id, SUM(quantity) AS quantity "
+            "SELECT SUM(quantity*p.dough_weight) AS load "
             "FROM order_product_association "
             "INNER JOIN order_ AS o ON o.id = order_id "
             "INNER JOIN product AS p ON p.id = product_id "
-            "WHERE p.available AND o.batch_id = $1 AND order_id != $2 "
-            "GROUP BY product_id"
+            "WHERE p.available AND o.batch_id = $1 AND order_id != $2"
         )
-        rows = await conn.fetch(q, batch_id, excluded)
+        load = await conn.fetchval(q, batch_id, excluded)
     else:
         q = (
-            "SELECT product_id, SUM(quantity) AS quantity "
+            "SELECT SUM(quantity*p.dough_weight) AS load "
             "FROM order_product_association "
             "INNER JOIN order_ AS o ON o.id = order_id "
             "INNER JOIN product AS p ON p.id = product_id "
-            "WHERE p.available AND o.batch_id = $1 "
-            "GROUP BY product_id"
+            "WHERE p.available AND o.batch_id = $1"
         )
-        rows = await conn.fetch(q, batch_id)
-    order_products = {op["product_id"]:op["quantity"] for op in rows}
-
-    # remove already ordered products from the batch products
-    for product_id, quantity in order_products.items():
-        if product_id in products:
-            products[product_id]["quantity"] -= order_products[product_id]
-
-    return products
+        load = await conn.fetchval(q, batch_id)
+    if load is None:
+        load = 0
+    return load
 
 
 @require("client")
@@ -94,37 +72,45 @@ async def create_order(request):
 
         # select opened batches that have no order from the client
         # select opened batches that have no order on them
-        # from all above selected batrches, select batches :
+        # from all above selected batches, select batches :
         #    - whose date is 12 hours in the future
         #    - client's delivery days corresponds to the batch date
         q = (
-            "SELECT batch_id, batch_date FROM ("
-            "    SELECT o.batch_id, b.date AS batch_date "
-            "    FROM order_product_association AS opa "
-            "    INNER JOIN product AS p ON opa.product_id = p.id "
-            "    INNER JOIN order_ AS o ON opa.order_id = o.id "
-            "    INNER JOIN client AS c ON o.client_id = c.id "
-            "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened AND c.id != $1 "
-            "    GROUP BY o.batch_id, b.date "
-            "    UNION "
-            "    SELECT b.id AS batch_id, b.date AS batch_date "
-            "    FROM batch AS b "
-            "    LEFT JOIN order_ AS o ON o.batch_id = b.id "
-            "    WHERE b.opened AND o.batch_id IS NULL"
-            ") AS sq "
-            "WHERE batch_date > (NOW() + INTERVAL '12 hour') "
-            "      AND (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM batch_date) + 1] "
-            "ORDER BY batch_date"
+            "WITH batch_choices AS ( "
+            "    SELECT b.id AS batch_id, b.date AS batch_date, c.id AS client_id FROM batch AS b "
+            "    LEFT JOIN order_ AS o ON b.id = o.batch_id "
+            "    LEFT JOIN client AS c ON c.id = o.client_id "
+            "    WHERE b.opened AND b.date > (NOW() + INTERVAL '12 hour') AND "
+            "          (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM b.date) + 1] "
+            "    GROUP BY b.id, b.date, c.id "
+            "    ORDER BY b.id, b.date "
+            ") "
+            "SELECT batch_id, batch_date FROM batch_choices "
+            "WHERE batch_id NOT IN ("
+            "    SELECT batch_id FROM batch_choices "
+            "    WHERE client_id = $1 "
+            ")"
         )
         rows = await conn.fetch(q, client_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
+        # get all available products
+        q = (
+            "SELECT * FROM product WHERE available"
+        )
+        rows = await conn.fetch(q)
+        products = {p["id"]: dict(p) for p in rows}
+
+        template_context = {
+            "products": products.values()
+        }
+
         if request.method == "POST":
-            form = CreateOrderForm(await request.post(), meta=await generate_csrf_meta(request))
+            data = await request.post()
+            form = CreateOrderForm(data, meta=await generate_csrf_meta(request))
             form.batch_id.choices = batch_choices
 
-            data = remove_special_data(form.data.items())
+            data = remove_special_data(data.items())
             batch_id = int(data["batch_id"])
 
             # just for csrf !
@@ -132,88 +118,22 @@ async def create_order(request):
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return HTTPFound(request.app.router["list_order"].url_for())
 
-            url = request.app.router["create_fill_order"].url_for(id=str(batch_id))
-            return HTTPSeeOther(url)
+            # get the batch date and load
+            q = "SELECT date, load FROM batch WHERE id = $1"
+            row = await conn.fetchrow(q, batch_id)
+            batch_date = row["date"]
+            batch_load = row["load"]
 
-        elif request.method == "GET":
-            form = CreateOrderForm(meta=await generate_csrf_meta(request))
-            form.batch_id.choices = batch_choices
-            return {"form": form}
-
-        else:
-            raise HTTPMethodNotAllowed()
-
-
-@require("client")
-@aiohttp_jinja2.template("create-fill-order.html")
-async def fill_order(request):
-    batch_id = int(request.match_info["id"])
-
-    login = await authorized_userid(request)
-
-    async with request.app["db-pool"].acquire() as conn:
-        q = (
-            "SELECT c.id, c.disabled, r.days "
-            "FROM client AS c "
-            "INNER JOIN repository AS r ON c.repository_id = r.id "
-            "WHERE c.login = $1 "
-        )
-        client = await conn.fetchrow(q, login)
-        client_id = client["id"]
-
-        if client["disabled"]:
-            flash(request, ("warning", "Vous ne pouvez pas passer de commande."))
-            return HTTPFound(request.app.router["list_order"].url_for())
-
-        # get the batch date
-        q = "SELECT date FROM batch WHERE id = $1"
-        batch_date = await conn.fetchval(q, batch_id)
-
-        # check that the batch corresponds to the delivery days
-        if not client["days"][(batch_date.weekday() + 1) % 7]:
-            flash(request, ("warning", "La fournée choisie ne permet de vous livrer."))
-            return HTTPFound(request.app.router["list_order"].url_for())
-
-        # check that there is no order from that client to this batch
-        q = (
-            "SELECT * "
-            "FROM order_ AS o "
-            "INNER JOIN batch AS b ON batch_id = b.id "
-            "INNER JOIN client AS c ON client_id = c.id "
-            "WHERE c.id = $1 AND b.id = $2"
-        )
-        row = await conn.fetchrow(q, client_id, batch_id)
-        if row:
-            flash(
-                request,
-                (
-                    "warning",
-                    "Vous avez déjà effectué une commande pour cette fournée."
-                )
-            )
-            return HTTPFound(request.app.router["list_order"].url_for())
-
-        # get product quantities updated with other orders on the same batch
-        products = await get_available_products_in_batch(conn, batch_id)
-
-        template_context = {
-            "batch_date": batch_date,
-            "batch_id": batch_id,
-            "products": products.values()
-        }
-
-        if request.method == "POST":
-            form = FillOrderForm(await request.post(), meta=await generate_csrf_meta(request))
-            data = remove_special_data(await request.post())
+            # check that the batch corresponds to the delivery days
+            if not client["days"][(batch_date.weekday() + 1) % 7]:
+                flash(request, ("warning", "La fournée choisie ne permet de vous livrer."))
+                return HTTPFound(request.app.router["list_order"].url_for())
 
             template_context["form"] = form
 
-            # just for csrf !
-            if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
-                return template_context
-
-            # get the ordered quantities from the form
+            # compute total price and total_weight of the order
+            total_price = 0
+            total_weight = 0
             for product_id, product in products.items():
                 ordered = data["product_qty_{}".format(product_id)].strip()
                 if ordered == '':
@@ -227,32 +147,24 @@ async def fill_order(request):
                         flash(request, ("danger", "Quantité(s) invalide(s)."))
                         return template_context
                 product["ordered"] = ordered
-
-            # check that less products has been ordered than the batch can provide
-            # compute total price
-            total = 0
-            for product in products.values():
-                ordered = product["ordered"]
-                total += ordered*products[product_id]["price"]
-
-                if product["quantity"] < ordered:
-                    flash(
-                        request,
-                        (
-                            "warning",
-                            (
-                                "Il n'y a pas assez de produits disponibles "
-                                "pour satisfaire votre commande ({} \"{}\" demandés "
-                                "pour {} disponibles)."
-                            ).format(product["ordered"], product["name"],
-                                     product["quantity"])
-                        )
-                    )
-                    return template_context
+                total_price += ordered * products[product_id]["price"]
+                total_weight += ordered * products[product_id]["dough_weight"]
 
             # check that at least one product has been ordered
-            if total == 0:
+            if total_weight == 0:
                 flash(request, ("warning", "Veuillez choisir au moins un produit"))
+                return template_context
+
+            # checked that the weight of ordered product is less than batch capacity
+            products_weight = await get_ordered_products_weight(conn, batch_id)
+            if total_weight + products_weight > batch_load:
+                flash(
+                    request,
+                    (
+                        "warning",
+                        "Votre commande dépasse la capacité de la fournée."
+                    )
+                )
                 return template_context
 
             try:
@@ -262,7 +174,7 @@ async def fill_order(request):
                         "INSERT INTO order_ (total, client_id, batch_id) "
                         "VALUES ($1, $2, $3) RETURNING id"
                     )
-                    order_id = await conn.fetchval(q, total, client_id, batch_id)
+                    order_id = await conn.fetchval(q, total_price, client_id, batch_id)
 
                     # create order to products
                     for product_id, product in products.items():
@@ -275,17 +187,17 @@ async def fill_order(request):
                                 "VALUES ($1, $2, $3)"
                             )
                             await conn.execute(q, ordered, order_id, product_id)
-            except:
-                flash( request, ( "warning", ( "Votre commande n'a pas pu être passée.")))
+            except Exception:
+                flash(request, ("warning", ("Votre commande n'a pas pu être passée.")))
                 return template_context
 
             flash(request, ("success", "Votre commande a été passée avec succès"))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         elif request.method == "GET":
-            form = FillOrderForm(meta=await generate_csrf_meta(request))
+            form = CreateOrderForm(meta=await generate_csrf_meta(request))
+            form.batch_id.choices = batch_choices
             template_context["form"] = form
-
             return template_context
 
         else:
@@ -314,29 +226,35 @@ async def edit_order(request):
 
         # check that the order belongs to the right client
         q = (
-            "SELECT * FROM order_ "
+            "SELECT COUNT(*) FROM order_ "
             "WHERE id = $1 AND client_id = $2 AND payment_id IS NULL"
         )
-        row = await conn.fetchrow(q, order_id, client_id)
-        if not row:
+        count = await conn.fetchval(q, order_id, client_id)
+        if count != 1:
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # get batch id and batch date
-        row = await conn.fetchrow(
-            "SELECT batch_id, b.date FROM order_ AS o "
+        q = (
+            "SELECT batch_id, b.date, b.load FROM order_ AS o "
             "INNER JOIN batch AS b ON b.id = batch_id "
-            "WHERE o.id = $1", order_id
+            "WHERE o.id = $1"
         )
+        row = await conn.fetchrow(q, order_id)
         batch_date = row["date"]
         batch_id = row["batch_id"]
+        batch_load = row["load"]
 
-        # check that's its not too late too modify the order
+        # check that's its not too late to modify the order
         if datetime.now() > batch_date - timedelta(hours=12):
             flash(request, ("warning", "Il est trop tard pour modifier votre commande."))
             return HTTPFound(request.app.router["list_order"].url_for())
 
-        # get product quantities updated with other orders on the same batch
-        products = await get_available_products_in_batch(conn, batch_id, excluded=order_id)
+        # get products
+        q = (
+            "SELECT * FROM product WHERE available"
+        )
+        rows = await conn.fetch(q)
+        products = {p["id"]: dict(p) for p in rows}
 
         template_context = {
             "batch_date": batch_date,
@@ -346,8 +264,9 @@ async def edit_order(request):
         }
 
         if request.method == "POST":
+            data = await request.post()
             form = FillOrderForm(await request.post(), meta=await generate_csrf_meta(request))
-            data = remove_special_data(await request.post())
+            data = remove_special_data(data)
 
             template_context["form"] = form
 
@@ -356,7 +275,9 @@ async def edit_order(request):
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return template_context
 
-            # get the ordered quantities from the form
+            # compute total price and total_weight of the order
+            total_price = 0
+            total_weight = 0
             for product_id, product in products.items():
                 ordered = data["product_qty_{}".format(product_id)].strip()
                 if ordered == '':
@@ -370,32 +291,24 @@ async def edit_order(request):
                         flash(request, ("danger", "Quantité(s) invalide(s)."))
                         return template_context
                 product["ordered"] = ordered
-
-            # check that less products has been ordered than the batch can provide
-            # compute total price
-            total = 0
-            for product in products.values():
-                ordered = product["ordered"]
-                total += ordered*products[product_id]["price"]
-
-                if product["quantity"] < ordered:
-                    flash(
-                        request,
-                        (
-                            "warning",
-                            (
-                                "Il n'y a pas assez de produits disponibles "
-                                "pour satisfaire votre commande ({} \"{}\" demandés "
-                                "pour {} disponibles)."
-                            ).format(product["ordered"], product["name"],
-                                     product["quantity"])
-                        )
-                    )
-                    return template_context
+                total_price += ordered * products[product_id]["price"]
+                total_weight += ordered * products[product_id]["dough_weight"]
 
             # check that at least one product has been ordered
-            if total == 0:
+            if total_weight == 0:
                 flash(request, ("warning", "Veuillez choisir au moins un produit"))
+                return template_context
+
+            # checked that the weight of ordered products is less than batch capacity
+            products_weight = await get_ordered_products_weight(conn, batch_id)
+            if total_weight + products_weight > batch_load:
+                flash(
+                    request,
+                    (
+                        "warning",
+                        "Votre commande dépasse la capacité de la fournée."
+                    )
+                )
                 return template_context
 
             # delete and re-create the order in a transaction
@@ -423,10 +336,10 @@ async def edit_order(request):
                         "UPDATE order_ SET total = $1, date=NOW() "
                         "WHERE id = $2"
                     )
-                    await conn.fetchval(q, total, order_id)
+                    await conn.fetchval(q, total_price, order_id)
 
-            except:
-                flash( request, ( "warning", ( "Votre commande n'a pas pu être modifiée.")))
+            except Exception:
+                flash(request, ("warning", ("Votre commande n'a pas pu être modifiée.")))
                 return template_context
 
             flash(request, ("success", "Votre commande a bien été modifiée."))
@@ -491,7 +404,7 @@ async def delete_order(request):
                     raise
 
                 flash(request, ("success", "Votre commande a bien été supprimée."))
-        except:
+        except Exception:
             flash(request, ("warning", "Votre commande n'a pas pu être supprimée."))
     return HTTPFound(request.app.router["list_order"].url_for())
 

@@ -30,32 +30,13 @@
         </div>
     </div>
     <div class="form-group">
+        {{ form.load.label(for="load") }}
+        <input class="form-control" name="load" placeholder="Entrez la capacité de la fournée" type="number" step='1'>
+    </div>
+    <div class="form-group">
         {{ form.opened() }}
         {{ form.opened.label(for="opened") }}
     </div>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Produit</th>
-                <th>Prix unitaire</th>
-                <th>Quantité</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-		{% if product.description %}
-                <td><a href="#" data-toggle="tooltip" title="{{ product.description }}">{{ product.name }}</a></td>
-		{% else %}
-                <td>{{ product.name }}</td>
-		{% endif %}
-                <td>{{ product.price }}</a></td>
-                <td>
-                    <input class="form-control" name="product_qty_{{ product.id }}" placeholder="Entrez la quantité" type="number" step='1' value="{{ product.quantity }}">
-	       </td>
-            {% endfor %}
-        </tbody>
-    </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
         <a href="{{ url("list_batch") }}" class="btn btn-default">Annuler</a>
