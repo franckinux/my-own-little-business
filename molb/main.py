@@ -19,7 +19,6 @@ from jinja2 import FileSystemLoader
 from molb.auth.db_auth import DBAuthorizationPolicy
 from molb.error import error_middleware
 from molb.routes import setup_routes
-from molb.views.order import translate_mode
 from molb.views.send_message import MassMailer
 from molb.utils import read_configuration_file
 
@@ -75,7 +74,6 @@ async def create_app():
     setup_jinja(
         app,
         loader=FileSystemLoader(template_dir),
-        filters={"translate_mode": translate_mode},
         context_processors=(
             aiohttp_session_flash.context_processor,
             authorized_userid_context_processor

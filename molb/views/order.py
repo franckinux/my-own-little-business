@@ -227,7 +227,7 @@ async def edit_order(request):
         # check that the order belongs to the right client
         q = (
             "SELECT COUNT(*) FROM order_ "
-            "WHERE id = $1 AND client_id = $2 AND payment_id IS NULL"
+            "WHERE id = $1 AND client_id = $2"
         )
         count = await conn.fetchval(q, order_id, client_id)
         if count != 1:
@@ -396,7 +396,7 @@ async def delete_order(request):
                 # delete and check that the order belongs to the right client
                 q = (
                     "DELETE FROM order_ "
-                    "WHERE id = $1 AND client_id = $2 AND payment_id IS NULL "
+                    "WHERE id = $1 AND client_id = $2"
                     "RETURNING id"
                 )
                 id_ = await conn.fetchval(q, order_id, client_id)
@@ -407,17 +407,6 @@ async def delete_order(request):
         except Exception:
             flash(request, ("warning", "Votre commande n'a pas pu être supprimée."))
     return HTTPFound(request.app.router["list_order"].url_for())
-
-
-def translate_mode(value):
-    if value == "order":
-        return "Commande"
-    elif value == "payed_by_check":
-        return "Payée par chèque"
-    elif value == "payed_by_paypal":
-        return "Payée par Paypal"
-    elif value == "payed_in_cash":
-        return "Payée en liquide"
 
 
 @require("client")
@@ -431,12 +420,11 @@ async def list_order(request):
         )
 
         q = (
-            "SELECT CAST(o.id AS TEXT), o.date AS order_date, o.total, o.payment_id, "
-            "       p.id AS payment_id, p.mode AS payment_mode, b.date AS batch_date, "
+            "SELECT CAST(o.id AS TEXT), o.date AS order_date, o.total, "
+            "       b.date AS batch_date, "
             "       b.date - INTERVAL '12 hour' AS cancellation_date "
             "FROM order_ AS o "
             "INNER JOIN batch AS b ON o.batch_id = b.id "
-            "LEFT JOIN payment AS p ON o.payment_id = p.id "
             "WHERE o.client_id = $1 ORDER BY batch_date DESC"
         )
         orders = await conn.fetch(q, client["id"])

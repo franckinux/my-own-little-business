@@ -22,12 +22,6 @@ async def main(config, loop=None):
     )
     conn = await asyncpg.connect(dsn)
 
-    # last invoice date
-    await conn.execute(
-        ("INSERT INTO storage(last_invoice_date) VALUES ($1)"),
-         datetime.today()
-    )
-
     # create a dummy repo for creating the admin
     repo_id = await conn.fetchval(
         "INSERT INTO repository (name, opened) VALUES ($1, $2) RETURNING id",

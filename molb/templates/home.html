@@ -19,7 +19,7 @@
 
 <ul>
     <li><a href="{{ url("list_account") }}">Non confirmés</a></li>
-    <li><a href="{{ url("list_client") }}">Avec en cours</a></li>
+    <li><a href="{{ url("list_client") }}">Liste</a></li>
 </ul>
 
 <h3>Production</h3>
@@ -27,18 +27,11 @@
 <ul>
     <li><a href="{{ url("plan") }}">Plan de fournée</a></li>
 </ul>
-
-<h3>Paiements</h3>
-
-<ul>
-    <li><a href="{{ url("invoice") }}">Envoi des appels de fonds</a></li>
-</ul>
 {% else %}
 <h3>Commandes</h3>
 
 <ul>
     <li><a href="{{ url("list_order") }}">Commandes</a></li>
-    <li><a href="{{ url("list_payment") }}">Paiements</a></li>
 </ul>
 {% endif %}
 

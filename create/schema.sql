@@ -1,16 +1,3 @@
-CREATE TYPE payedstatusenum AS ENUM (
-    'order',
-    'payed_by_check',
-    'payed_by_paypal',
-    'payed_in_cash'
-);
-
-
-CREATE TABLE storage (
-    last_invoice_date timestamp without time zone DEFAULT NOW()
-);
-
-
 CREATE TABLE repository (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
@@ -31,7 +18,6 @@ CREATE TABLE client (
     last_name character varying NOT NULL,
     email_address character varying UNIQUE NOT NULL,
     phone_number character varying,
-    wallet numeric(8,2) DEFAULT 0 CHECK (wallet >= 0),
     created_at timestamp without time zone DEFAULT NOW(),
     last_seen timestamp without time zone,
     repository_id integer REFERENCES repository(id) NOT NULL,
@@ -48,15 +34,6 @@ CREATE TABLE batch (
 
 CREATE INDEX batch_date_index ON batch(date);
 
-CREATE TABLE payment (
-    id SERIAL PRIMARY KEY NOT NULL,
-    amount numeric(8,2) NOT NULL CHECK (amount != 0),
-    date timestamp without time zone DEFAULT NOW(),
-    mode payedstatusenum,
-    reference character varying,
-    client_id integer REFERENCES client(id) NOT NULL
-);
-
 
 CREATE TABLE order_ (
     id SERIAL PRIMARY KEY NOT NULL,
@@ -64,8 +41,7 @@ CREATE TABLE order_ (
     date timestamp without time zone DEFAULT NOW(),
     disabled boolean DEFAULT false,
     client_id integer REFERENCES client(id) NOT NULL,
-    batch_id integer REFERENCES batch(id) NOT NULL,
-    payment_id integer REFERENCES payment(id) DEFAULT NULL
+    batch_id integer REFERENCES batch(id) NOT NULL
 );
 
 CREATE INDEX order_date_index ON order_(date);

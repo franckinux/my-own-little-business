@@ -103,43 +103,6 @@ async def delete_profile(request):
             )
             return HTTPFound(request.app.router["home"].url_for())
 
-        # check if there are unpayed orders from the client
-        q = (
-            "SELECT COUNT(*) "
-            "FROM order_ AS o "
-            "INNER JOIN client AS c ON o.client_id = c.id "
-            "WHERE o.payment_id IS NULL AND c.id = $1"
-        )
-        payment_count = await conn.fetchval(q, client_id)
-        if payment_count != 0:
-            flash(
-                request,
-                (
-                    "warning",
-                    (
-                        "Vous ne pouvez pas supprimer vote profil : "
-                        "vous avez des commandes non payées."
-                    )
-                )
-            )
-            return HTTPFound(request.app.router["home"].url_for())
-
-        # check client's wallet
-        q = "SELECT wallet FROM client WHERE id = $1"
-        wallet = await conn.fetchval(q, client_id)
-        if wallet != 0:
-            flash(
-                request,
-                (
-                    "warning",
-                    (
-                        "Vous ne pouvez pas supprimer vote profil : "
-                        "votre porte-monnaie n'est pas vide."
-                    )
-                )
-            )
-            return HTTPFound(request.app.router["home"].url_for())
-
         try:
             async with conn.transaction():
                 # delete associations between orders and products
@@ -152,10 +115,6 @@ async def delete_profile(request):
 
                 # delete orders
                 q = "DELETE FROM order_ WHERE client_id = $1"
-                await conn.execute(q, client_id)
-
-                # delete payments
-                q = "DELETE FROM payment WHERE client_id = $1"
                 await conn.execute(q, client_id)
 
                 # delete client
