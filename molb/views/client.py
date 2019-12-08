@@ -12,12 +12,10 @@ async def list_client(request):
     if request.method == "GET":
         async with request.app["db-pool"].acquire() as conn:
             q = (
-                "SELECT c.id, c.first_name, c.last_name, "
-                "       c.disabled, SUM(o.total) AS total "
-                "FROM order_ AS o "
-                "INNER JOIN client AS c ON o.client_id = c.id "
-                "WHERE NOT c.super_user "
-                "GROUP BY c.id, c.first_name, c.last_name, c.disabled "
+                "SELECT id, first_name, last_name, disabled "
+                "FROM client "
+                "WHERE NOT super_user "
+                "ORDER BY last_name, first_name"
             )
             clients = await conn.fetch(q)
         return {"clients": clients}

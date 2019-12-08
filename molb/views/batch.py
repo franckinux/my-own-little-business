@@ -19,7 +19,7 @@ from molb.views.utils import settings
 
 class BatchForm(CsrfForm):
     date = DateTimeField("Date", validators=[Required()])
-    load = DecimalField("Capacité", validators=[Required()])
+    capacity = DecimalField("Capacité", validators=[Required()])
     opened = BooleanField("Ouverte", default=True)
     submit = SubmitField("Valider")
 
@@ -37,7 +37,7 @@ async def create_batch(request):
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return {"form": form}
 
-            if data["load"] <= 0:
+            if data["capacity"] <= 0:
                 flash(request, ("danger", "Capacité de la fournée invalide"))
                 return {"form": form}
 
@@ -45,10 +45,10 @@ async def create_batch(request):
                 async with conn.transaction():
                     # create the batch
                     q = (
-                        "INSERT INTO batch (date, load, opened) VALUES ($1, $2, $3)"
+                        "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3)"
                     )
                     await conn.execute(
-                        q, form.data["date"], form.data["load"], form.data["opened"]
+                        q, form.data["date"], form.data["capacity"], form.data["opened"]
                     )
 
                 flash(request, ("success", "La fournée a bien été crée"))
@@ -120,7 +120,7 @@ async def edit_batch(request):
 async def list_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         q = (
-            "SELECT CAST(id AS TEXT), date, load, opened "
+            "SELECT CAST(id AS TEXT), date, capacity, opened "
             "FROM batch "
             "WHERE date > NOW() "
             "ORDER BY date ASC "

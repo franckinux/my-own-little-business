@@ -28,7 +28,7 @@ CREATE TABLE client (
 CREATE TABLE batch (
     id SERIAL PRIMARY KEY NOT NULL,
     date timestamp without time zone UNIQUE NOT NULL,
-    load numeric(4,2) NOT NULL CHECK (load > 0),
+    capacity numeric(4,2) NOT NULL CHECK (capacity > 0),
     opened boolean DEFAULT TRUE
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE product (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
     description character varying,
-    dough_weight numeric(8,2) NOT NULL CHECK (dough_weight != 0),
+    load numeric(8,2) NOT NULL CHECK (load != 0),
     price numeric(8,2) NOT NULL CHECK (price > 0),
     available boolean DEFAULT TRUE
 );

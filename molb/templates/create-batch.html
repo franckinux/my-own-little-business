@@ -30,8 +30,13 @@
         </div>
     </div>
     <div class="form-group">
-        {{ form.load.label(for="load") }}
-        <input class="form-control" name="load" placeholder="Entrez la capacité de la fournée" type="number" step='1'>
+        {{ form.capacity.label(for="capacity") }}
+        {{ form.capacity(class="form-control", placeholder="Entrez la capacité de la fournée") }}
+        {% if form.capacity.errors %}
+        <div class="help-text">
+            {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
     </div>
     <div class="form-group">
         {{ form.opened() }}

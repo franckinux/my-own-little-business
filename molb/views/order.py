@@ -24,13 +24,13 @@ class FillOrderForm(CsrfForm):
     submit = SubmitField("Valider")
 
 
-async def get_ordered_products_weight(conn, batch_id, excluded=None):
-    """Return the weight of already ordered products"""
+async def get_ordered_products_load(conn, batch_id, excluded=None):
+    """Return the load of already ordered products"""
 
     # get summed quantities of all orders
     if excluded is not None:
         q = (
-            "SELECT SUM(quantity*p.dough_weight) AS load "
+            "SELECT SUM(quantity*p.load) AS load "
             "FROM order_product_association "
             "INNER JOIN order_ AS o ON o.id = order_id "
             "INNER JOIN product AS p ON p.id = product_id "
@@ -39,7 +39,7 @@ async def get_ordered_products_weight(conn, batch_id, excluded=None):
         load = await conn.fetchval(q, batch_id, excluded)
     else:
         q = (
-            "SELECT SUM(quantity*p.dough_weight) AS load "
+            "SELECT SUM(quantity*p.load) AS load "
             "FROM order_product_association "
             "INNER JOIN order_ AS o ON o.id = order_id "
             "INNER JOIN product AS p ON p.id = product_id "
@@ -118,11 +118,11 @@ async def create_order(request):
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return HTTPFound(request.app.router["list_order"].url_for())
 
-            # get the batch date and load
-            q = "SELECT date, load FROM batch WHERE id = $1"
+            # get the batch date and capacity
+            q = "SELECT date, capacity FROM batch WHERE id = $1"
             row = await conn.fetchrow(q, batch_id)
             batch_date = row["date"]
-            batch_load = row["load"]
+            batch_capacity = row["capacity"]
 
             # check that the batch corresponds to the delivery days
             if not client["days"][(batch_date.weekday() + 1) % 7]:
@@ -131,9 +131,9 @@ async def create_order(request):
 
             template_context["form"] = form
 
-            # compute total price and total_weight of the order
+            # compute total price and total_load of the order
             total_price = 0
-            total_weight = 0
+            total_load = 0
             for product_id, product in products.items():
                 ordered = data["product_qty_{}".format(product_id)].strip()
                 if ordered == '':
@@ -148,16 +148,16 @@ async def create_order(request):
                         return template_context
                 product["ordered"] = ordered
                 total_price += ordered * products[product_id]["price"]
-                total_weight += ordered * products[product_id]["dough_weight"]
+                total_load += ordered * products[product_id]["load"]
 
             # check that at least one product has been ordered
-            if total_weight == 0:
+            if total_load == 0:
                 flash(request, ("warning", "Veuillez choisir au moins un produit"))
                 return template_context
 
-            # checked that the weight of ordered product is less than batch capacity
-            products_weight = await get_ordered_products_weight(conn, batch_id)
-            if total_weight + products_weight > batch_load:
+            # checked that the load of ordered products is less than the batch capacity
+            products_load = await get_ordered_products_load(conn, batch_id)
+            if total_load + products_load > batch_capacity:
                 flash(
                     request,
                     (
@@ -235,14 +235,14 @@ async def edit_order(request):
 
         # get batch id and batch date
         q = (
-            "SELECT batch_id, b.date, b.load FROM order_ AS o "
+            "SELECT batch_id, b.date, b.capacity FROM order_ AS o "
             "INNER JOIN batch AS b ON b.id = batch_id "
             "WHERE o.id = $1"
         )
         row = await conn.fetchrow(q, order_id)
         batch_date = row["date"]
         batch_id = row["batch_id"]
-        batch_load = row["load"]
+        batch_capacity = row["capacity"]
 
         # check that's its not too late to modify the order
         if datetime.now() > batch_date - timedelta(hours=12):
@@ -275,9 +275,9 @@ async def edit_order(request):
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return template_context
 
-            # compute total price and total_weight of the order
+            # compute total price and total_load of the order
             total_price = 0
-            total_weight = 0
+            total_load = 0
             for product_id, product in products.items():
                 ordered = data["product_qty_{}".format(product_id)].strip()
                 if ordered == '':
@@ -292,16 +292,17 @@ async def edit_order(request):
                         return template_context
                 product["ordered"] = ordered
                 total_price += ordered * products[product_id]["price"]
-                total_weight += ordered * products[product_id]["dough_weight"]
+                total_load += ordered * products[product_id]["load"]
 
             # check that at least one product has been ordered
-            if total_weight == 0:
+            if total_load == 0:
                 flash(request, ("warning", "Veuillez choisir au moins un produit"))
                 return template_context
 
-            # checked that the weight of ordered products is less than batch capacity
-            products_weight = await get_ordered_products_weight(conn, batch_id)
-            if total_weight + products_weight > batch_load:
+            # checked that the load of ordered products is less than batch capacity
+            products_load = await get_ordered_products_load(conn, batch_id,
+                                                            excluded=order_id)
+            if total_load + products_load > batch_capacity:
                 flash(
                     request,
                     (

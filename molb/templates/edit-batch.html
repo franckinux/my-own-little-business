@@ -29,12 +29,12 @@
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
-    <div class="form-group{% if form.load.errors %} has-error{% endif %}">
-        {{ form.load.label(for="load") }}
-        {{ form.load(class="form-control", placeholder="Entrez la capacité de la fournée") }}
-        {% if form.load.errors %}
+    <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
+        {{ form.capacity.label(for="capacity") }}
+        {{ form.capacity(class="form-control", placeholder="Entrez la capacité de la fournée") }}
+        {% if form.capacity.errors %}
         <div class="help-text">
-            {% for error in form.load.errors %}<p>{{ error }}</p>{% endfor %}
+            {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
         </div>
         {% endif %}
     </div>

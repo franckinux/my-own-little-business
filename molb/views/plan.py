@@ -56,6 +56,18 @@ async def plan(request):
             )
             products = await conn.fetch(q, batch_id)
 
+            # compute batch load
+            q = (
+                "SELECT b.id, b.capacity, SUM(opa.quantity * p.load) AS load "
+                "FROM order_product_association AS opa "
+                "INNER JOIN product AS p ON opa.product_id = p.id "
+                "INNER JOIN order_ AS o ON opa.order_id = o.id "
+                "INNER JOIN batch AS b ON o.batch_id = b.id "
+                "WHERE b.id = $1 "
+                "GROUP BY b.id"
+            )
+            batch = await conn.fetchrow(q, batch_id)
+
             # get the number of products by repository to make from the batch
             q = (
                 "SELECT r.name AS repository_name, p.name AS product_name, "
