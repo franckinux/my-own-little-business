@@ -28,8 +28,15 @@ async def handler(request):
                 q = "SELECT id, email_address FROM client WHERE email_address = $1"
                 client = await conn.fetchrow(q, email_address)
             if client is None:
-                flash(request, ("danger", "Il n'y a pas de compte dont l'adresse email est {}".format(
-                                            email_address)))
+                flash(
+                    request,
+                    (
+                        "danger",
+                        "Il n'y a pas de compte dont l'adresse email est {}".format(
+                            email_address
+                        )
+                    )
+                )
             else:
                 await send_confirmation(
                     request,
@@ -77,7 +84,7 @@ async def confirm(request):
             token, request.app["config"]["application"]["secret_key"]
         )
         id_ = token_data["id"]
-    except:
+    except Exception:
         flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
@@ -90,7 +97,7 @@ async def confirm(request):
                 q = "UPDATE client SET password_hash = $1 WHERE id = $2"
                 try:
                     await conn.execute(q, password_hash, id_)
-                except:
+                except Exception:
                     flash(request, ("danger", "Votre mot de passe ne peut être modifié"))
                     return {"form": form, "token": token}
                 else:

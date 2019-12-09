@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import asyncio
-from datetime import datetime
 import os
 import sys
 
@@ -36,14 +35,14 @@ async def main(config, loop=None):
         ("INSERT INTO client (login, password_hash, confirmed, super_user, "
         "first_name, last_name, email_address, repository_id) "
         "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"),
-            "admin",
-            sha256_crypt.hash(admin_password),
-            True,
-            True,
-            "Admin",
-            "Admin",
-            "admin@molb.net",
-            repo_id
+        "admin",
+        sha256_crypt.hash(admin_password),
+        True,
+        True,
+        "Admin",
+        "Admin",
+        "admin@molb.net",
+        repo_id
     )
 
 if __name__ == "__main__":

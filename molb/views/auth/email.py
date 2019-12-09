@@ -66,7 +66,7 @@ async def confirm(request):
         token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
         id_ = token_data["id"]
         email_address = token_data["email_address"]
-    except:
+    except Exception:
         flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
@@ -74,7 +74,7 @@ async def confirm(request):
         q = "UPDATE client SET email_address = $1 WHERE id = $2"
         try:
             await conn.execute(q, email_address, id_)
-        except:
+        except Exception:
             flash(request, ("danger", "Votre adresse mail ne peut pas être modifiée"))
         else:
             flash(request, ("info", "Votre adresse mail a bien été modifiée"))

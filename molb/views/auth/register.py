@@ -31,8 +31,7 @@ class RegisterForm(CsrfForm):
         Length(min=1, max=64),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
             "L'identifiant ne doit comporter que des lettres non accentuées, "
-            "des chiffres, '.'  et '_' et commencer par une lettre"
-        )
+            "des chiffres, '.'  et '_' et commencer par une lettre")
     ])
     password = PasswordField("Mot de passe", validators=[
         Required(),
@@ -105,7 +104,7 @@ async def handler(request):
                             )
                         )
                         return HTTPFound(request.app.router["login"].url_for())
-                except:
+                except Exception:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", "Le formulaire comporte des erreurs"))
@@ -124,7 +123,7 @@ async def confirm(request):
     try:
         token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
         id_ = token_data["id"]
-    except:
+    except Exception:
         flash(request, ("danger", "Le lien est invalide ou a expiré"))
         raise HTTPBadRequest()
 
@@ -134,7 +133,7 @@ async def confirm(request):
             updated = await conn.fetchval(q, id_)
             if updated is None:
                 raise
-        except:
+        except Exception:
             flash(request, ("danger", "Vous ne pouvez pas être enregistré."))
             return HTTPFound(request.app.router["register"].url_for())
         else:
