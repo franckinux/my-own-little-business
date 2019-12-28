@@ -12,23 +12,28 @@
 
 {% block content %}
 {{ super() }}
-<div class="container">
-    <div class="header">
-        {% if authorized_userid %}
-        <div class="btn-toolbar float-right">
-            <a href="{{ url("logout") }}" class="btn btn-light">Déconnexion</a>
+<div class="row">
+    <div class="col-2 d-flex align-items-center justify-content-center">
+        <img src="/static/logo.png">
+    </div>
+    <div class="col-6">
+        <div class="header">
+            {% if authorized_userid %}
+            <div class="btn-toolbar float-right">
+                <a href="{{ url("logout") }}" class="btn btn-light">Déconnexion</a>
+            </div>
+            {% endif %}
+            <h2>{{ app.config.application.site_name }} <small>Commandes</small></h2>
         </div>
-        {% endif %}
-        <h2>{{ app.config.application.site_name }} <small>Commandes</small></h2>
+        {% block breadcrumb %}{% endblock %}
+        {% block message %}
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-{{ message[0] }}" role="alert">
+        {{ message[1] }}
+        </div>
+        {% endfor %}
+        {% endblock %}
+        {% block page_content %}{% endblock %}
     </div>
-    {% block breadcrumb %}{% endblock %}
-    {% block message %}
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-{{ message[0] }}" role="alert">
-    {{ message[1] }}
-    </div>
-    {% endfor %}
-    {% endblock %}
-    {% block page_content %}{% endblock %}
 </div>
 {% endblock %}
