@@ -1,5 +1,10 @@
 {% extends "bootstrap/base.html" %}
 
+{% block metas %}
+{{ super() }}
+    <meta charset="utf-8">
+{% endblock %}
+
 {% block styles %}
 {{ super() }}
     <link href="/static/css/styles.css" rel="stylesheet" type="text/css">
