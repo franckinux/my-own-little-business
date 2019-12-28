@@ -7,6 +7,12 @@
 
 {% block title %}Création d'une fournée{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script src="/static/gijgo/js/gijgo.min.js" type="text/javascript"></script>
+<script src="/static/gijgo/js/messages/messages.fr-fr.min.js" type="text/javascript"></script>
+{% endblock %}
+
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
@@ -23,11 +29,7 @@
     {% endif %}
     <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         {{ form.date.label(for="date") }}
-        {{ form.date(class="invisible") }}
-        <div class="input-group date form_date" data-date="" data-date-format="d MM yyyy hh:ii" data-link-field="date" data-link-format="yyyy-mm-dd hh:ii:00">
-            <input class="form-control" size="16" type="text" value="" readonly>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-        </div>
+	<input id="date" name="date" readonly width="100%" />
     </div>
     <div class="form-group">
         {{ form.capacity.label(for="capacity") }}
@@ -44,19 +46,21 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_batch") }}" class="btn btn-default">Annuler</a>
+        <a href="{{ url("list_batch") }}" class="btn btn-light">Annuler</a>
     </div>
 </form>
-{% endblock %}
 
-{% block scripts %}
-{{ super() }}
-<script src="/static/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js"></script>
-<script src="/static/bootstrap-datepicker/js//locales/bootstrap-datetimepicker.fr.js"></script>
 <script>
-
-// When the document is ready
-$(document).ready(function () {
-});
+    var date = new Date();
+    date.setDate(date.getDate()+1);
+    tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	$('#date').datepicker({
+        format: "d/m/yyyy",
+        uiLibrary: "bootstrap4",
+        locale: "fr-fr",
+        minDate: tomorow,
+        weekStartDay: 1
+	});
 </script>
+
 {% endblock %}

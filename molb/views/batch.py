@@ -3,8 +3,10 @@ from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
+from datetime import datetime
+from datetime import time
 from wtforms import BooleanField
-from wtforms import DateTimeField
+from wtforms import DateField
 from wtforms import DecimalField
 from wtforms import SubmitField
 from wtforms.validators import Required
@@ -18,7 +20,7 @@ from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
-    date = DateTimeField("Date", validators=[Required()])
+    date = DateField("Date", id="date", format="%d/%m/%Y", validators=[Required()])
     capacity = DecimalField("Capacité", validators=[Required()])
     opened = BooleanField("Ouverte", default=True)
     submit = SubmitField("Valider")
@@ -31,6 +33,8 @@ async def create_batch(request):
         if request.method == "POST":
             form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
             data = remove_special_data(form.data.items())
+            # as the date only is chosen by the user, the time part is set to 6:00 am
+            data["date"] = datetime.combine(data["date"], time(hour=6))
 
             # just for csrf !
             if not form.validate():
@@ -95,6 +99,9 @@ async def edit_batch(request):
             )
             if form.validate():
                 data = remove_special_data(form.data.items())
+                # as the date only is chosen by the user, the time part is set to 6:00 am
+                data["date"] = datetime.combine(data["date"], time(hour=6))
+
                 q = "UPDATE batch SET {} WHERE id = ${:d}".format(
                     settings(data), len(data) + 1
                 )
