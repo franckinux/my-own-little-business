@@ -2,7 +2,7 @@
 
 {% block styles %}
 {{ super() }}
-<link href="/static/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<link href="/static/gijgo/css/gijgo.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Modification d'une fournée{% endblock %}
@@ -56,19 +56,6 @@
 <script>
 
 // When the document is ready
-$(document).ready(function () {
-    $('.form_date').datetimepicker({
-        language:  'fr',
-        weekStart: 1,
-        todayBtn:  0,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        startDate: '+1d',
-        minuteStep: 15,
-    });
-    $('.form_date').datetimepicker('update', $('#date').val());
 });
 </script>
 {% endblock %}
