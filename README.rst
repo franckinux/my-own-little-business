@@ -106,6 +106,6 @@ Downloads
 These softwares are already present in molb, this is just a reminder on where they
 have been downloaded from :
 
-- `JQuery <https://code.jquery.com/jquery/>`_ - Version 1.12.4 ;
+- `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.4.1 ;
 - `Bootstrap <http://getbootstrap.com/>`_ - Version 4.4.1 ;
 - `DateTime Picker - Bootstrap <https://github.com/smalot/bootstrap-datetimepicker/>`_
