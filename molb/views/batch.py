@@ -55,9 +55,9 @@ async def create_batch(request):
                         q, form.data["date"], form.data["capacity"], form.data["opened"]
                     )
 
-                flash(request, ("success", "La fournée a bien été crée"))
+                flash(request, ("success", "La fournée a bien été créée"))
             except Exception:
-                flash(request, ("warning", "La fournée ne peut pas être crée"))
+                flash(request, ("warning", "La fournée ne peut pas être créée"))
                 return {"form": form}
             return HTTPFound(request.app.router["list_batch"].url_for())
         elif request.method == "GET":
