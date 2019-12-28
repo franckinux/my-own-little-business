@@ -2,13 +2,13 @@
 {% block title %}Points de livraison{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="active">Points de livraison</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="breadcrumb-item active">Points de livraison</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-default">Créer un point de livraison</a></div>
+<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-light">Créer un point de livraison</a></div>
 
 <table class="table table-hover">
    <thead>

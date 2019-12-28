@@ -2,8 +2,8 @@
 {% block title %}Changement d'adresse mail{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="active">Changement d'adresse mail</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="breadcrumb-item active">Changement d'adresse mail</li>
 </ol>
 {% endblock %}
 
@@ -26,7 +26,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("home") }}" class="btn btn-default">Annuler</a>
+        <a href="{{ url("home") }}" class="btn btn-light">Annuler</a>
     </div>
 </form>
 {% endblock %}

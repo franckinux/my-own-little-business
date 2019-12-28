@@ -2,9 +2,9 @@
 {% block title %}Modification d'une commande{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("home") }}">Accueil</a></li>
-    <li><a href="{{ url("list_order") }}">Commandes</a></li>
-    <li class="active">Modification d'une commande</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">Commandes</a></li>
+    <li class="breadcrumb-item active">Modification d'une commande</li>
 </ol>
 {% endblock %}
 
@@ -54,7 +54,7 @@ $(document).ready(function(){
     </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_order") }}" class="btn btn-default">Annuler</a>
+        <a href="{{ url("list_order") }}" class="btn btn-light">Annuler</a>
     </div>
 </form>
 {% endblock %}

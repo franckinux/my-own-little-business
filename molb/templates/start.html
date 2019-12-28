@@ -2,7 +2,7 @@
 {% block title %}Accueil{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="active">Accueil</li>
+    <li class="breadcrumb-item active">Accueil</li>
 </ol>
 {% endblock %}
 {% block page_content %}
@@ -13,7 +13,7 @@
     </div>
     <div class="form-group">
         Déjà enregistré ?
-        <a href={{ url("login") }} class="btn btn-default">Connectez vous</a>
+        <a href={{ url("login") }} class="btn btn-light">Connectez vous</a>
 	<small><a href="{{ url("password") }}">Mot de passe perdu</a></small>
     </div>
     <p>

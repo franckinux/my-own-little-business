@@ -2,9 +2,9 @@
 {% block title %}Modification d'un point de livraison{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("home") }}">Accueil</a></li>
-    <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
-    <li class="active">Modification d'un point de livraison</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_repository") }}">Points de livraison</a></li>
+    <li class="breadcrumb-item active">Modification d'un point de livraison</li>
 </ol>
 {% endblock %}
 
@@ -67,7 +67,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_repository") }}" class="btn btn-default">Annuler</a>
+        <a href="{{ url("list_repository") }}" class="btn btn-light">Annuler</a>
     </div>
 </form>
 {% endblock %}

@@ -2,7 +2,7 @@
 {% block title %}Connexion{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="active">Connexion</li>
+    <li class="breadcrumb-item active">Connexion</li>
 </ol>
 {% endblock %}
 {% block page_content %}
@@ -31,7 +31,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("start") }}" class="btn btn-default">Annuler</a>
+        <a href="{{ url("start") }}" class="btn btn-light">Annuler</a>
     </div>
 </form>
 {% endblock %}

@@ -2,13 +2,13 @@
 {% block title %}Fournées{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="active">Fournées</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
+    <li class="breadcrumb-item active">Fournées</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<div class="form-group"><a href="{{ url("create_batch") }}" class="btn btn-default">Créer une fournée</a></div>
+<div class="form-group"><a href="{{ url("create_batch") }}" class="btn btn-light">Créer une fournée</a></div>
 
 <table class="table table-hover">
    <thead>
@@ -22,7 +22,7 @@
    <tbody>
       {% for batch in batches %}
       <tr>
-         <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date }}</a></td>
+         <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date.strftime("%d/%m/%Y") }}</a></td>
          <td>{{ batch.capacity }}</td>
          <td>{{ batch.opened }}</td>
          <td><a href="{{ url("delete_batch", id=batch.id) }}">Supprimer</a></td>
