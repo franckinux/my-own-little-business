@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block content %}
+{{ super() }}
 <div class="container">
-    {% block header %}
     <div class="header">
         {% if authorized_userid %}
         <div class="btn-toolbar float-right">
@@ -21,7 +21,6 @@
         {% endif %}
         <h2>{{ app.config.application.site_name }} <small>Commandes</small></h2>
     </div>
-    {% endblock %}
     {% block breadcrumb %}{% endblock %}
     {% block message %}
     {% for message in get_flashed_messages() %}

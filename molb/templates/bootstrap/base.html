@@ -14,19 +14,18 @@
     <!-- Bootstrap -->
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     {%- endblock styles %}
-    {%- endblock head %}
-  </head>
-  <body{% block body_attribs %}{% endblock body_attribs %}>
-    {% block body -%}
-    {% block navbar %}
-    {%- endblock navbar %}
-    {% block content -%}
-    {%- endblock content %}
 
     {% block scripts %}
-    <script src="/static/jquery/jquery.min.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     {%- endblock scripts %}
+    {%- endblock head %}
+  </head>
+
+  <body{% block body_attribs %}{% endblock body_attribs %}>
+    {% block body -%}
+    {% block navbar %}{%- endblock navbar %}
+    {% block content -%}{%- endblock content %}
     {%- endblock body %}
   </body>
 {%- endblock html %}
