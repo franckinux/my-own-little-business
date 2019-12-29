@@ -29,7 +29,14 @@
     {% endif %}
     <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         {{ form.date.label(for="date") }}
-	<input id="date" name="date" readonly width="100%" />
+	{% if form.date.data is none %}
+	<input id="date" name="date" readonly width="100%" placeholder="Entrez la date de livraison "/>
+	{% else %}
+	<input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" placeholder="Entrez la date de livraison" />
+	{% endif %}
+        <div class="help-text">
+            {% for error in form.date.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
     </div>
     <div class="form-group">
         {{ form.capacity.label(for="capacity") }}

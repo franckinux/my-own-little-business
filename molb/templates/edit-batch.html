@@ -27,7 +27,7 @@
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
-    <div class="form-group{% if form.date.errors %} has-error{% endif %}">
+    <div class="form-group">
         {{ form.date.label(for="date") }}
 	<input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" />
     </div>

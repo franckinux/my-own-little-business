@@ -10,6 +10,7 @@ from wtforms import DateField
 from wtforms import DecimalField
 from wtforms import SubmitField
 from wtforms.validators import Required
+from wtforms.validators import ValidationError
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
@@ -25,6 +26,10 @@ class BatchForm(CsrfForm):
     opened = BooleanField("Ouverte", default=True)
     submit = SubmitField("Valider")
 
+    def validate_capacity(form, field):
+        if int(field.data) <= 0:
+            raise ValidationError("Valeur négative ou nulle")
+
 
 @require("admin")
 @aiohttp_jinja2.template("create-batch.html")
@@ -33,17 +38,14 @@ async def create_batch(request):
         if request.method == "POST":
             form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
             data = remove_special_data(form.data.items())
-            # as the date only is chosen by the user, the time part is set to 6:00 am
-            data["date"] = datetime.combine(data["date"], time(hour=6))
 
             # just for csrf !
             if not form.validate():
                 flash(request, ("danger", "Le formulaire comporte des erreurs."))
                 return {"form": form}
 
-            if data["capacity"] <= 0:
-                flash(request, ("danger", "Capacité de la fournée invalide"))
-                return {"form": form}
+            # as the date only is chosen by the user, the time part is set to 6:00 am
+            data["date"] = datetime.combine(data["date"], time(hour=6))
 
             try:
                 async with conn.transaction():
