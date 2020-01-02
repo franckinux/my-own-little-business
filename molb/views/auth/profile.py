@@ -15,6 +15,7 @@ from wtforms.validators import EqualTo
 from wtforms.validators import Regexp
 
 from molb.auth import require
+from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
@@ -22,18 +23,18 @@ from molb.views.utils import settings
 
 
 class ProfileForm(CsrfForm):
-    password = PasswordField("Mot de passe", validators=[
-        EqualTo("password2", message="Les mots de passe doivent être identiques"),
+    password = PasswordField(_("Mot de passe"), validators=[
+        EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
     ])
-    password2 = PasswordField("Répétition du mot de passe")
-    first_name = StringField("Prénom")
-    last_name = StringField("Nom")
-    phone_number = StringField("Numéro de téléphone", validators=[
+    password2 = PasswordField(_("Répétition du mot de passe"))
+    first_name = StringField(_("Prénom"))
+    last_name = StringField(_("Nom"))
+    phone_number = StringField(_("Numéro de téléphone"), validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
-    repository_id = SelectField("Point de livraison", coerce=int)
-    mailing = BooleanField("Réception de messages")
-    submit = SubmitField("Valider")
+    repository_id = SelectField(_("Point de livraison"), coerce=int)
+    mailing = BooleanField(_("Réception de messages"))
+    submit = SubmitField(_("Valider"))
 
 
 @require("client")
@@ -59,7 +60,7 @@ async def edit_profile(request):
                 password = data.pop("password")
                 if password:
                     if len(password) < 6:
-                        flash(request, ("warning", "Le mot de passe est trop court"))
+                        flash(request, ("warning", _("Le mot de passe est trop court")))
                         return {"form": form}
                     data["password_hash"] = sha256_crypt.hash(password)
                 q = "UPDATE client SET {} WHERE login = ${}".format(
@@ -68,12 +69,12 @@ async def edit_profile(request):
                 try:
                     await conn.execute(q, *data.values(), login)
                 except UniqueViolationError:
-                    flash(request, ("warning", "Votre profil ne peut être modifié"))
+                    flash(request, ("warning", _("Votre profil ne peut être modifié")))
                 else:
-                    flash(request, ("success", "Votre profil a bien été modifié"))
+                    flash(request, ("success", _("Votre profil a été modifié")))
                     return HTTPFound(request.app.router["home"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire comporte des erreurs"))
+                flash(request, ("danger", _("Le formulaire comporte des erreurs")))
             return {"form": form}
         elif request.method == "GET":
             form = ProfileForm(data=data, meta=await generate_csrf_meta(request))
@@ -98,7 +99,7 @@ async def delete_profile(request):
                 request,
                 (
                     "warning",
-                    "Un administrateur ne peut pas supprimer son profil."
+                    _("Un administrateur ne peut pas supprimer son profil.")
                 )
             )
             return HTTPFound(request.app.router["home"].url_for())
@@ -121,11 +122,11 @@ async def delete_profile(request):
                 q = "DELETE FROM client WHERE id = $1"
                 await conn.execute(q, client_id)
         except Exception:
-            flash(request, ("warning", "Votre profil ne peut être détruit"))
+            flash(request, ("warning", _("Votre profil ne peut être supprimé")))
         else:
             response = HTTPFound(request.app.router["login"].url_for())
             await forget(request, response)
-            flash(request, ("success", "Votre profil a été détruit"))
+            flash(request, ("success", _("Votre profil a été supprimé")))
             return response
 
         return HTTPFound(request.app.router["home"].url_for())

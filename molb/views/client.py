@@ -4,6 +4,7 @@ import aiohttp_jinja2
 from aiohttp_session_flash import flash
 
 from molb.auth import require
+from molb.main import _
 
 
 @require("admin")
@@ -29,5 +30,5 @@ async def toggle_client(request):
     async with request.app["db-pool"].acquire() as conn:
         q = "UPDATE client SET disabled = NOT disabled WHERE id = $1"
         await conn.execute(q, client_id)
-    flash(request, ("success", "Le statut du client a été modifié."))
+    flash(request, ("success", _("Le statut du client a été modifié.")))
     return HTTPFound(request.app.router["list_client"].url_for())

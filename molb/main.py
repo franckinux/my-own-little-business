@@ -2,6 +2,7 @@
 
 import asyncio
 import base64
+import gettext
 import os
 import os.path as op
 
@@ -21,6 +22,8 @@ from molb.error import error_middleware
 from molb.routes import setup_routes
 from molb.views.send_message import MassMailer
 from molb.utils import read_configuration_file
+
+_ = None
 
 
 def setup_session(app):
@@ -91,6 +94,10 @@ loop = asyncio.get_event_loop()
 app = loop.run_until_complete(create_app())
 
 if __name__ == "__main__":
+    # internationalization
+    i18n = gettext.translation("molb", localedir="locales", languages=["fr-FR"J, "en-GB"])
+    _ = i18n.gettext
+
     web.run_app(
         app,
         host=app["config"]["http_server"]["host"],

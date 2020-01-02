@@ -6,14 +6,15 @@ from wtforms import SelectField
 from wtforms import SubmitField
 
 from molb.auth import require
+from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
 
 class PlanForm(CsrfForm):
-    batch_id = SelectField("Fournée", coerce=int)
-    submit = SubmitField("Valider")
+    batch_id = SelectField(_("Fournée"), coerce=int)
+    submit = SubmitField(_("Valider"))
 
 
 @require("admin")
@@ -41,7 +42,7 @@ async def plan(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
                 return HTTPFound(request.app.router["plan"].url_for())
 
             # get the number of products to make from the batch

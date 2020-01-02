@@ -13,6 +13,7 @@ from wtforms.validators import Required
 from wtforms.validators import ValidationError
 
 from molb.auth import require
+from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 # from molb.views.utils import place_holders
@@ -21,14 +22,14 @@ from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
-    date = DateField("Date", id="date", format="%d/%m/%Y", validators=[Required()])
-    capacity = DecimalField("Capacité", validators=[Required()])
-    opened = BooleanField("Ouverte", default=True)
-    submit = SubmitField("Valider")
+    date = DateField(_("Date"), id="date", format="%d/%m/%Y", validators=[Required()])
+    capacity = DecimalField(_("Capacité"), validators=[Required()])
+    opened = BooleanField(_("Ouverte"), default=True)
+    submit = SubmitField(_("Valider"))
 
     def validate_capacity(form, field):
         if int(field.data) <= 0:
-            raise ValidationError("Valeur négative ou nulle")
+            raise ValidationError(_("Valeur négative ou nulle"))
 
 
 @require("admin")
@@ -41,7 +42,7 @@ async def create_batch(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
                 return {"form": form}
 
             # as the date only is chosen by the user, the time part is set to 6:00 am
@@ -57,9 +58,9 @@ async def create_batch(request):
                         q, form.data["date"], form.data["capacity"], form.data["opened"]
                     )
 
-                flash(request, ("success", "La fournée a bien été créée"))
+                flash(request, ("success", _("La fournée a été créée")))
             except Exception:
-                flash(request, ("warning", "La fournée ne peut pas être créée"))
+                flash(request, ("warning", _("La fournée ne peut pas être créée")))
                 return {"form": form}
             return HTTPFound(request.app.router["list_batch"].url_for())
         elif request.method == "GET":
@@ -77,11 +78,11 @@ async def delete_batch(request):
             async with conn.transaction():
                 await conn.execute("DELETE FROM batch WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "La fournée ne peut pas être supprimée"))
+            flash(request, ("warning", _("La fournée ne peut pas être supprimée")))
         except Exception:
-            flash(request, ("danger", "La fournée ne peut pas être supprimée"))
+            flash(request, ("danger", _("La fournée ne peut pas être supprimée")))
         else:
-            flash(request, ("success", "La fournée a bien été supprimée"))
+            flash(request, ("success", _("La fournée a été supprimée")))
         finally:
             return HTTPFound(request.app.router["list_batch"].url_for())
 
@@ -110,12 +111,12 @@ async def edit_batch(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "La fournée ne peut pas être modifiée"))
+                    flash(request, ("warning", _("La fournée ne peut pas être modifiée")))
                 else:
-                    flash(request, ("success", "La fournée a bien été modifiée"))
+                    flash(request, ("success", _("La fournée a été modifiée")))
                     return HTTPFound(request.app.router["list_batch"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire contient des erreurs"))
+                flash(request, ("danger", _("Le formulaire contient des erreurs")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))

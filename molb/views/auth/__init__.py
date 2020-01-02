@@ -10,14 +10,15 @@ from wtforms import SubmitField
 from wtforms.validators import Required
 
 from molb.auth import require
+from molb.main import _
 from molb.auth.db_auth import check_credentials
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):
-    login = StringField("Identifiant", [Required()])
-    password = PasswordField("Mot de passe", [Required()])
+    login = StringField(_("Identifiant"), [Required()])
+    password = PasswordField(_("Mot de passe"), [Required()])
     submit = SubmitField("Valider")
 
 
@@ -43,12 +44,12 @@ async def login(request):
                         request,
                         (
                             "info",
-                            "Bonjour {} ! Ravi de vous revoir à nouveau".format(
+                            _("Bonjour {} ! Ravi de vous revoir à nouveau").format(
                                 client["first_name"])
                         )
                     )
                 return response
-        flash(request, ("danger", "La combinaison identifiant/mot de passe est invalide"))
+        flash(request, ("danger", _("La combinaison identifiant/mot de passe est invalide")))
         return {"form": form}
     elif request.method == "GET":
         form = LoginForm(meta=await generate_csrf_meta(request))
@@ -61,5 +62,5 @@ async def login(request):
 async def logout(request):
     response = HTTPFound(request.app.router["login"].url_for())
     await forget(request, response)
-    flash(request, ("info", "Vous êtes déconnecté"))
+    flash(request, ("info", _("Vous êtes déconnecté")))
     return response

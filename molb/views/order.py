@@ -10,18 +10,19 @@ from wtforms import SelectField
 from wtforms import SubmitField
 
 from molb.auth import require
+from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
 
 class CreateOrderForm(CsrfForm):
-    batch_id = SelectField("Fournée", coerce=int)
-    submit = SubmitField("Valider")
+    batch_id = SelectField(_("Fournée"), coerce=int)
+    submit = SubmitField(_("Valider"))
 
 
 class FillOrderForm(CsrfForm):
-    submit = SubmitField("Valider")
+    submit = SubmitField(_("Valider"))
 
 
 async def get_ordered_products_load(conn, batch_id, excluded=None):
@@ -67,7 +68,7 @@ async def create_order(request):
         client_id = client["id"]
 
         if client["disabled"]:
-            flash(request, ("warning", "Vous ne pouvez pas passer de commande."))
+            flash(request, ("warning", _("Vous ne pouvez pas passer de commande.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # select opened batches that have no order from the client
@@ -115,7 +116,7 @@ async def create_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
                 return HTTPFound(request.app.router["list_order"].url_for())
 
             # get the batch date and capacity
@@ -126,7 +127,7 @@ async def create_order(request):
 
             # check that the batch corresponds to the delivery days
             if not client["days"][(batch_date.weekday() + 1) % 7]:
-                flash(request, ("warning", "La fournée choisie ne permet de vous livrer."))
+                flash(request, ("warning", _("La fournée choisie ne permet de vous livrer.")))
                 return HTTPFound(request.app.router["list_order"].url_for())
 
             template_context["form"] = form
@@ -144,7 +145,7 @@ async def create_order(request):
                         if ordered < 0:
                             raise ValueError("negative quantity")
                     except ValueError:
-                        flash(request, ("danger", "Quantité(s) invalide(s)."))
+                        flash(request, ("danger", _("Quantité(s) invalide(s).")))
                         return template_context
                 product["ordered"] = ordered
                 total_price += ordered * products[product_id]["price"]
@@ -152,7 +153,7 @@ async def create_order(request):
 
             # check that at least one product has been ordered
             if total_load == 0:
-                flash(request, ("warning", "Veuillez choisir au moins un produit"))
+                flash(request, ("warning", _("Veuillez choisir au moins un produit")))
                 return template_context
 
             # checked that the load of ordered products is less than the batch capacity
@@ -162,7 +163,7 @@ async def create_order(request):
                     request,
                     (
                         "warning",
-                        "Votre commande dépasse la capacité de la fournée."
+                        _("Votre commande dépasse la capacité de la fournée.")
                     )
                 )
                 return template_context
@@ -188,10 +189,10 @@ async def create_order(request):
                             )
                             await conn.execute(q, ordered, order_id, product_id)
             except Exception:
-                flash(request, ("warning", ("Votre commande n'a pas pu être passée.")))
+                flash(request, ("warning", (_("Votre commande n'a pas pu être passée."))))
                 return template_context
 
-            flash(request, ("success", "Votre commande a été passée avec succès"))
+            flash(request, ("success", _("Votre commande a été passée avec succès")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         elif request.method == "GET":
@@ -221,7 +222,7 @@ async def edit_order(request):
         client_id = client["id"]
 
         if client["disabled"]:
-            flash(request, ("warning", "Vous ne pouvez pas modifier votre commande."))
+            flash(request, ("warning", _("Vous ne pouvez pas modifier votre commande.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # check that the order belongs to the right client
@@ -246,7 +247,7 @@ async def edit_order(request):
 
         # check that's its not too late to modify the order
         if datetime.now() > batch_date - timedelta(hours=12):
-            flash(request, ("warning", "Il est trop tard pour modifier votre commande."))
+            flash(request, ("warning", _("Il est trop tard pour modifier votre commande.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # get products
@@ -272,7 +273,7 @@ async def edit_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
                 return template_context
 
             # compute total price and total_load of the order
@@ -288,7 +289,7 @@ async def edit_order(request):
                         if ordered < 0:
                             raise ValueError("negative quantity")
                     except ValueError:
-                        flash(request, ("danger", "Quantité(s) invalide(s)."))
+                        flash(request, ("danger", _("Quantité(s) invalide(s).")))
                         return template_context
                 product["ordered"] = ordered
                 total_price += ordered * products[product_id]["price"]
@@ -296,18 +297,17 @@ async def edit_order(request):
 
             # check that at least one product has been ordered
             if total_load == 0:
-                flash(request, ("warning", "Veuillez choisir au moins un produit"))
+                flash(request, ("warning", _("Veuillez choisir au moins un produit")))
                 return template_context
 
             # checked that the load of ordered products is less than batch capacity
-            products_load = await get_ordered_products_load(conn, batch_id,
-                                                            excluded=order_id)
+            products_load = await get_ordered_products_load(conn, batch_id, excluded=order_id)
             if total_load + products_load > batch_capacity:
                 flash(
                     request,
                     (
                         "warning",
-                        "Votre commande dépasse la capacité de la fournée."
+                        _("Votre commande dépasse la capacité de la fournée.")
                     )
                 )
                 return template_context
@@ -340,10 +340,10 @@ async def edit_order(request):
                     await conn.fetchval(q, total_price, order_id)
 
             except Exception:
-                flash(request, ("warning", ("Votre commande n'a pas pu être modifiée.")))
+                flash(request, ("warning", (_("Votre commande n'a pas pu être modifiée."))))
                 return template_context
 
-            flash(request, ("success", "Votre commande a bien été modifiée."))
+            flash(request, ("success", _("Votre commande a été modifiée.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         elif request.method == "GET":
@@ -385,7 +385,7 @@ async def delete_order(request):
             "WHERE o.id = $1", order_id
         )
         if datetime.now() > batch_date - timedelta(hours=12):
-            flash(request, ("warning", "Il est trop tard pour annuler votre commande."))
+            flash(request, ("warning", _("Il est trop tard pour annuler votre commande.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         try:
@@ -404,9 +404,9 @@ async def delete_order(request):
                 if not id_:
                     raise
 
-                flash(request, ("success", "Votre commande a bien été supprimée."))
+                flash(request, ("success", _("Votre commande a été supprimée.")))
         except Exception:
-            flash(request, ("warning", "Votre commande n'a pas pu être supprimée."))
+            flash(request, ("warning", _("Votre commande n'a pas pu être supprimée.")))
     return HTTPFound(request.app.router["list_order"].url_for())
 
 

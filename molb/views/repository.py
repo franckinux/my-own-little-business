@@ -10,6 +10,7 @@ from wtforms.validators import Length
 from wtforms.validators import Required
 
 from molb.auth import require
+from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import array_to_days
 from molb.views.utils import days_to_array
@@ -21,16 +22,16 @@ from molb.views.utils import settings
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField("Nom", validators=[Required(), Length(min=5, max=128)])
-    opened = BooleanField("Ouvert", default=True)
-    monday = BooleanField("Lundi")
-    tuesday = BooleanField("Mardi")
-    wednesday = BooleanField("Mercredi")
-    thursday = BooleanField("Jeudi")
-    friday = BooleanField("Vendredi")
-    saturday = BooleanField("Samedi")
-    sunday = BooleanField("Dimanche")
-    submit = SubmitField("Valider")
+    name = StringField(_("Nom"), validators=[Required(), Length(min=5, max=128)])
+    opened = BooleanField(_("Ouvert"), default=True)
+    monday = BooleanField(_("Lundi"))
+    tuesday = BooleanField(_("Mardi"))
+    wednesday = BooleanField(_("Mercredi"))
+    thursday = BooleanField(_("Jeudi"))
+    friday = BooleanField(_("Vendredi"))
+    saturday = BooleanField(_("Samedi"))
+    sunday = BooleanField(_("Dimanche"))
+    submit = SubmitField(_("Valider"))
 
 
 @require("admin")
@@ -48,12 +49,12 @@ async def create_repository(request):
                 try:
                     await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "Le point de livraison ne peut pas être créé"))
+                    flash(request, ("warning", _("Le point de livraison ne peut pas être créé")))
                     return {"form": form}
-            flash(request, ("success", "Le point de livraison a bien été créé"))
+            flash(request, ("success", _("Le point de livraison a été créé")))
             return HTTPFound(request.app.router["list_repository"].url_for())
         else:
-            flash(request, ("danger", "Le formulaire contient des erreurs"))
+            flash(request, ("danger", _("Le formulaire contient des erreurs")))
             return {"form": form}
     elif request.method == "GET":
         form = RepositoryForm(meta=await generate_csrf_meta(request))
@@ -69,9 +70,9 @@ async def delete_repository(request):
         try:
             await conn.execute("DELETE FROM repository WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "Le point de livraison ne peut pas être supprimé"))
+            flash(request, ("warning", _("Le point de livraison ne peut pas être supprimé")))
         else:
-            flash(request, ("success", "Le point de livraison a bien été supprimé"))
+            flash(request, ("success", _("Le point de livraison a été supprimé")))
         finally:
             return HTTPFound(request.app.router["list_repository"].url_for())
 
@@ -98,12 +99,12 @@ async def edit_repository(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "Le point de livraison ne peut pas être modifié"))
+                    flash(request, ("warning", _("Le point de livraison ne peut pas être modifié")))
                 else:
-                    flash(request, ("success", "Le point de livraison a bien été modifié"))
+                    flash(request, ("success", _("Le point de livraison a été modifié")))
                     return HTTPFound(request.app.router["list_repository"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire contient des erreurs"))
+                flash(request, ("danger", _("Le formulaire contient des erreurs")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))

@@ -10,6 +10,7 @@ from wtforms.validators import EqualTo
 from wtforms.validators import Length
 from wtforms.validators import Required
 
+from molb.main_form import _
 from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
@@ -32,7 +33,7 @@ async def handler(request):
                     request,
                     (
                         "danger",
-                        "Il n'y a pas de compte dont l'adresse email est {}".format(
+                        _("Il n'y a pas de compte dont l'adresse email est {}").format(
                             email_address
                         )
                     )
@@ -50,14 +51,14 @@ async def handler(request):
                     request,
                     (
                         "info",
-                        "Un message de confirmation a été envoyé à {}".format(
+                        _("Un message de confirmation a été envoyé à {}").format(
                             email_address
                         )
                     )
                 )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", "Le formulaire comporte des erreurs"))
+            flash(request, ("danger", _("Le formulaire comporte des erreurs")))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -67,12 +68,12 @@ async def handler(request):
 
 
 class PasswordForm(CsrfForm):
-    password = PasswordField("Mot de passe", validators=[
+    password = PasswordField(_("Mot de passe"), validators=[
         Required(),
-        EqualTo("password2", message="Les mots de passe doivent être identiques"),
+        EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
         Length(min=6)
     ])
-    password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
+    password2 = PasswordField(_("Répétition du mot de passe"), validators=[Required()])
     submit = SubmitField("Valider")
 
 
@@ -85,7 +86,7 @@ async def confirm(request):
         )
         id_ = token_data["id"]
     except Exception:
-        flash(request, ("danger", "Le lien est invalide ou a expiré"))
+        flash(request, ("danger", _("Le lien est invalide ou a expiré")))
         raise HTTPBadRequest()
 
     if request.method == "POST":
@@ -98,22 +99,28 @@ async def confirm(request):
                 try:
                     await conn.execute(q, password_hash, id_)
                 except Exception:
-                    flash(request, ("danger", "Votre mot de passe ne peut être modifié"))
+                    flash(
+                        request,
+                        (
+                            "danger",
+                            _("Votre mot de passe ne peut être modifié")
+                        )
+                    )
                     return {"form": form, "token": token}
                 else:
                     flash(
                         request,
                         (
                             "info",
-                            (
-                                "Votre mot de passe a bien été modifié, "
+                            _((
+                                "Votre mot de passe a été modifié, "
                                 "vous pouvez vous connecter"
-                            )
+                            ))
                         )
                     )
                     return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", _("Le formulaire comorte des erreurs")))
         return {"form": form, "token": token}
     elif request.method == "GET":
         form = PasswordForm(meta=await generate_csrf_meta(request))
