@@ -1,25 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Commandes{% endblock %}
+{% block title %}{% trans %}Commandes{% endtrans %}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Commandes</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
+    <li class="breadcrumb-item active">{% trans %}Commandes{% endtrans %}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
 {% if disabled %}
-<p>Vous n'avez pas la possibilité de passer une commande.</p>
+<p>{% trans %}Vous n'avez pas la possibilité de passer une commande.{% endtrans %}</p>
 {% else %}
-<div class="form-group"><a href="{{ url("create_order") }}" class="btn btn-light">Passer une commande</a></div>
+<div class="form-group"><a href="{{ url("create_order") }}" class="btn btn-light">{% trans %}Passer une commande{% endtrans %}</a></div>
 {% endif %}
 
 <table class="table table-hover">
    <thead>
       <tr>
-         <th>Date de la commande</th>
-         <th>Date de la fournée</th>
-         <th>Total</th>
+         <th>{% trans %}Date de la commande{% endtrans %}</th>
+         <th>{% trans %}Date de la fournée{% endtrans %}</th>
+         <th>{% trans %}Total{% endtrans %}</th>
          <th></th>
       </tr>
    </thead>
@@ -33,7 +33,7 @@
          {% endif %}
          <td>{{ order.batch_date.strftime("%Y-%m-%d %H:%M") }}</td>
          <td>{{ order.total }}</td>
-         <td>{% if now < order.cancellation_date %}<a href="{{ url("delete_order", id=order.id) }}">Supprimer</a>{% endif%}</td>
+         <td>{% if now < order.cancellation_date %}<a href="{{ url("delete_order", id=order.id) }}">{% trans %}Supprimer{% endtrans %}</a>{% endif%}</td>
       </tr>
       {%- endfor %}
    </tbody>

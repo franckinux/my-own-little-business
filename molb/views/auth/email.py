@@ -30,7 +30,7 @@ async def handler(request):
 
                 q = "SELECT COUNT(*) FROM client WHERE email_address = $1"
                 if await conn.fetchval(q, email_address) != 0:
-                    flash(request, ("danger", _("Veuillez choisir une autre adresse mail")))
+                    flash(request, ("danger", _("Veuillez choisir une autre adresse email")))
                     return {"form": form, "email": client["email_address"]}
 
                 await send_confirmation(
@@ -38,7 +38,7 @@ async def handler(request):
                     email_address,
                     {"id": client["id"], "email_address": email_address},
                     "confirm_email",
-                    _("Changement d'adresse mail"),
+                    _("Changement d'adresse email"),
                     "email-confirmation"
                 )
                 flash(
@@ -52,7 +52,7 @@ async def handler(request):
                 )
                 return HTTPFound(request.app.router["home"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire comporte des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs")))
             return {"form": form, "email": client["email_address"]}
         elif request.method == "GET":
             form = EmailForm(meta=await generate_csrf_meta(request))
@@ -76,9 +76,9 @@ async def confirm(request):
         try:
             await conn.execute(q, email_address, id_)
         except Exception:
-            flash(request, ("danger", _("Votre adresse mail ne peut pas être modifiée")))
+            flash(request, ("danger", _("Votre adresse email ne peut pas être modifiée")))
         else:
-            flash(request, ("info", _("Votre adresse mail a été modifiée")))
+            flash(request, ("info", _("Votre adresse email a été modifiée")))
         login = await authorized_userid(request)
         if login:
             return HTTPFound(request.app.router["home"].url_for())

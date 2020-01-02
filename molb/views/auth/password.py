@@ -33,7 +33,7 @@ async def handler(request):
                     request,
                     (
                         "danger",
-                        _("Il n'y a pas de compte dont l'adresse email est {}").format(
+                        _("Il n'y a pas de profil dont l'adresse email est {}").format(
                             email_address
                         )
                     )
@@ -58,7 +58,7 @@ async def handler(request):
                 )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", _("Le formulaire comporte des erreurs")))
+            flash(request, ("danger", _("Le formulaire contient des erreurs")))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -120,7 +120,7 @@ async def confirm(request):
                     )
                     return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", _("Le formulaire comorte des erreurs")))
+            flash(request, ("danger", _("Le formulaire contient des erreurs")))
         return {"form": form, "token": token}
     elif request.method == "GET":
         form = PasswordForm(meta=await generate_csrf_meta(request))

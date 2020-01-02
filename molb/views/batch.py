@@ -42,7 +42,7 @@ async def create_batch(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return {"form": form}
 
             # as the date only is chosen by the user, the time part is set to 6:00 am

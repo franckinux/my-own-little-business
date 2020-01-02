@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Saisie d'une commande{% endblock %}
+{% block title %}{% trans %}Saisie d'une commande{% endtrans %}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">Commandes</a></li>
-    <li class="breadcrumb-item active">Saisie d'une commande</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">{% trans %}Commandes{% endtrans %}</a></li>
+    <li class="breadcrumb-item active">{% trans %}Saisie d'une commande{% endtrans %}</li>
 </ol>
 {% endblock %}
 
@@ -46,7 +46,7 @@ $(document).ready(function(){
                 <td>{{ product.price }}</a></td>
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}"
-                    placeholder="Entrez la quantité"
+                    placeholder="{% trans %}Entrez la quantité{% endtrans %}"
                     type="number" step="1">
                 </td>
                 <td>{{ product.quantity }}</td>
@@ -55,7 +55,7 @@ $(document).ready(function(){
     </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_order") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("list_order") }}" class="btn btn-light">{% trans %}Annuler{% endtrans %}</a>
     </div>
 </form>
 {% endblock %}

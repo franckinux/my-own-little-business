@@ -20,10 +20,10 @@
         <div class="header">
             {% if authorized_userid %}
             <div class="btn-toolbar float-right">
-                <a href="{{ url("logout") }}" class="btn btn-light">Déconnexion</a>
+                <a href="{{ url("logout") }}" class="btn btn-light">{% trans %}Déconnexion{% endtrans %}</a>
             </div>
             {% endif %}
-            <h2>{{ app.config.application.site_name }} <small>Commandes</small></h2>
+            <h2>{{ app.config.application.site_name }} <small>{% trans %}Commandes</small{% endtrans %}></h2>
         </div>
         {% block breadcrumb %}{% endblock %}
         {% block message %}

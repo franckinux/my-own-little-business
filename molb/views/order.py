@@ -116,7 +116,7 @@ async def create_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return HTTPFound(request.app.router["list_order"].url_for())
 
             # get the batch date and capacity
@@ -273,7 +273,7 @@ async def edit_order(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", _("Le formulaire comporte des erreurs.")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return template_context
 
             # compute total price and total_load of the order

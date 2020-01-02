@@ -5,7 +5,7 @@
 <link href="/static/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}Création d'une fournée{% endblock %}
+{% block title %}{% trans %}Création d'une fournée{% endtrans %}{% endblock %}
 
 {% block scripts %}
 {{ super() }}
@@ -15,9 +15,9 @@
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">Fournées</a></li>
-    <li class="breadcrumb-item active">Création d'une fournée</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">{% trans %}Fournées{% endtrans %}</a></li>
+    <li class="breadcrumb-item active">{% trans %}Création d'une fournée{% endtrans %}</li>
 </ol>
 {% endblock %}
 
@@ -29,18 +29,19 @@
     {% endif %}
     <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         {{ form.date.label(for="date") }}
-	{% if form.date.data is none %}
-	<input id="date" name="date" readonly width="100%" placeholder="Entrez la date de livraison "/>
-	{% else %}
-	<input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" placeholder="Entrez la date de livraison" />
-	{% endif %}
+    {% if form.date.data is none %}
+    <input id="date" name="date" readonly width="100%" placeholder="{% trans %}Entrez la date de livraison{% endtrans %}" />
+    {% else %}
+    <input id="date" name="date" readonly width="100%" value="{{
+    form.date.data.strftime("%d/%m/%Y") }}" placeholder="{% trans %}Entrez la date de livraison{% endtrans %}" />
+    {% endif %}
         <div class="help-text">
             {% for error in form.date.errors %}<p>{{ error }}</p>{% endfor %}
         </div>
     </div>
     <div class="form-group">
         {{ form.capacity.label(for="capacity") }}
-        {{ form.capacity(class="form-control", placeholder="Entrez la capacité de la fournée") }}
+        {{ form.capacity(class="form-control", placeholder="{% trans %}Entrez la capacité de la fournée{% endtrans %}") }}
         {% if form.capacity.errors %}
         <div class="help-text">
             {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
@@ -53,7 +54,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_batch") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("list_batch") }}" class="btn btn-light">{% trans %}Annuler{% endtrans %}</a>
     </div>
 </form>
 
@@ -61,13 +62,13 @@
     var date = new Date();
     date.setDate(date.getDate()+1);
     tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-	$('#date').datepicker({
+    $('#date').datepicker({
         format: "d/m/yyyy",
         uiLibrary: "bootstrap4",
         locale: "fr-fr",
         minDate: tomorow,
         weekStartDay: 1
-	});
+    });
 </script>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 {% if app.config.application.repository_map %}
-<p class="row top-margin-25">Choisissez votre point de livraison dans la carte ci-dessous :</p>
+<p class="row top-margin-25">{% trans %}Choisissez votre point de livraison dans la carte ci-dessous :{% endtrans %}</p>
 
-<iframe height="480" width="640px" src="{{ app.config.application.repository_map }}" title="La carte des points de livraison">
+<iframe height="480" width="640px" src="{{ app.config.application.repository_map }}" title="{% trans %}La carte des points de livraison{% endtrans %}">
 </iframe>
 {% endif %}

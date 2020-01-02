@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Plan de fournée{% endblock %}
+{% block title %}{% trans %}Plan de fournée{% endtrans %}{% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Plan de fournée</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
+    <li class="breadcrumb-item active">{% trans %}Plan de fournée{% endtrans %}</li>
 </ol>
 {% endblock %}
 
@@ -22,17 +22,17 @@
     </div>
 </form>
 {% if products %}
-<h3>Charge de la fournée</h3>
+<h3>{% trans %}Charge de la fournée{% endtrans %}</h3>
 
 <p>{{ batch.load }} / {{ batch.capacity }}</p>
 
-<h3>Produits de la fournée</h3>
+<h3>{% trans %}Produits de la fournée{% endtrans %}</h3>
 
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Nom du produit</th>
-            <th>Quantité</th>
+            <th>{% trans %}Nom du produit{% endtrans %}</th>
+            <th>{% trans %}Quantité{% endtrans %}</th>
         </tr>
     </thead>
     <tbody>
@@ -47,7 +47,7 @@
 {% endif %}
 
 {% if products_by_repository %}
-<h3>Produits de la fournée par point de livraison</h3>
+<h3>{% trans %}Produits de la fournée par point de livraison{% endtrans %}</h3>
 
 {% for repository_name, repository_products in products_by_repository|groupby("repository_name") -%}
 <h4>{{ repository_name }}</h4>
@@ -55,8 +55,8 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Nom du produit</th>
-            <th>Quantité</th>
+            <th>{% trans %}Nom du produit{% endtrans %}</th>
+            <th>{% trans %}Quantité{% endtrans %}</th>
         </tr>
     </thead>
     <tbody>
@@ -72,7 +72,7 @@
 {% endif %}
 
 {% if products_by_repository_by_client %}
-<h3>Produits de la fournée par point de livraison et par client</h3>
+<h3>{% trans %}Produits de la fournée par point de livraison et par client{% endtrans %}</h3>
 
 {% for repository_name, repository_client_products in products_by_repository_by_client|groupby("repository_name") -%}
 <h4>{{ repository_name }}</h4>
@@ -80,10 +80,10 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Nom du client</th>
-            <th>Prénom du client</th>
-            <th>Nom du produit</th>
-            <th>Quantité</th>
+            <th>{% trans %}Nom du client{% endtrans %}</th>
+            <th>{% trans %}Prénom du client{% endtrans %}</th>
+            <th>{% trans %}Nom du produit{% endtrans %}</th>
+            <th>{% trans %}Quantité{% endtrans %}</th>
         </tr>
     </thead>
     <tbody>

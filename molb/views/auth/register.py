@@ -31,7 +31,7 @@ class RegisterForm(CsrfForm):
         Required(),
         Length(min=1, max=64),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
-            _("L'identifiant ne doit comporter que des lettres non accentuées, "
+            _("L'identifiant ne doit contenir que des lettres non accentuées, "
             "des chiffres, '.'  et '_' et commencer par une lettre"))
     ])
     password = PasswordField("Mot de passe", validators=[
@@ -42,7 +42,7 @@ class RegisterForm(CsrfForm):
     password2 = PasswordField(_("Répétition du mot de passe"), validators=[Required()])
     first_name = StringField(_("Prénom"))
     last_name = StringField(_("Nom"))
-    email_address = StringField(_("Adresse mail"), validators=[
+    email_address = StringField(_("Adresse email"), validators=[
         Required(),
         Length(min=1, max=64),
         Email()
@@ -81,7 +81,7 @@ async def handler(request):
                                 (
                                     "warning",
                                     _(
-                                        "Votre compte ne peut être créé, cet "
+                                        "Votre profil ne peut être créé, cet "
                                         "identifiant est déjà utilisé"
                                     )
                                 )
@@ -108,7 +108,7 @@ async def handler(request):
                 except Exception:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire comporte des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs")))
             return {"form": form}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))

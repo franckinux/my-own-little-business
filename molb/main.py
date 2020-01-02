@@ -2,12 +2,16 @@
 
 import asyncio
 import base64
-import gettext
 import os
 import os.path as op
 
 from aiohttp import web
-from aiohttp_jinja2 import setup as setup_jinja
+from aiohttp.babel.locale import load_gettext_translations
+from aiohttp.babel.locale import set_default_locale
+# from aiohttp.babel.locale import set_locale_detector
+from aiohttp.babel.middlewares import babel_middleware
+from aiohttp.babel.middlewares import _
+import aiohttp_jinja2
 from aiohttp_session import setup as session_setup
 from aiohttp_security import authorized_userid
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
@@ -23,7 +27,11 @@ from molb.routes import setup_routes
 from molb.views.send_message import MassMailer
 from molb.utils import read_configuration_file
 
-_ = None
+
+def setup_i18n():
+    set_default_locale("fr_FR")
+    locales_dir = op.join(op.dirname(op.abspath(__file__)), "locales")
+    load_gettext_translations(locales_dir, "molb")
 
 
 def setup_session(app):
@@ -58,7 +66,7 @@ async def create_app():
     config = read_configuration_file()
     db_pool = await attach_db(config)
 
-    app = web.Application(middlewares=[error_middleware])
+    app = web.Application(middlewares=[error_middleware, babel_middleware])
     app["config"] = config
     app["db-pool"] = db_pool
 
@@ -74,7 +82,7 @@ async def create_app():
     app.middlewares.append(aiohttp_session_flash.middleware)
 
     template_dir = op.join(op.dirname(op.abspath(__file__)), "templates")
-    setup_jinja(
+    aiohttp_jinja2.setup(
         app,
         loader=FileSystemLoader(template_dir),
         context_processors=(
@@ -82,6 +90,8 @@ async def create_app():
             authorized_userid_context_processor
         )
     )
+    jinja2_env = aiohttp_jinja2.get_env(app)
+    jinja2_env.globals['_'] = _
 
     setup_routes(app)
 
@@ -94,9 +104,7 @@ loop = asyncio.get_event_loop()
 app = loop.run_until_complete(create_app())
 
 if __name__ == "__main__":
-    # internationalization
-    i18n = gettext.translation("molb", localedir="locales", languages=["fr-FR"J, "en-GB"])
-    _ = i18n.gettext
+    setup_i18n()
 
     web.run_app(
         app,

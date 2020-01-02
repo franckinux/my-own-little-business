@@ -1,24 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Accueil{% endblock %}
+{% block title %}{% trans %}Accueil{% endtrans %}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item active">Accueil</li>
+    <li class="breadcrumb-item active">{% trans %}Accueil{% endtrans %}</li>
 </ol>
 {% endblock %}
 {% block page_content %}
 <div class="text-center">
     <div class="form-group">
-        Pas encore client ?
-        <a href={{ url("register") }} class="btn btn-primary">Enregistrez vous</a>
+        {% trans %}Pas encore client ?{% endtrans %}
+        <a href={{ url("register") }} class="btn btn-primary">{% trans %}Enregistrez vous{% endtrans %}</a>
     </div>
     <div class="form-group">
-        Déjà enregistré ?
-        <a href={{ url("login") }} class="btn btn-light">Connectez vous</a>
-	<small><a href="{{ url("password") }}">Mot de passe perdu</a></small>
+        {% trans %}Déjà enregistré ?{% endtrans %}
+        <a href={{ url("login") }} class="btn btn-light">{% trans %}Connectez vous{% endtrans %}</a>
+        <small><a href="{{ url("password") }}">{% trans %}Mot de passe perdu{% endtrans %}</a></small>
     </div>
     <p>
-        Pour tout problème concernant ce site, veuillez écrire à
-	<a href="mailto:{{ app.config.application.from }}?subject={{ app.config.application.site_name }}">{{ app.config.application.from }}</a>
+        {% trans %}Pour tout problème concernant ce site, veuillez écrire à{% endtrans %}
+        <a href="mailto:{{ app.config.application.from }}?subject={{ app.config.application.site_name }}">{{ app.config.application.from }}</a>
     </p>
 </div>
 {% endblock %}
