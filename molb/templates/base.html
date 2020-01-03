@@ -18,11 +18,13 @@
     </div>
     <div class="col-6">
         <div class="header">
-            {% if authorized_userid %}
             <div class="btn-toolbar float-right">
+                <a href="{{ url("en") }}"><img src="/static/english-flag.png"></a>
+                <a href="{{ url("fr") }}"><img src="/static/france-flag.png"></a>
+                {% if authorized_userid %}
                 <a href="{{ url("logout") }}" class="btn btn-light">{% trans %}Déconnexion{% endtrans %}</a>
+                {% endif %}
             </div>
-            {% endif %}
             <h2>{{ app.config.application.site_name }} <small>{% trans %}Commandes{% endtrans %}</small></h2>
         </div>
         {% block breadcrumb %}{% endblock %}

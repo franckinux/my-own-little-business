@@ -19,6 +19,7 @@ from molb.views.batch import list_batch
 from molb.views.client import toggle_client
 from molb.views.client import list_client
 from molb.views.home import home
+from molb.views.language import language
 from molb.views.order import create_order
 from molb.views.order import edit_order
 from molb.views.order import delete_order
@@ -72,6 +73,10 @@ def setup_routes(app):
 
     # home
     app.router.add_get("/home/", home, name="home")
+
+    # language
+    app.router.add_get("/lang/en/", language, name="en")
+    app.router.add_get("/lang/fr/", language, name="fr")
 
     # orders
     app.router.add_route('*', "/order/create/", create_order, name="create_order")
