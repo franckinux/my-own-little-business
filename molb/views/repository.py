@@ -54,7 +54,7 @@ async def create_repository(request):
             flash(request, ("success", _("Le point de livraison a été créé")))
             return HTTPFound(request.app.router["list_repository"].url_for())
         else:
-            flash(request, ("danger", _("Le formulaire contient des erreurs")))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form}
     elif request.method == "GET":
         form = RepositoryForm(meta=await generate_csrf_meta(request))
@@ -104,7 +104,7 @@ async def edit_repository(request):
                     flash(request, ("success", _("Le point de livraison a été modifié")))
                     return HTTPFound(request.app.router["list_repository"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire contient des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))

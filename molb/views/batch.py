@@ -116,7 +116,7 @@ async def edit_batch(request):
                     flash(request, ("success", _("La fournée a été modifiée")))
                     return HTTPFound(request.app.router["list_batch"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire contient des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = BatchForm(data=data, meta=await generate_csrf_meta(request))

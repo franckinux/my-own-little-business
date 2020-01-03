@@ -45,14 +45,14 @@ async def handler(request):
                     request,
                     (
                         "info",
-                        _("Un mail de confirmation a été envoyé à {}").format(
+                        _("Un email de confirmation a été envoyé à {}").format(
                             email_address
                         )
                     )
                 )
                 return HTTPFound(request.app.router["home"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire contient des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form, "email": client["email_address"]}
         elif request.method == "GET":
             form = EmailForm(meta=await generate_csrf_meta(request))

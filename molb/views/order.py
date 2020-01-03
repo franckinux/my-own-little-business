@@ -189,7 +189,7 @@ async def create_order(request):
                             )
                             await conn.execute(q, ordered, order_id, product_id)
             except Exception:
-                flash(request, ("warning", (_("Votre commande n'a pas pu être passée."))))
+                flash(request, ("warning", _("Votre commande n'a pas pu être passée.")))
                 return template_context
 
             flash(request, ("success", _("Votre commande a été passée avec succès")))
@@ -340,7 +340,7 @@ async def edit_order(request):
                     await conn.fetchval(q, total_price, order_id)
 
             except Exception:
-                flash(request, ("warning", (_("Votre commande n'a pas pu être modifiée."))))
+                flash(request, ("warning", _("Votre commande n'a pas pu être modifiée.")))
                 return template_context
 
             flash(request, ("success", _("Votre commande a été modifiée.")))

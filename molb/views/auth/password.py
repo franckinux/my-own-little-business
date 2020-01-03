@@ -51,14 +51,14 @@ async def handler(request):
                     request,
                     (
                         "info",
-                        _("Un message de confirmation a été envoyé à {}").format(
+                        _("Un email de confirmation a été envoyé à {}").format(
                             email_address
                         )
                     )
                 )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", _("Le formulaire contient des erreurs")))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -112,15 +112,15 @@ async def confirm(request):
                         request,
                         (
                             "info",
-                            _((
+                            _(
                                 "Votre mot de passe a été modifié, "
                                 "vous pouvez vous connecter"
-                            ))
+                            )
                         )
                     )
                     return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", _("Le formulaire contient des erreurs")))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
         return {"form": form, "token": token}
     elif request.method == "GET":
         form = PasswordForm(meta=await generate_csrf_meta(request))

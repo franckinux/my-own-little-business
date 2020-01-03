@@ -108,4 +108,17 @@ have been downloaded from :
 
 - `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.4.1 ;
 - `Bootstrap <http://getbootstrap.com/>`_ - Version 4.4.1 ;
-- `Gijgo <>`_ - Version 1.9.13 ;
+- `Gijgo <https://gijgo.com/>`_ - Version 1.9.13 ;
+
+Internationalization
+====================
+
+Creation : ::
+
+     pybabel extract -F babel-mapping.ini -o locales/messages.pot .
+     pybabel init -i messages.pot -d translations -l en_GB
+     pybabel init -i messages.pot -d translations -l fr_FR
+     pybabel compile -d translations
+
+Update : ::
+    pybabel update -i messages.pot -d translations

@@ -99,7 +99,7 @@ async def handler(request):
                             request,
                             (
                                 "info",
-                                _("Un message de confirmation a été envoyé à {}").format(
+                                _("Un email de confirmation a été envoyé à {}").format(
                                     client["email_address"]
                                 )
                             )
@@ -108,7 +108,7 @@ async def handler(request):
                 except Exception:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
-                flash(request, ("danger", _("Le formulaire contient des erreurs")))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
