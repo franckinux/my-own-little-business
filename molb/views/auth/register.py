@@ -1,6 +1,7 @@
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
@@ -17,7 +18,6 @@ from wtforms.validators import Regexp
 from wtforms.validators import Required
 
 from molb.views.auth.token import get_token_data
-from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_confirmation
 from molb.views.utils import field_list

@@ -1,12 +1,12 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from wtforms import SelectField
 from wtforms import SubmitField
 
 from molb.auth import require
-from molb.main import _
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data

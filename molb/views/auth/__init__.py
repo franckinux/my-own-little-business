@@ -1,5 +1,6 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import forget
 from aiohttp_security import remember
@@ -10,7 +11,6 @@ from wtforms import SubmitField
 from wtforms.validators import Required
 
 from molb.auth import require
-from molb.main import _
 from molb.auth.db_auth import check_credentials
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import generate_csrf_meta

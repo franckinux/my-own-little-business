@@ -6,11 +6,10 @@ import os
 import os.path as op
 
 from aiohttp import web
-from aiohttp.babel.locale import load_gettext_translations
-from aiohttp.babel.locale import set_default_locale
-# from aiohttp.babel.locale import set_locale_detector
-from aiohttp.babel.middlewares import babel_middleware
-from aiohttp.babel.middlewares import _
+from aiohttp_babel.locale import load_gettext_translations
+from aiohttp_babel.locale import set_default_locale
+# from aiohttp_babel.locale import set_locale_detector
+from aiohttp_babel.middlewares import babel_middleware
 import aiohttp_jinja2
 from aiohttp_session import setup as session_setup
 from aiohttp_security import authorized_userid
@@ -31,7 +30,7 @@ from molb.utils import read_configuration_file
 def setup_i18n():
     set_default_locale("fr_FR")
     locales_dir = op.join(op.dirname(op.abspath(__file__)), "locales")
-    load_gettext_translations(locales_dir, "molb")
+    load_gettext_translations(locales_dir, "messages")
 
 
 def setup_session(app):
@@ -90,8 +89,9 @@ async def create_app():
             authorized_userid_context_processor
         )
     )
-    jinja2_env = aiohttp_jinja2.get_env(app)
-    jinja2_env.globals['_'] = _
+    # For use of '_' instead of "trans" tags in templates
+    # jinja2_env = aiohttp_jinja2.get_env(app)
+    # jinja2_env.globals['_'] = _
 
     setup_routes(app)
 

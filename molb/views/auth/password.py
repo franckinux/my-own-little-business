@@ -1,6 +1,7 @@
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 from passlib.hash import sha256_crypt
@@ -10,7 +11,6 @@ from wtforms.validators import EqualTo
 from wtforms.validators import Length
 from wtforms.validators import Required
 
-from molb.main_form import _
 from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
