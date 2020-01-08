@@ -94,6 +94,10 @@ async def create_order(request):
         rows = await conn.fetch(q, client_id, str(client["days"]).strip("[]"))
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
+        if not batch_choices:
+            flash(request, ("warning", "Il n'y a pas de fournée enregistrée."))
+            return HTTPFound(request.app.router["list_order"].url_for())
+
         # get all available products
         q = (
             "SELECT * FROM product WHERE available"
