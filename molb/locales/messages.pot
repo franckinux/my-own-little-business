@@ -8,20 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-03 11:32+0100\n"
+"POT-Creation-Date: 2020-01-09 22:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: templates/base.html:23
+#: templates/base.html:25
 msgid "Déconnexion"
 msgstr ""
 
-#: templates/base.html:26 templates/create-order.html:6
+#: templates/base.html:28 templates/create-order.html:6
 #: templates/edit-order.html:6 templates/home.html:31 templates/home.html:34
 #: templates/list-order.html:2 templates/list-order.html:6
 msgid "Commandes"
@@ -34,11 +34,12 @@ msgstr ""
 #: templates/auth/email-email.html:5 templates/auth/profile.html:5
 #: templates/create-batch.html:18 templates/create-order.html:5
 #: templates/create-repository.html:5 templates/edit-batch.html:18
-#: templates/edit-order.html:5 templates/edit-repository.html:5
-#: templates/home.html:2 templates/home.html:5 templates/list-batch.html:5
-#: templates/list-order.html:5 templates/list-product.html:5
-#: templates/list-repository.html:5 templates/plan.html:7
-#: templates/start.html:2 templates/start.html:5
+#: templates/edit-order.html:5 templates/edit-product.html:5
+#: templates/edit-repository.html:5 templates/home.html:2 templates/home.html:5
+#: templates/list-accounts.html:5 templates/list-batch.html:5
+#: templates/list-client.html:5 templates/list-order.html:5
+#: templates/list-product.html:5 templates/list-repository.html:5
+#: templates/plan.html:7 templates/start.html:2 templates/start.html:5
 msgid "Accueil"
 msgstr ""
 
@@ -48,17 +49,18 @@ msgstr ""
 msgid "Fournées"
 msgstr ""
 
-#: templates/create-batch.html:33 templates/create-batch.html:36
+#: templates/create-batch.html:33 templates/create-batch.html:35
 msgid "Entrez la date de livraison"
 msgstr ""
 
 #: templates/auth/email-email.html:29 templates/auth/email-password.html:26
-#: templates/auth/login.html:34 templates/auth/password.html:35
+#: templates/auth/login.html:35 templates/auth/password.html:35
 #: templates/auth/profile.html:73 templates/auth/register.html:90
-#: templates/create-batch.html:57 templates/create-order.html:58
+#: templates/create-batch.html:56 templates/create-order.html:58
 #: templates/create-product.html:59 templates/create-repository.html:70
 #: templates/edit-batch.html:49 templates/edit-order.html:57
-#: templates/edit-repository.html:70 templates/home.html:58
+#: templates/edit-product.html:59 templates/edit-repository.html:70
+#: templates/home.html:58
 msgid "Annuler"
 msgstr ""
 
@@ -109,6 +111,15 @@ msgstr ""
 msgid "Quantité"
 msgstr ""
 
+#: templates/edit-product.html:2 templates/edit-product.html:7
+msgid "Modification d'un produit"
+msgstr ""
+
+#: templates/edit-product.html:6 templates/home.html:14
+#: templates/list-product.html:2 templates/list-product.html:6
+msgid "Produits"
+msgstr ""
+
 #: templates/edit-repository.html:2 templates/edit-repository.html:7
 msgid "Modification d'un point de livraison"
 msgstr ""
@@ -117,12 +128,8 @@ msgstr ""
 msgid "Erreur"
 msgstr ""
 
-#: templates/home.html:14 templates/list-product.html:2
-#: templates/list-product.html:6
-msgid "Produits"
-msgstr ""
-
-#: templates/home.html:18
+#: templates/home.html:18 templates/list-client.html:2
+#: templates/list-client.html:6 templates/list-client.html:12
 msgid "Clients"
 msgstr ""
 
@@ -164,10 +171,44 @@ msgid ""
 "commandes."
 msgstr ""
 
-#: templates/home.html:59 templates/list-batch.html:28
-#: templates/list-order.html:36 templates/list-product.html:30
-#: templates/list-repository.html:26
+#: templates/home.html:59 templates/list-accounts.html:32
+#: templates/list-batch.html:28 templates/list-order.html:36
+#: templates/list-product.html:30 templates/list-repository.html:26
 msgid "Supprimer"
+msgstr ""
+
+#: templates/list-accounts.html:2 templates/list-accounts.html:6
+msgid "Profils"
+msgstr ""
+
+#: templates/list-accounts.html:11
+msgid "Profils non confirmés"
+msgstr ""
+
+#: templates/list-accounts.html:16 templates/list-client.html:17
+#: views/auth/profile.py:30 views/auth/register.py:43
+msgid "Prénom"
+msgstr ""
+
+#: templates/list-accounts.html:17 templates/list-client.html:18
+#: templates/list-product.html:16 templates/list-repository.html:16
+#: views/auth/profile.py:31 views/auth/register.py:44 views/product.py:24
+#: views/repository.py:25
+msgid "Nom"
+msgstr ""
+
+#: templates/list-accounts.html:18 views/auth/email_form.py:12
+#: views/auth/register.py:45
+msgid "Adresse email"
+msgstr ""
+
+#: templates/list-accounts.html:19 views/auth/profile.py:32
+#: views/auth/register.py:50
+msgid "Numéro de téléphone"
+msgstr ""
+
+#: templates/list-accounts.html:20
+msgid "Date d'enregistrement"
 msgstr ""
 
 #: templates/list-batch.html:11
@@ -184,6 +225,22 @@ msgstr ""
 
 #: templates/list-batch.html:18 views/batch.py:27
 msgid "Ouverte"
+msgstr ""
+
+#: templates/list-client.html:19
+msgid "Statut"
+msgstr ""
+
+#: templates/list-client.html:29
+msgid "Inactif"
+msgstr ""
+
+#: templates/list-client.html:29
+msgid "Actif"
+msgstr ""
+
+#: templates/list-client.html:30
+msgid "Changer statut"
 msgstr ""
 
 #: templates/list-order.html:12
@@ -208,12 +265,6 @@ msgstr ""
 
 #: templates/list-product.html:11
 msgid "Créer un produit"
-msgstr ""
-
-#: templates/list-product.html:16 templates/list-repository.html:16
-#: views/auth/profile.py:31 views/auth/register.py:44 views/product.py:24
-#: views/repository.py:25
-msgid "Nom"
 msgstr ""
 
 #: templates/list-product.html:17 views/product.py:28
@@ -573,10 +624,6 @@ msgstr ""
 msgid "Votre adresse email a été modifiée"
 msgstr ""
 
-#: views/auth/email_form.py:12 views/auth/register.py:45
-msgid "Adresse email"
-msgstr ""
-
 #: views/auth/password.py:36
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
 msgstr ""
@@ -593,12 +640,8 @@ msgstr ""
 msgid "Votre mot de passe ne peut être modifié"
 msgstr ""
 
-#: views/auth/profile.py:30 views/auth/register.py:43
-msgid "Prénom"
-msgstr ""
-
-#: views/auth/profile.py:32 views/auth/register.py:50
-msgid "Numéro de téléphone"
+#: views/auth/password.py:115
+msgid "Votre mot de passe a été modifié, vous pouvez vous connecter"
 msgstr ""
 
 #: views/auth/profile.py:35 views/auth/register.py:53

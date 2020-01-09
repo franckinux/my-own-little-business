@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{% trans %}Modification d'un point de livraison{% endtrans %}{% endblock %}
+{% block title %}{{ _("Modification d'un point de livraison") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_repository") }}">{% trans %}Points de livraison{% endtrans %}</a></li>
-    <li class="breadcrumb-item active">{% trans %}Modification d'un point de livraison{% endtrans %}</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_repository") }}">{{ _("Points de livraison") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Modification d'un point de livraison") }}</li>
 </ol>
 {% endblock %}
 
@@ -16,7 +16,7 @@
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
         {{ form.name.label(for="name") }}
-        {{ form.name(class="form-control", placeholder="{% trans %}Entrez le nom{% endtrans %}") }}
+        {{ form.name(class="form-control", placeholder="_('Entrez le nom')") }}
         {% if form.name.errors %}
         <div class="help-text">
             {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
@@ -28,7 +28,7 @@
         {{ form.opened.label(for="opened") }}
     </div>
     <div class="form-group">
-        <p><strong>{% trans %}Jours de livraison{% endtrans %}</strong></p>
+        <p><strong>{{ _("Jours de livraison") }}</strong></p>
 
         <label class="checkbox-inline">
         {{ form.monday() }}
@@ -67,7 +67,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_repository") }}" class="btn btn-light">{% trans %}Annuler{% endtrans %}</a>
+        <a href="{{ url("list_repository") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% block title %}{% trans %}Clients{% endtrans %}{% endblock %}
+{% block title %}{{ _("Clients") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
-    <li class="breadcrumb-item active">{% trans %}Clients{% endtrans %}</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Clients") }}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
 {% if clients %}
-<h3>{% trans %}Clients{% endtrans %}</h3>
+<h3>{{ _("Clients") }}</h3>
 
 <table class="table table-hover">
    <thead>
       <tr>
-         <th>{% trans %}Prénom</th>
-         <th>N{% trans %}om</th>
-         <th>S{% trans %}tatut</th>
+          <th>{{ _("Prénom") }}</th>
+          <th>{{ _("Nom") }}</th>
+          <th>{{ _("Statut") }}</th>
          <th></th>
          <th></th>
       </tr>
@@ -26,8 +26,8 @@
       <tr>
          <td>{{ client.first_name }}</td>
          <td>{{ client.last_name }}</td>
-         <td>{% if client.disabled %}{% trans %}Inactif{% endtrans %}{% else %}{% trans %}Actif{% endtrans %}{% endif %}</td>
-         <td><a href="{{ url("toggle_client", id=client.id) }}">{% trans %}Changer statut{% endtrans %}</a></td>
+         <td>{% if client.disabled %}{{ _("Inactif") }}{% else %}{{ _("Actif") }}{% endif %}</td>
+         <td><a href="{{ url("toggle_client", id=client.id) }}">{{ _("Changer statut") }}</a></td>
       </tr>
       {%- endfor %}
    </tbody>

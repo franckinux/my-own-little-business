@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-03 11:32+0100\n"
+"POT-Creation-Date: 2020-01-09 22:26+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -16,13 +16,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: templates/base.html:23
+#: templates/base.html:25
 msgid "Déconnexion"
 msgstr "Deconnection"
 
-#: templates/base.html:26 templates/create-order.html:6
+#: templates/base.html:28 templates/create-order.html:6
 #: templates/edit-order.html:6 templates/home.html:31 templates/home.html:34
 #: templates/list-order.html:2 templates/list-order.html:6
 msgid "Commandes"
@@ -35,11 +35,12 @@ msgstr "Batch creation"
 #: templates/auth/email-email.html:5 templates/auth/profile.html:5
 #: templates/create-batch.html:18 templates/create-order.html:5
 #: templates/create-repository.html:5 templates/edit-batch.html:18
-#: templates/edit-order.html:5 templates/edit-repository.html:5
-#: templates/home.html:2 templates/home.html:5 templates/list-batch.html:5
-#: templates/list-order.html:5 templates/list-product.html:5
-#: templates/list-repository.html:5 templates/plan.html:7
-#: templates/start.html:2 templates/start.html:5
+#: templates/edit-order.html:5 templates/edit-product.html:5
+#: templates/edit-repository.html:5 templates/home.html:2 templates/home.html:5
+#: templates/list-accounts.html:5 templates/list-batch.html:5
+#: templates/list-client.html:5 templates/list-order.html:5
+#: templates/list-product.html:5 templates/list-repository.html:5
+#: templates/plan.html:7 templates/start.html:2 templates/start.html:5
 msgid "Accueil"
 msgstr "Home"
 
@@ -49,17 +50,18 @@ msgstr "Home"
 msgid "Fournées"
 msgstr "Batches"
 
-#: templates/create-batch.html:33 templates/create-batch.html:36
+#: templates/create-batch.html:33 templates/create-batch.html:35
 msgid "Entrez la date de livraison"
 msgstr "Enter delivery date"
 
 #: templates/auth/email-email.html:29 templates/auth/email-password.html:26
-#: templates/auth/login.html:34 templates/auth/password.html:35
+#: templates/auth/login.html:35 templates/auth/password.html:35
 #: templates/auth/profile.html:73 templates/auth/register.html:90
-#: templates/create-batch.html:57 templates/create-order.html:58
+#: templates/create-batch.html:56 templates/create-order.html:58
 #: templates/create-product.html:59 templates/create-repository.html:70
 #: templates/edit-batch.html:49 templates/edit-order.html:57
-#: templates/edit-repository.html:70 templates/home.html:58
+#: templates/edit-product.html:59 templates/edit-repository.html:70
+#: templates/home.html:58
 msgid "Annuler"
 msgstr "Cancel"
 
@@ -77,7 +79,7 @@ msgstr "Product creation"
 
 #: templates/create-repository.html:2 templates/create-repository.html:7
 msgid "Création d'un point de livraison"
-msgstr "Delivery point creation"
+msgstr "Delivery place creation"
 
 #: templates/create-repository.html:6 templates/edit-repository.html:6
 #: templates/home.html:15 templates/list-repository.html:2
@@ -110,6 +112,15 @@ msgstr "Unitary price"
 msgid "Quantité"
 msgstr "Quantity"
 
+#: templates/edit-product.html:2 templates/edit-product.html:7
+msgid "Modification d'un produit"
+msgstr "Product change"
+
+#: templates/edit-product.html:6 templates/home.html:14
+#: templates/list-product.html:2 templates/list-product.html:6
+msgid "Produits"
+msgstr "Products"
+
 #: templates/edit-repository.html:2 templates/edit-repository.html:7
 msgid "Modification d'un point de livraison"
 msgstr "Delivery place edit"
@@ -118,12 +129,8 @@ msgstr "Delivery place edit"
 msgid "Erreur"
 msgstr "Error"
 
-#: templates/home.html:14 templates/list-product.html:2
-#: templates/list-product.html:6
-msgid "Produits"
-msgstr "Products"
-
-#: templates/home.html:18
+#: templates/home.html:18 templates/list-client.html:2
+#: templates/list-client.html:6 templates/list-client.html:12
 msgid "Clients"
 msgstr "Customers"
 
@@ -153,11 +160,11 @@ msgstr "Edit your profile"
 
 #: templates/home.html:45
 msgid "Modifier votre adresse email"
-msgstr "modify your email address"
+msgstr "Modify your email address"
 
 #: templates/home.html:52
 msgid "Suppression de votre profil"
-msgstr "Deletion of your profile"
+msgstr "Delete your profile"
 
 #: templates/home.html:55
 msgid ""
@@ -165,11 +172,45 @@ msgid ""
 "commandes."
 msgstr "Be careful, if you delete your profile, your orders will be canceled."
 
-#: templates/home.html:59 templates/list-batch.html:28
-#: templates/list-order.html:36 templates/list-product.html:30
-#: templates/list-repository.html:26
+#: templates/home.html:59 templates/list-accounts.html:32
+#: templates/list-batch.html:28 templates/list-order.html:36
+#: templates/list-product.html:30 templates/list-repository.html:26
 msgid "Supprimer"
 msgstr "Delete"
+
+#: templates/list-accounts.html:2 templates/list-accounts.html:6
+msgid "Profils"
+msgstr "Profiles"
+
+#: templates/list-accounts.html:11
+msgid "Profils non confirmés"
+msgstr "Not confirmed profiles"
+
+#: templates/list-accounts.html:16 templates/list-client.html:17
+#: views/auth/profile.py:30 views/auth/register.py:43
+msgid "Prénom"
+msgstr "First name"
+
+#: templates/list-accounts.html:17 templates/list-client.html:18
+#: templates/list-product.html:16 templates/list-repository.html:16
+#: views/auth/profile.py:31 views/auth/register.py:44 views/product.py:24
+#: views/repository.py:25
+msgid "Nom"
+msgstr "Name"
+
+#: templates/list-accounts.html:18 views/auth/email_form.py:12
+#: views/auth/register.py:45
+msgid "Adresse email"
+msgstr "Email address"
+
+#: templates/list-accounts.html:19 views/auth/profile.py:32
+#: views/auth/register.py:50
+msgid "Numéro de téléphone"
+msgstr "Phone number"
+
+#: templates/list-accounts.html:20
+msgid "Date d'enregistrement"
+msgstr "Registering date"
 
 #: templates/list-batch.html:11
 msgid "Créer une fournée"
@@ -186,6 +227,22 @@ msgstr "Capacity"
 #: templates/list-batch.html:18 views/batch.py:27
 msgid "Ouverte"
 msgstr "Open"
+
+#: templates/list-client.html:19
+msgid "Statut"
+msgstr "Status"
+
+#: templates/list-client.html:29
+msgid "Inactif"
+msgstr "Inactive"
+
+#: templates/list-client.html:29
+msgid "Actif"
+msgstr "Active"
+
+#: templates/list-client.html:30
+msgid "Changer statut"
+msgstr "Change status"
 
 #: templates/list-order.html:12
 msgid "Vous n'avez pas la possibilité de passer une commande."
@@ -210,12 +267,6 @@ msgstr "Total"
 #: templates/list-product.html:11
 msgid "Créer un produit"
 msgstr "Product creation"
-
-#: templates/list-product.html:16 templates/list-repository.html:16
-#: views/auth/profile.py:31 views/auth/register.py:44 views/product.py:24
-#: views/repository.py:25
-msgid "Nom"
-msgstr "Name"
 
 #: templates/list-product.html:17 views/product.py:28
 msgid "Disponible"
@@ -548,11 +599,11 @@ msgstr "Hello {} ! Nice to see you again"
 
 #: views/auth/__init__.py:52
 msgid "La combinaison identifiant/mot de passe est invalide"
-msgstr ""
+msgstr "Invalid id or password"
 
 #: views/auth/__init__.py:65
 msgid "Vous êtes déconnecté"
-msgstr "You are disconected"
+msgstr "You are disconnected"
 
 #: views/auth/email.py:33
 msgid "Veuillez choisir une autre adresse email"
@@ -560,7 +611,7 @@ msgstr "Please, select another email address"
 
 #: views/auth/email.py:48 views/auth/password.py:54 views/auth/register.py:102
 msgid "Un email de confirmation a été envoyé à {}"
-msgstr ""
+msgstr "A confirmation email has been sent to {}"
 
 #: views/auth/email.py:71 views/auth/password.py:89 views/auth/register.py:128
 msgid "Le lien est invalide ou a expiré"
@@ -573,10 +624,6 @@ msgstr "Your email address cannot be modified"
 #: views/auth/email.py:81
 msgid "Votre adresse email a été modifiée"
 msgstr "Your email address has been changed"
-
-#: views/auth/email_form.py:12 views/auth/register.py:45
-msgid "Adresse email"
-msgstr "Email address"
 
 #: views/auth/password.py:36
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
@@ -594,13 +641,9 @@ msgstr "Repeat your password"
 msgid "Votre mot de passe ne peut être modifié"
 msgstr "Your password cannot be changed"
 
-#: views/auth/profile.py:30 views/auth/register.py:43
-msgid "Prénom"
-msgstr "First name"
-
-#: views/auth/profile.py:32 views/auth/register.py:50
-msgid "Numéro de téléphone"
-msgstr "Phone number"
+#: views/auth/password.py:115
+msgid "Votre mot de passe a été modifié, vous pouvez vous connecter"
+msgstr ""
 
 #: views/auth/profile.py:35 views/auth/register.py:53
 msgid "Point de livraison"
@@ -648,7 +691,7 @@ msgstr "Your profile cannot be created, id already in use"
 
 #: views/auth/register.py:95
 msgid "Confirmation de votre enregistrement"
-msgstr ""
+msgstr "Registering confirmation"
 
 #: views/auth/register.py:138
 msgid "Vous ne pouvez pas être enregistré."

@@ -89,9 +89,8 @@ async def create_app():
             authorized_userid_context_processor
         )
     )
-    # For use of '_' instead of "trans" tags in templates
-    # jinja2_env = aiohttp_jinja2.get_env(app)
-    # jinja2_env.globals['_'] = _
+    jinja2_env = aiohttp_jinja2.get_env(app)
+    jinja2_env.globals['_'] = _
 
     setup_routes(app)
 
@@ -100,11 +99,11 @@ async def create_app():
     return app
 
 
+setup_i18n()
 loop = asyncio.get_event_loop()
 app = loop.run_until_complete(create_app())
 
 if __name__ == "__main__":
-    setup_i18n()
 
     web.run_app(
         app,

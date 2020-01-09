@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{% trans %}Modification de votre profil{% endtrans %}{% endblock %}
+{% block title %}{{ _("Modification de votre profil") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
-    <li class="breadcrumb-item active">{% trans %}Modification de votre profil{% endtrans %}</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Modification de votre profil") }}</li>
 </ol>
 {% endblock %}
 
@@ -15,7 +15,7 @@
     {% endif %}
     <div class="form-group{% if form.password.errors %} has-error{% endif %}">
         {{ form.password.label(for="password") }}
-        {{ form.password(class="form-control", placeholder="{% trans %}Entrez votre mot de passe{% endtrans %}") }}
+        {{ form.password(class="form-control", placeholder="_('Entrez votre mot de passe')") }}
         {% if form.password.errors %}
         <div class="help-text">
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
@@ -24,7 +24,7 @@
     </div>
     <div class="form-group{% if form.password2.errors %} has-error{% endif %}">
         {{ form.password2.label(for="password2") }}
-        {{ form.password2(class="form-control", placeholder="{% trans %}Répétez votre mot de passe{% endtrans %}") }}
+        {{ form.password2(class="form-control", placeholder="_('Répétez votre mot de passe')") }}
         {% if form.password2.errors %}
         <div class="help-text">
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
@@ -33,7 +33,7 @@
     </div>
     <div class="form-group{% if form.first_name.errors %} has-error{% endif %}">
         {{ form.first_name.label(for="first_name") }}
-        {{ form.first_name(class="form-control", placeholder="{% trans %}Entrez votre prénom{% endtrans %}") }}
+        {{ form.first_name(class="form-control", placeholder="_('Entrez votre prénom')") }}
         {% if form.first_name.errors %}
         <div class="help-text">
             {% for error in form.first_name.errors %}<p>{{ error }}</p>{% endfor %}
@@ -42,7 +42,7 @@
     </div>
     <div class="form-group{% if form.last_name.errors %} has-error{% endif %}">
         {{ form.last_name.label(for="last_name") }}
-        {{ form.last_name(class="form-control", placeholder="{% trans %}Entrez votre nom{% endtrans %}") }}
+        {{ form.last_name(class="form-control", placeholder="_('Entrez votre nom')") }}
         {% if form.last_name.errors %}
         <div class="help-text">
             {% for error in form.last_name.errors %}<p>{{ error }}</p>{% endfor %}
@@ -51,7 +51,7 @@
     </div>
     <div class="form-group{% if form.phone_number.errors %} has-error{% endif %}">
         {{ form.phone_number.label(for="phone_number") }}
-        {{ form.phone_number(class="form-control", placeholder="{% trans %}Entrez votre numéro de téléphone{% endtrans %}") }}
+        {{ form.phone_number(class="form-control", placeholder="_('Entrez votre numéro de téléphone')") }}
         {% if form.phone_number.errors %}
         <div class="help-text">
             {% for error in form.phone_number.errors %}<p>{{ error }}</p>{% endfor %}
@@ -70,7 +70,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("home") }}" class="btn btn-light">{% trans %}Annuler{% endtrans %}</a>
+        <a href="{{ url("home") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 

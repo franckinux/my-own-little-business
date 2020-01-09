@@ -5,7 +5,7 @@
 <link href="/static/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}{% trans %}Modification d'une fournée{% endtrans %}{% endblock %}
+{% block title %}{{ _("Modification d'une fournée") }}{% endblock %}
 
 {% block scripts %}
 {{ super() }}
@@ -15,9 +15,9 @@
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">{% trans %}Accueil{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">{% trans %}Fournées{% endtrans %}</a></li>
-    <li class="breadcrumb-item active">{% trans %}Modification d'une fournée{% endtrans %}</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Modification d'une fournée") }}</li>
 </ol>
 {% endblock %}
 
@@ -33,7 +33,7 @@
     </div>
     <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
         {{ form.capacity.label(for="capacity") }}
-        {{ form.capacity(class="form-control", placeholder="{% trans %}Entrez la capacité de la fournée{% endtrans %}") }}
+        {{ form.capacity(class="form-control", placeholder="_('Entrez la capacité de la fournée')") }}
         {% if form.capacity.errors %}
         <div class="help-text">
             {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
@@ -46,7 +46,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_batch") }}" class="btn btn-light">{% trans %}Annuler{% endtrans %}</a>
+        <a href="{{ url("list_batch") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 
