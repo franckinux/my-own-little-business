@@ -16,8 +16,9 @@ from molb.views.batch import create_batch
 from molb.views.batch import edit_batch
 from molb.views.batch import delete_batch
 from molb.views.batch import list_batch
-from molb.views.client import toggle_client
+from molb.views.client import confirm_client
 from molb.views.client import list_client
+from molb.views.client import toggle_client
 from molb.views.home import home
 from molb.views.order import create_order
 from molb.views.order import edit_order
@@ -67,8 +68,9 @@ def setup_routes(app):
     app.router.add_get("/batch/list/", list_batch, name="list_batch")
 
     # client
-    app.router.add_get("/client/toggle/{id:\d+}/", toggle_client, name="toggle_client")
+    app.router.add_get("/client/confirm/{id:\d+}/", confirm_client, name="confirm_client")
     app.router.add_route('*', "/client/list/", list_client, name="list_client")
+    app.router.add_get("/client/toggle/{id:\d+}/", toggle_client, name="toggle_client")
 
     # home
     app.router.add_get("/home/", home, name="home")
