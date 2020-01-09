@@ -30,7 +30,7 @@
 	 <td>{% if client.confirmed %}Oui{% else %}Non{% endif %}</td>
 	 <td>{% if client.disabled %}Inactif{% else %}Actif{% endif %}</td>
          <td><a href="{{ url("toggle_client", id=client.id) }}">Changer statut</a></td>
-         <td>{% if not client.confirmed %}<a href="{{ url("confirm_client", id=client.id) }}">Envoyer demande de confirmation</a>{% endif %}</td>
+         <td>{% if not client.confirmed %}<a href="{{ url("confirm_client", id=client.id) }}">Envoyer la demande de confirmation</a>{% endif %}</td>
       </tr>
       {%- endfor %}
    </tbody>

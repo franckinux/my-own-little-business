@@ -29,11 +29,12 @@ async def confirm_client(request):
     client_id = int(request.match_info["id"])
     async with request.app["db-pool"].acquire() as conn:
         q = "SELECT email_address FROM client WHERE id = $1"
-        client = await conn.execute(q, client_id)
+        row = await conn.fetchrow(q, client_id)
+        email_address = row["email_address"]
     await send_confirmation(
         request,
-        client["email_address"],
-        {"id": client["id"]},
+        email_address,
+        {"id": client_id},
         "confirm_register",
         "Confirmation de votre enregistrement",
         "register-confirmation"
@@ -42,9 +43,7 @@ async def confirm_client(request):
         request,
         (
             "info",
-            "Un message de confirmation a été envoyé à {}".format(
-                client["email_address"]
-            )
+            "Un message de confirmation a été envoyé à {}".format(email_address)
         )
     )
     return HTTPFound(request.app.router["list_client"].url_for())
