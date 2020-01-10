@@ -1,7 +1,5 @@
 import os.path as op
 
-from molb.views.accounts import list_account
-from molb.views.accounts import delete_account
 from molb.views.auth import login
 from molb.views.auth import logout
 from molb.views.auth.email import confirm as confirm_email
@@ -34,6 +32,9 @@ from molb.views.repository import edit_repository
 from molb.views.repository import delete_repository
 from molb.views.repository import list_repository
 from molb.views.start import start
+from molb.views.unconfirmed import list_unconfirmed
+from molb.views.unconfirmed import delete_unconfirmed
+from molb.views.unconfirmed import send_unconfirmed
 
 
 def setup_routes(app):
@@ -44,10 +45,6 @@ def setup_routes(app):
 
     # starting page
     app.router.add_get('/', start, name="start")
-
-    # accounts
-    app.router.add_get("/account/list/", list_account, name="list_account")
-    app.router.add_get("/account/delete/{id:\d+}/", delete_account, name="delete_account")
 
     # auth
     app.router.add_route('*', "/login/", login, name="login")
@@ -71,6 +68,9 @@ def setup_routes(app):
     app.router.add_get("/client/confirm/{id:\d+}/", confirm_client, name="confirm_client")
     app.router.add_route('*', "/client/list/", list_client, name="list_client")
     app.router.add_get("/client/toggle/{id:\d+}/", toggle_client, name="toggle_client")
+    app.router.add_get("/client/unconfirmed/list/", list_unconfirmed, name="list_unconfirmed")
+    app.router.add_get("/client/unconfirmed/delete/{id:\d+}/", delete_unconfirmed, name="delete_unconfirmed")
+    app.router.add_get("/client/unconfirmed/send/{id:\d+}/", send_unconfirmed, name="send_unconfirmed")
 
     # home
     app.router.add_get("/home/", home, name="home")
