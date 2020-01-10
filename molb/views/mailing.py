@@ -11,6 +11,7 @@ from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.send_message import send_mailing_message
 from molb.views.send_message import send_text_message
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
@@ -19,8 +20,8 @@ from molb.views.utils import remove_special_data
 class MailingForm(CsrfForm):
     all_repositories = BooleanField("Tous les points de livraison", default=True)
     repository_id = SelectField("Point de livraison", coerce=int)
-    personnalized = BooleanField("Personnalisé", default=True)
-    subject = StringField("Objet", validators=[Required()])
+    personalized = BooleanField("Personnalisé", default=False)
+    subject = StringField("Sujet", validators=[Required()])
     message = TextAreaField("Message", render_kw={"rows": 20, "cols": 50}, validators=[Required()])
     submit = SubmitField("Valider")
 
@@ -29,11 +30,15 @@ class MailingForm(CsrfForm):
 @aiohttp_jinja2.template("mailing.html")
 async def mailing(request):
     async with request.app["db-pool"].acquire() as conn:
+        rows = await conn.fetch("SELECT id, name FROM repository WHERE opened")
+        repository_choices = [(row["id"], row["name"]) for row in rows]
+
         if request.method == "POST":
             form = MailingForm(await request.post(), meta=await generate_csrf_meta(request))
+            form.repository_id.choices = repository_choices
             if form.validate():
                 data = remove_special_data(form.data.items())
-                personnalized = data["personnalized"]
+                personalized = data["personalized"]
                 subject = data["subject"]
                 message = data["message"]
                 if data["all_repositories"]:
@@ -50,13 +55,13 @@ async def mailing(request):
                     flash(request, ("warning", "Il n'y a pas de destinataire."))
                     return HTTPFound(request.app.router["mailing"].url_for())
 
-                if personnalized:
+                if personalized:
                     for r in rows:
                         message_ = message.replace("<first_name>", r["first_name"])
                         await send_text_message(request, r["email_address"], subject, message_)
                 else:
-                    email_addresses = [r["email_address"] for r in rows].join(',')
-                    await send_text_message(request, email_addresses, subject, message)
+                    email_addresses = ','.join([r["email_address"] for r in rows])
+                    await send_mailing_message(request, email_addresses, subject, message)
                 flash(request, ("info", "Les messages ont été envoyés."))
                 return HTTPFound(request.app.router["mailing"].url_for())
             else:
@@ -64,8 +69,7 @@ async def mailing(request):
                 return HTTPFound(request.app.router["mailing"].url_for())
 
         elif request.method == "GET":
-            rows = await conn.fetch("SELECT id, name FROM repository WHERE opened")
-            repository_choices = [(row["id"], row["name"]) for row in rows]
+            form = MailingForm(meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
             return {"form": form}
 

@@ -15,7 +15,7 @@
     <div class="checkbox">
         <label>
             {{ form.all_repositories() }}
-            <strong>{{ form.all_repositories.label.text }}</strong>
+            {{ form.all_repositories.label.text }}
         </label>
     </div>
     <div class="form-group">
@@ -23,14 +23,18 @@
         {{ form.repository_id(class="form-control") }}
     </div>
     <div class="form-group">
-        {{ form.message.label(for="message") }}
-        {{ form.message(class="form-control") }}
+        {{ form.subject.label(for="subject") }}
+        {{ form.subject(class="form-control") }}
     </div>
     <div class="checkbox">
         <label>
-            {{ form.individual() }}
-            <strong>{{ form.individual.label.text }}</strong>
+            {{ form.personalized() }}
+            {{ form.personalized.label.text }}
         </label>
+    </div>
+    <div class="form-group">
+        {{ form.message.label(for="message") }}
+        {{ form.message(class="form-control") }}
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}

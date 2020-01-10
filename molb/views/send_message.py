@@ -8,6 +8,17 @@ from aiosmtplib import SMTP
 from molb.views.auth.token import generate_token
 
 
+async def send_mailing_message(request, to, subject, text):
+    config = request.app["config"]
+
+    message = MIMEText(text, "plain")
+    message["subject"] = "[{}] {}".format(config["application"]["site_name"], subject)
+    message["cc"] = to
+    message["to"] = config["application"]["from"]
+    message["from"] = config["application"]["from"]
+    await request.app["mailer"].send_message(message)
+
+
 async def send_text_message(request, to, subject, text):
     config = request.app["config"]
 
