@@ -18,6 +18,7 @@ from molb.views.client import confirm_client
 from molb.views.client import list_client
 from molb.views.client import toggle_client
 from molb.views.home import home
+from molb.views.mailing import mailing
 from molb.views.order import create_order
 from molb.views.order import edit_order
 from molb.views.order import delete_order
@@ -67,6 +68,7 @@ def setup_routes(app):
     # client
     app.router.add_get("/client/confirm/{id:\d+}/", confirm_client, name="confirm_client")
     app.router.add_route('*', "/client/list/", list_client, name="list_client")
+    app.router.add_route('*', "/client/mailing/", mailing, name="mailing")
     app.router.add_get("/client/toggle/{id:\d+}/", toggle_client, name="toggle_client")
     app.router.add_get("/client/unconfirmed/list/", list_unconfirmed, name="list_unconfirmed")
     app.router.add_get("/client/unconfirmed/delete/{id:\d+}/", delete_unconfirmed, name="delete_unconfirmed")
