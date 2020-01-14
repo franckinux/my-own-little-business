@@ -37,17 +37,19 @@ async def mailing(request):
             form.repository_id.choices = repository_choices
             if form.validate():
                 data = remove_special_data(form.data.items())
-                personalized = data["personalized"]
                 subject = data["subject"]
                 message = data["message"]
                 if data["all_repositories"]:
-                    q = ("SELECT first_name, email_address FROM client WHERE confirmed")
+                    q = (
+                        "SELECT first_name, email_address FROM client "
+                        "WHERE confirmed AND mailing"
+                        )
                     rows = await conn.fetch(q)
                 else:
                     repository_id = data.get("repository_id")
                     q = (
                         "SELECT first_name, email_address FROM client "
-                        "WHERE confirmed AND repository_id = $1"
+                        "WHERE confirmed AND mailing AND repository_id = $1"
                     )
                     rows = await conn.fetch(q, repository_id)
                 if not rows:
