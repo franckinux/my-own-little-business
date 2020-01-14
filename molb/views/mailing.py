@@ -20,7 +20,6 @@ from molb.views.utils import remove_special_data
 class MailingForm(CsrfForm):
     all_repositories = BooleanField("Tous les points de livraison", default=True)
     repository_id = SelectField("Point de livraison", coerce=int)
-    personalized = BooleanField("Personnalisé", default=False)
     subject = StringField("Sujet", validators=[Required()])
     message = TextAreaField("Message", render_kw={"rows": 20, "cols": 50}, validators=[Required()])
     submit = SubmitField("Valider")
@@ -55,7 +54,7 @@ async def mailing(request):
                     flash(request, ("warning", "Il n'y a pas de destinataire."))
                     return HTTPFound(request.app.router["mailing"].url_for())
 
-                if personalized:
+                if "<first_name>" in message:
                     for r in rows:
                         message_ = message.replace("<first_name>", r["first_name"])
                         await send_text_message(request, r["email_address"], subject, message_)
