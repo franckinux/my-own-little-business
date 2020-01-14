@@ -27,7 +27,7 @@
       {% for order in orders -%}
       <tr>
          {% if now < order.cancellation_date %}
-         <td><a href="{{ url("edit_fill_order", id=order.id) }}">{{ order.order_date.strftime("%d-%m-%Y") }}</a></td>
+         <td><a href="{{ url("edit_fill_order", id=order.id) }}">{{ order.order_date.strftime("%d-%m-%Y %H:%M") }}</a></td>
          {% else %}
          <td>{{ order.order_date.strftime("%d-%m-%Y %H:%M") }}</td>
          {% endif %}
