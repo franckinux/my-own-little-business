@@ -27,11 +27,11 @@
       {% for order in orders -%}
       <tr>
          {% if now < order.cancellation_date %}
-         <td><a href="{{ url("edit_fill_order", id=order.id) }}">{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</a></td>
+         <td><a href="{{ url("edit_fill_order", id=order.id) }}">{{ order.order_date.strftime("%d-%m-%Y") }}</a></td>
          {% else %}
-         <td>{{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</td>
+         <td>{{ order.order_date.strftime("%d-%m-%Y %H:%M") }}</td>
          {% endif %}
-         <td>{{ order.batch_date.strftime("%Y-%m-%d %H:%M") }}</td>
+         <td>{{ order.batch_date.strftime("%d-%m-%Y") }}</td>
          <td>{{ order.total }}</td>
          <td>{% if now < order.cancellation_date %}<a href="{{ url("delete_order", id=order.id) }}">Supprimer</a>{% endif%}</td>
       </tr>
