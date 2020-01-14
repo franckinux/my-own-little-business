@@ -41,7 +41,7 @@ class RegisterForm(CsrfForm):
     password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
     first_name = StringField("Prénom")
     last_name = StringField("Nom")
-    email_address = StringField("Adresse mail", validators=[
+    email_address = StringField("Adresse email", validators=[
         Required(),
         Length(min=1, max=64),
         Email()

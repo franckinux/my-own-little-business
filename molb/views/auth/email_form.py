@@ -8,7 +8,7 @@ from molb.views.csrf_form import CsrfForm
 
 
 class EmailForm(CsrfForm):
-    email_address = StringField("Adresse mail", validators=[
+    email_address = StringField("Adresse email", validators=[
         Required(),
         Length(min=5, max=64),
         Email()
