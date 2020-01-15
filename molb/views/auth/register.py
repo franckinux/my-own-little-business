@@ -29,9 +29,9 @@ class RegisterForm(CsrfForm):
     login = StringField("Identifiant", validators=[
         Required(),
         Length(min=1, max=64),
-        Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
+        Regexp("^[A-Za-z][A-Za-z0-9_.-@]*$", 0,
             "L'identifiant ne doit comporter que des lettres non accentuées, "
-            "des chiffres, '.'  et '_' et commencer par une lettre")
+            "des chiffres, '.', '-', '_' et '@' et commencer par une lettre")
     ])
     password = PasswordField("Mot de passe", validators=[
         Required(),
