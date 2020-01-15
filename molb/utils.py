@@ -8,7 +8,7 @@ def read_configuration_file():
     try:
         conf_filename = os.environ.get("MOLB_CONFIG")
         config.read(conf_filename)
-    except:
+    except Exception:
         sys.stderr.write(
             "problem encountered while reading the configuration file %s\n" %
             conf_filename

@@ -17,7 +17,7 @@ async def error_middleware(app, handler):
                 else:
                     message = "Method not allowed"
                 flash(request, ("danger", message))
-                return render_template( "error.html", request, {})
+                return render_template("error.html", request, {})
             return response
         except web.HTTPException as e:
             flash(request, ("danger", str(e)))
