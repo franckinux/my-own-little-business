@@ -13,7 +13,7 @@ async def send_mailing_message(request, to, subject, text):
 
     message = MIMEText(text, "plain")
     message["subject"] = "[{}] {}".format(config["application"]["site_name"], subject)
-    message["cc"] = to
+    message["cci"] = to
     message["to"] = config["application"]["from"]
     message["from"] = config["application"]["from"]
     await request.app["mailer"].send_message(message)
