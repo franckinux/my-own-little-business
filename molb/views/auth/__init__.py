@@ -13,13 +13,14 @@ from wtforms.validators import Required
 from molb.auth import require
 from molb.auth.db_auth import check_credentials
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):
-    login = StringField(_("Identifiant"), [Required()])
-    password = PasswordField(_("Mot de passe"), [Required()])
-    submit = SubmitField("Valider")
+    login = StringField(_l("Identifiant"), [Required()])
+    password = PasswordField(_l("Mot de passe"), [Required()])
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/login.html")

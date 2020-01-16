@@ -17,24 +17,25 @@ from wtforms.validators import Regexp
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 from molb.views.utils import settings
 
 
 class ProfileForm(CsrfForm):
-    password = PasswordField(_("Mot de passe"), validators=[
-        EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
+    password = PasswordField(_l("Mot de passe"), validators=[
+        EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
     ])
-    password2 = PasswordField(_("Répétition du mot de passe"))
-    first_name = StringField(_("Prénom"))
-    last_name = StringField(_("Nom"))
-    phone_number = StringField(_("Numéro de téléphone"), validators=[
+    password2 = PasswordField(_l("Répétition du mot de passe"))
+    first_name = StringField(_l("Prénom"))
+    last_name = StringField(_l("Nom"))
+    phone_number = StringField(_l("Numéro de téléphone"), validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
-    repository_id = SelectField(_("Point de livraison"), coerce=int)
-    mailing = BooleanField(_("Réception de messages"))
-    submit = SubmitField(_("Valider"))
+    repository_id = SelectField(_l("Point de livraison"), coerce=int)
+    mailing = BooleanField(_l("Réception de messages"))
+    submit = SubmitField(_l("Valider"))
 
 
 @require("client")

@@ -20,6 +20,7 @@ from wtforms.validators import Required
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_confirmation
+from molb.views.utils import _l
 from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
@@ -27,32 +28,32 @@ from molb.views.utils import remove_special_data
 
 
 class RegisterForm(CsrfForm):
-    login = StringField("Identifiant", validators=[
+    login = StringField(_l("Identifiant"), validators=[
         Required(),
         Length(min=1, max=64),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
-            _("L'identifiant ne doit contenir que des lettres non accentuées, "
+            _l("L'identifiant ne doit contenir que des lettres non accentuées, "
             "des chiffres, '.'  et '_' et commencer par une lettre"))
     ])
-    password = PasswordField("Mot de passe", validators=[
+    password = PasswordField(_l("Mot de passe"), validators=[
         Required(),
         EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
         Length(min=6)
     ])
-    password2 = PasswordField(_("Répétition du mot de passe"), validators=[Required()])
-    first_name = StringField(_("Prénom"))
-    last_name = StringField(_("Nom"))
-    email_address = StringField(_("Adresse email"), validators=[
+    password2 = PasswordField(_l("Répétition du mot de passe"), validators=[Required()])
+    first_name = StringField(_l("Prénom"))
+    last_name = StringField(_l("Nom"))
+    email_address = StringField(_l("Adresse email"), validators=[
         Required(),
         Length(min=1, max=64),
         Email()
     ])
-    phone_number = StringField(_("Numéro de téléphone"), validators=[
+    phone_number = StringField(_l("Numéro de téléphone"), validators=[
         Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
     ])
-    repository_id = SelectField(_("Point de livraison"), coerce=int)
-    mailing = BooleanField(_("Réception de messages"), default=True)
-    submit = SubmitField(_("Valider"))
+    repository_id = SelectField(_l("Point de livraison"), coerce=int)
+    mailing = BooleanField(_l("Réception de messages"), default=True)
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/register.html")

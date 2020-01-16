@@ -13,6 +13,7 @@ from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
@@ -21,12 +22,12 @@ from molb.views.utils import settings
 
 
 class ProductForm(CsrfForm):
-    name = StringField(_("Nom"), validators=[Required(), Length(min=6, max=128)])
-    description = StringField(_("Description"))
-    price = DecimalField(_("Prix"), validators=[Required()])
-    load = DecimalField(_("Poids du pâton"), validators=[Required()])
-    available = BooleanField(_("Disponible"), default=True)
-    submit = SubmitField(_("Valider"))
+    name = StringField(_l("Nom"), validators=[Required(), Length(min=6, max=128)])
+    description = StringField(_l("Description"))
+    price = DecimalField(_l("Prix"), validators=[Required()])
+    load = DecimalField(_l("Poids du pâton"), validators=[Required()])
+    available = BooleanField(_l("Disponible"), default=True)
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")

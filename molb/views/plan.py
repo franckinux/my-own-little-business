@@ -8,13 +8,14 @@ from wtforms import SubmitField
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
 
 class PlanForm(CsrfForm):
-    batch_id = SelectField(_("Fournée"), coerce=int)
-    submit = SubmitField(_("Valider"))
+    batch_id = SelectField(_l("Fournée"), coerce=int)
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")

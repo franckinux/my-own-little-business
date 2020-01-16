@@ -12,6 +12,7 @@ from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import array_to_days
 from molb.views.utils import days_to_array
 from molb.views.utils import field_list
@@ -22,16 +23,16 @@ from molb.views.utils import settings
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField(_("Nom"), validators=[Required(), Length(min=5, max=128)])
-    opened = BooleanField(_("Ouvert"), default=True)
-    monday = BooleanField(_("Lundi"))
-    tuesday = BooleanField(_("Mardi"))
-    wednesday = BooleanField(_("Mercredi"))
-    thursday = BooleanField(_("Jeudi"))
-    friday = BooleanField(_("Vendredi"))
-    saturday = BooleanField(_("Samedi"))
-    sunday = BooleanField(_("Dimanche"))
-    submit = SubmitField(_("Valider"))
+    name = StringField(_l("Nom"), validators=[Required(), Length(min=5, max=128)])
+    opened = BooleanField(_l("Ouvert"), default=True)
+    monday = BooleanField(_l("Lundi"))
+    tuesday = BooleanField(_l("Mardi"))
+    wednesday = BooleanField(_l("Mercredi"))
+    thursday = BooleanField(_l("Jeudi"))
+    friday = BooleanField(_l("Vendredi"))
+    saturday = BooleanField(_l("Samedi"))
+    sunday = BooleanField(_l("Dimanche"))
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")

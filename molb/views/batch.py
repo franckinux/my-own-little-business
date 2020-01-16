@@ -15,21 +15,21 @@ from wtforms.validators import ValidationError
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import generate_csrf_meta
-# from molb.views.utils import place_holders
 from molb.views.utils import remove_special_data
 from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
-    date = DateField(_("Date"), id="date", format="%d/%m/%Y", validators=[Required()])
-    capacity = DecimalField(_("Capacité"), validators=[Required()])
-    opened = BooleanField(_("Ouverte"), default=True)
-    submit = SubmitField(_("Valider"))
+    date = DateField(_l("Date"), id="date", format="%d/%m/%Y", validators=[Required()])
+    capacity = DecimalField(_l("Capacité"), validators=[Required()])
+    opened = BooleanField(_l("Ouverte"), default=True)
+    submit = SubmitField(_l("Valider"))
 
     def validate_capacity(form, field):
         if int(field.data) <= 0:
-            raise ValidationError(_("Valeur négative ou nulle"))
+            raise ValidationError(_l("Valeur négative ou nulle"))
 
 
 @require("admin")
