@@ -54,7 +54,7 @@ async def create_batch(request):
                         "INSERT INTO batch (date, capacity, opened) VALUES ($1, $2, $3)"
                     )
                     await conn.execute(
-                        q, form.data["date"], form.data["capacity"], form.data["opened"]
+                        q, data["date"], data["capacity"], data["opened"]
                     )
 
                 flash(request, ("success", "La fournée a bien été créée"))
