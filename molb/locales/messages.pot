@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-09 22:26+0100\n"
+"POT-Creation-Date: 2020-01-16 14:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: templates/base.html:25
 msgid "Déconnexion"
@@ -186,24 +186,24 @@ msgid "Profils non confirmés"
 msgstr ""
 
 #: templates/list-accounts.html:16 templates/list-client.html:17
-#: views/auth/profile.py:30 views/auth/register.py:43
+#: views/auth/profile.py:31 views/auth/register.py:44
 msgid "Prénom"
 msgstr ""
 
 #: templates/list-accounts.html:17 templates/list-client.html:18
 #: templates/list-product.html:16 templates/list-repository.html:16
-#: views/auth/profile.py:31 views/auth/register.py:44 views/product.py:24
-#: views/repository.py:25
+#: views/auth/profile.py:32 views/auth/register.py:45 views/product.py:25
+#: views/repository.py:26
 msgid "Nom"
 msgstr ""
 
-#: templates/list-accounts.html:18 views/auth/email_form.py:12
-#: views/auth/register.py:45
+#: templates/list-accounts.html:18 views/auth/email_form.py:13
+#: views/auth/register.py:46
 msgid "Adresse email"
 msgstr ""
 
-#: templates/list-accounts.html:19 views/auth/profile.py:32
-#: views/auth/register.py:50
+#: templates/list-accounts.html:19 views/auth/profile.py:33
+#: views/auth/register.py:51
 msgid "Numéro de téléphone"
 msgstr ""
 
@@ -267,15 +267,15 @@ msgstr ""
 msgid "Créer un produit"
 msgstr ""
 
-#: templates/list-product.html:17 views/product.py:28
+#: templates/list-product.html:17 views/product.py:29
 msgid "Disponible"
 msgstr ""
 
-#: templates/list-product.html:18 views/product.py:26
+#: templates/list-product.html:18 views/product.py:27
 msgid "Prix"
 msgstr ""
 
-#: templates/list-product.html:19 views/product.py:27
+#: templates/list-product.html:19 views/product.py:28
 msgid "Poids du pâton"
 msgstr ""
 
@@ -283,7 +283,7 @@ msgstr ""
 msgid "Créer un point de livraison"
 msgstr ""
 
-#: templates/list-repository.html:17 views/repository.py:26
+#: templates/list-repository.html:17 views/repository.py:27
 msgid "Ouvert"
 msgstr ""
 
@@ -397,10 +397,10 @@ msgstr ""
 msgid "Enregistrement"
 msgstr ""
 
-#: views/auth/email_form.py:17 views/auth/profile.py:37
-#: views/auth/register.py:55 views/batch.py:28 views/order.py:21
-#: views/order.py:25 views/plan.py:17 views/product.py:29
-#: views/repository.py:34
+#: views/auth/__init__.py:23 views/auth/email_form.py:18
+#: views/auth/profile.py:38 views/auth/register.py:56 views/batch.py:28
+#: views/order.py:22 views/order.py:26 views/plan.py:18 views/product.py:30
+#: views/repository.py:35
 msgid "Valider"
 msgstr ""
 
@@ -409,10 +409,10 @@ msgid "Valeur négative ou nulle"
 msgstr ""
 
 #: views/auth/email.py:55 views/auth/password.py:61 views/auth/password.py:123
-#: views/auth/profile.py:77 views/auth/register.py:111 views/batch.py:45
-#: views/batch.py:119 views/order.py:119 views/order.py:276 views/plan.py:45
-#: views/product.py:51 views/product.py:99 views/repository.py:57
-#: views/repository.py:107
+#: views/auth/profile.py:78 views/auth/register.py:112 views/batch.py:45
+#: views/batch.py:119 views/order.py:120 views/order.py:277 views/plan.py:46
+#: views/product.py:52 views/product.py:100 views/repository.py:58
+#: views/repository.py:108
 msgid "Le formulaire contient des erreurs."
 msgstr ""
 
@@ -444,163 +444,164 @@ msgstr ""
 msgid "Le statut du client a été modifié."
 msgstr ""
 
-#: views/order.py:20 views/plan.py:16
+#: views/order.py:21 views/plan.py:17
 msgid "Fournée"
 msgstr ""
 
-#: views/order.py:71
+#: views/order.py:72
 msgid "Vous ne pouvez pas passer de commande."
 msgstr ""
 
-#: views/order.py:130
+#: views/order.py:131
 msgid "La fournée choisie ne permet de vous livrer."
 msgstr ""
 
-#: views/order.py:148 views/order.py:292
+#: views/order.py:149 views/order.py:293
 msgid "Quantité(s) invalide(s)."
 msgstr ""
 
-#: views/order.py:156 views/order.py:300
+#: views/order.py:157 views/order.py:301
 msgid "Veuillez choisir au moins un produit"
 msgstr ""
 
-#: views/order.py:166 views/order.py:310
+#: views/order.py:167 views/order.py:311
 msgid "Votre commande dépasse la capacité de la fournée."
 msgstr ""
 
-#: views/order.py:192
+#: views/order.py:193
 msgid "Votre commande n'a pas pu être passée."
 msgstr ""
 
-#: views/order.py:195
+#: views/order.py:196
 msgid "Votre commande a été passée avec succès"
 msgstr ""
 
-#: views/order.py:225
+#: views/order.py:226
 msgid "Vous ne pouvez pas modifier votre commande."
 msgstr ""
 
-#: views/order.py:250
+#: views/order.py:251
 msgid "Il est trop tard pour modifier votre commande."
 msgstr ""
 
-#: views/order.py:343
+#: views/order.py:344
 msgid "Votre commande n'a pas pu être modifiée."
 msgstr ""
 
-#: views/order.py:346
+#: views/order.py:347
 msgid "Votre commande a été modifiée."
 msgstr ""
 
-#: views/order.py:388
+#: views/order.py:389
 msgid "Il est trop tard pour annuler votre commande."
 msgstr ""
 
-#: views/order.py:407
+#: views/order.py:408
 msgid "Votre commande a été supprimée."
 msgstr ""
 
-#: views/order.py:409
+#: views/order.py:410
 msgid "Votre commande n'a pas pu être supprimée."
 msgstr ""
 
-#: views/product.py:25
+#: views/product.py:26
 msgid "Description"
 msgstr ""
 
-#: views/product.py:46
+#: views/product.py:47
 msgid "Le produit ne peut pas être créé"
 msgstr ""
 
-#: views/product.py:48
+#: views/product.py:49
 msgid "Le produit a été créé"
 msgstr ""
 
-#: views/product.py:67
+#: views/product.py:68
 msgid "Le produit ne peut pas être supprimé"
 msgstr ""
 
-#: views/product.py:69
+#: views/product.py:70
 msgid "Le produit a été supprimé"
 msgstr ""
 
-#: views/product.py:94
+#: views/product.py:95
 msgid "Le produit ne peut pas être modifié"
 msgstr ""
 
-#: views/product.py:96
+#: views/product.py:97
 msgid "Le produit a été modifié"
 msgstr ""
 
-#: views/repository.py:27
+#: views/repository.py:28
 msgid "Lundi"
 msgstr ""
 
-#: views/repository.py:28
+#: views/repository.py:29
 msgid "Mardi"
 msgstr ""
 
-#: views/repository.py:29
+#: views/repository.py:30
 msgid "Mercredi"
 msgstr ""
 
-#: views/repository.py:30
+#: views/repository.py:31
 msgid "Jeudi"
 msgstr ""
 
-#: views/repository.py:31
+#: views/repository.py:32
 msgid "Vendredi"
 msgstr ""
 
-#: views/repository.py:32
+#: views/repository.py:33
 msgid "Samedi"
 msgstr ""
 
-#: views/repository.py:33
+#: views/repository.py:34
 msgid "Dimanche"
 msgstr ""
 
-#: views/repository.py:52
+#: views/repository.py:53
 msgid "Le point de livraison ne peut pas être créé"
 msgstr ""
 
-#: views/repository.py:54
+#: views/repository.py:55
 msgid "Le point de livraison a été créé"
 msgstr ""
 
-#: views/repository.py:73
+#: views/repository.py:74
 msgid "Le point de livraison ne peut pas être supprimé"
 msgstr ""
 
-#: views/repository.py:75
+#: views/repository.py:76
 msgid "Le point de livraison a été supprimé"
 msgstr ""
 
-#: views/repository.py:102
+#: views/repository.py:103
 msgid "Le point de livraison ne peut pas être modifié"
 msgstr ""
 
-#: views/repository.py:104
+#: views/repository.py:105
 msgid "Le point de livraison a été modifié"
 msgstr ""
 
-#: views/auth/__init__.py:20
+#: views/auth/__init__.py:21 views/auth/register.py:31
 msgid "Identifiant"
 msgstr ""
 
-#: views/auth/__init__.py:21 views/auth/password.py:71 views/auth/profile.py:26
+#: views/auth/__init__.py:22 views/auth/password.py:71 views/auth/profile.py:27
+#: views/auth/register.py:38
 msgid "Mot de passe"
 msgstr ""
 
-#: views/auth/__init__.py:47
+#: views/auth/__init__.py:48
 msgid "Bonjour {} ! Ravi de vous revoir à nouveau"
 msgstr ""
 
-#: views/auth/__init__.py:52
+#: views/auth/__init__.py:53
 msgid "La combinaison identifiant/mot de passe est invalide"
 msgstr ""
 
-#: views/auth/__init__.py:65
+#: views/auth/__init__.py:66
 msgid "Vous êtes déconnecté"
 msgstr ""
 
@@ -608,11 +609,11 @@ msgstr ""
 msgid "Veuillez choisir une autre adresse email"
 msgstr ""
 
-#: views/auth/email.py:48 views/auth/password.py:54 views/auth/register.py:102
+#: views/auth/email.py:48 views/auth/password.py:54 views/auth/register.py:103
 msgid "Un email de confirmation a été envoyé à {}"
 msgstr ""
 
-#: views/auth/email.py:71 views/auth/password.py:89 views/auth/register.py:128
+#: views/auth/email.py:71 views/auth/password.py:89 views/auth/register.py:129
 msgid "Le lien est invalide ou a expiré"
 msgstr ""
 
@@ -628,11 +629,11 @@ msgstr ""
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
 msgstr ""
 
-#: views/auth/password.py:73 views/auth/profile.py:27 views/auth/register.py:39
+#: views/auth/password.py:73 views/auth/profile.py:28 views/auth/register.py:40
 msgid "Les mots de passe doivent être identiques"
 msgstr ""
 
-#: views/auth/password.py:76 views/auth/profile.py:29 views/auth/register.py:42
+#: views/auth/password.py:76 views/auth/profile.py:30 views/auth/register.py:43
 msgid "Répétition du mot de passe"
 msgstr ""
 
@@ -644,57 +645,57 @@ msgstr ""
 msgid "Votre mot de passe a été modifié, vous pouvez vous connecter"
 msgstr ""
 
-#: views/auth/profile.py:35 views/auth/register.py:53
+#: views/auth/profile.py:36 views/auth/register.py:54
 msgid "Point de livraison"
 msgstr ""
 
-#: views/auth/profile.py:36 views/auth/register.py:54
+#: views/auth/profile.py:37 views/auth/register.py:55
 msgid "Réception de messages"
 msgstr ""
 
-#: views/auth/profile.py:63
+#: views/auth/profile.py:64
 msgid "Le mot de passe est trop court"
 msgstr ""
 
-#: views/auth/profile.py:72
+#: views/auth/profile.py:73
 msgid "Votre profil ne peut être modifié"
 msgstr ""
 
-#: views/auth/profile.py:74
+#: views/auth/profile.py:75
 msgid "Votre profil a été modifié"
 msgstr ""
 
-#: views/auth/profile.py:102
+#: views/auth/profile.py:103
 msgid "Un administrateur ne peut pas supprimer son profil."
 msgstr ""
 
-#: views/auth/profile.py:125
+#: views/auth/profile.py:126
 msgid "Votre profil ne peut être supprimé"
 msgstr ""
 
-#: views/auth/profile.py:129
+#: views/auth/profile.py:130
 msgid "Votre profil a été supprimé"
 msgstr ""
 
-#: views/auth/register.py:34
+#: views/auth/register.py:35
 msgid ""
 "L'identifiant ne doit contenir que des lettres non accentuées, des "
 "chiffres, '.'  et '_' et commencer par une lettre"
 msgstr ""
 
-#: views/auth/register.py:83
+#: views/auth/register.py:84
 msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"
 msgstr ""
 
-#: views/auth/register.py:95
+#: views/auth/register.py:96
 msgid "Confirmation de votre enregistrement"
 msgstr ""
 
-#: views/auth/register.py:138
+#: views/auth/register.py:139
 msgid "Vous ne pouvez pas être enregistré."
 msgstr ""
 
-#: views/auth/register.py:145
+#: views/auth/register.py:146
 msgid "Votre enregistrement est confirmé, vous pouvez vous connecter."
 msgstr ""
 
