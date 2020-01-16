@@ -8,7 +8,7 @@ import os.path as op
 from aiohttp import web
 from aiohttp_babel.locale import load_gettext_translations
 from aiohttp_babel.locale import set_default_locale
-# from aiohttp_babel.locale import set_locale_detector
+from aiohttp_babel.middlewares import _
 from aiohttp_babel.middlewares import babel_middleware
 import aiohttp_jinja2
 from aiohttp_session import setup as session_setup
@@ -28,8 +28,8 @@ from molb.utils import read_configuration_file
 
 
 def setup_i18n():
-    set_default_locale("fr_FR")
-    locales_dir = op.join(op.dirname(op.abspath(__file__)), "locales")
+    set_default_locale("fr")
+    locales_dir = op.join(op.dirname(op.abspath(__file__)), "locales", "translations")
     load_gettext_translations(locales_dir, "messages")
 
 
