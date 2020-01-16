@@ -77,18 +77,19 @@ async def create_order(request):
         #    - client's delivery days corresponds to the batch date
         q = (
             "WITH batch_choices AS ( "
-            "    SELECT b.id AS batch_id, b.date AS batch_date, c.id AS client_id FROM batch AS b "
+            "    SELECT b.id AS batch_id, b.date AS batch_date_, c.id AS client_id FROM batch AS b "
             "    LEFT JOIN order_ AS o ON b.id = o.batch_id "
             "    LEFT JOIN client AS c ON c.id = o.client_id "
             "    WHERE b.opened AND b.date > (NOW() + INTERVAL '12 hour') AND "
-            "          (string_to_array($2, ',')::boolean[])[EXTRACT(DOW FROM b.date) + 1] "
+            "          (string_to_array($2, ',')::BOOLEAN[])[EXTRACT(DOW FROM b.date) + 1] "
             "    GROUP BY b.id, b.date, c.id "
-            "    ORDER BY b.id, b.date "
+            "    ORDER BY b.id, b.date"
             ") "
-            "SELECT DISTINCT batch_id, TO_CHAR(batch_date :: DATE, 'dd-mm-yyyy') FROM batch_choices "
+            "SELECT DISTINCT batch_id, TO_CHAR(batch_date_::DATE, 'dd-mm-yyyy') AS batch_date "
+            "FROM batch_choices "
             "WHERE batch_id NOT IN ("
             "    SELECT batch_id FROM batch_choices "
-            "    WHERE client_id = $1 "
+            "    WHERE client_id = $1"
             ")"
         )
         rows = await conn.fetch(q, client_id, str(client["days"]).strip("[]"))
