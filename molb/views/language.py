@@ -4,9 +4,9 @@ from aiohttp.web import HTTPFound
 async def language(request):
     path_items = request.path.split('/')
     if "en" in path_items:
-        locale = "en_GB"
+        locale = "en"
     else:
-        locale = "fr_FR"
+        locale = "fr"
 
     url = request.headers.get("HTTP_REFERER")
     if url is None:

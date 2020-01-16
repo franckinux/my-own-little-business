@@ -116,8 +116,8 @@ Internationalization
 Creation : ::
 
      pybabel extract -F babel-mapping.ini -k _ -k _l -o locales/messages.pot .
-     pybabel init -i messages.pot -d translations -l en_GB
-     pybabel init -i messages.pot -d translations -l fr_FR
+     pybabel init -i messages.pot -d translations -l en
+     pybabel init -i messages.pot -d translations -l fr
      pybabel compile -d translations
 
 Update : ::
