@@ -23,7 +23,7 @@ async def plan(request):
         # select opened batches whose date is in the future and that have orders
         # on them
         q = (
-            "SELECT DISTINCT b.id AS batch_id, b.date AS batch_date "
+            "SELECT DISTINCT b.id AS batch_id, TO_CHAR(b.date :: DATE, 'dd-mm-yyyy') AS batch_date "
             "FROM order_ AS o "
             "INNER JOIN batch AS b ON o.batch_id = b.id "
             "WHERE b.opened AND b.date > NOW() "

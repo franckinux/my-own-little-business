@@ -85,7 +85,7 @@ async def create_order(request):
             "    GROUP BY b.id, b.date, c.id "
             "    ORDER BY b.id, b.date "
             ") "
-            "SELECT DISTINCT batch_id, batch_date FROM batch_choices "
+            "SELECT DISTINCT batch_id, TO_CHAR(batch_date :: DATE, 'dd-mm-yyyy') FROM batch_choices "
             "WHERE batch_id NOT IN ("
             "    SELECT batch_id FROM batch_choices "
             "    WHERE client_id = $1 "
