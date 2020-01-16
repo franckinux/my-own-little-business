@@ -15,6 +15,7 @@ from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_confirmation
+from molb.views.utils import _l
 from molb.views.utils import generate_csrf_meta
 
 
@@ -68,13 +69,13 @@ async def handler(request):
 
 
 class PasswordForm(CsrfForm):
-    password = PasswordField(_("Mot de passe"), validators=[
+    password = PasswordField(_l("Mot de passe"), validators=[
         Required(),
-        EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
+        EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
         Length(min=6)
     ])
-    password2 = PasswordField(_("Répétition du mot de passe"), validators=[Required()])
-    submit = SubmitField("Valider")
+    password2 = PasswordField(_l("Répétition du mot de passe"), validators=[Required()])
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/password.html")

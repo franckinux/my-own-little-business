@@ -37,7 +37,7 @@ class RegisterForm(CsrfForm):
     ])
     password = PasswordField(_l("Mot de passe"), validators=[
         Required(),
-        EqualTo("password2", message=_("Les mots de passe doivent être identiques")),
+        EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
         Length(min=6)
     ])
     password2 = PasswordField(_l("Répétition du mot de passe"), validators=[Required()])
