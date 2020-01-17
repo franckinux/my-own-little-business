@@ -8,7 +8,7 @@ async def language(request):
     else:
         locale = "fr"
 
-    url = request.headers.get("HTTP_REFERER")
+    url = request.headers.get("REFERER")
     if url is None:
         url = request.app.router["home"].url_for()
     resp = HTTPFound(url)
