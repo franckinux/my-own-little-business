@@ -50,7 +50,9 @@ CREATE INDEX order_date_index ON order_(date);
 CREATE TABLE product (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
+    name_lang1 character varying UNIQUE NOT NULL,
     description character varying,
+    description_lang1 character varying,
     load numeric(8,2) NOT NULL CHECK (load != 0),
     price numeric(8,2) NOT NULL CHECK (price > 0),
     available boolean DEFAULT TRUE

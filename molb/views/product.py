@@ -23,7 +23,9 @@ from molb.views.utils import settings
 
 class ProductForm(CsrfForm):
     name = StringField(_l("Nom"), validators=[Required(), Length(min=6, max=128)])
+    name_lang1 = StringField(_l("Nom"), validators=[Required(), Length(min=6, max=128)])
     description = StringField(_l("Description"))
+    description_lang1 = StringField(_l("Description"))
     price = DecimalField(_l("Prix"), validators=[Required()])
     load = DecimalField(_l("Poids du pâton"), validators=[Required()])
     available = BooleanField(_l("Disponible"), default=True)

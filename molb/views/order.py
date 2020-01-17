@@ -4,6 +4,7 @@ from datetime import timedelta
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp_babel.middlewares import _
+from aiohttp_babel.middlewares import get_current_locale
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from aiohttp_session_flash import flash
@@ -51,6 +52,19 @@ async def get_ordered_products_load(conn, batch_id, excluded=None):
     if load is None:
         load = 0
     return load
+
+
+def products_for_context(rows, locale):
+    p = {}
+    for r in rows:
+        dct = dict(r)
+        n = dct.pop("name_lang1")
+        d = dct.pop("description_lang1")
+        if locale == 'en':
+            d["name"] = n
+            d["description"] = d
+        p[dct["id"]] = dct
+    return p
 
 
 @require("client")
@@ -101,7 +115,7 @@ async def create_order(request):
             "SELECT * FROM product WHERE available"
         )
         rows = await conn.fetch(q)
-        products = {p["id"]: dict(p) for p in rows}
+        products = products_for_context(rows, get_current_locale())
 
         template_context = {
             "products": products.values()
@@ -251,12 +265,12 @@ async def edit_order(request):
             flash(request, ("warning", _("Il est trop tard pour modifier votre commande.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
-        # get products
+        # get all available products
         q = (
             "SELECT * FROM product WHERE available"
         )
         rows = await conn.fetch(q)
-        products = {p["id"]: dict(p) for p in rows}
+        products = products_for_context(rows, get_current_locale())
 
         template_context = {
             "batch_date": batch_date,
