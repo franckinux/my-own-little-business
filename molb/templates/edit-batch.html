@@ -29,7 +29,7 @@
     {% endif %}
     <div class="form-group">
         {{ form.date.label(for="date") }}
-	<input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" />
+        <input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" />
     </div>
     <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
         {{ form.capacity.label(for="capacity") }}
@@ -54,13 +54,13 @@
     var date = new Date();
     date.setDate(date.getDate()+1);
     tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-	$('#date').datepicker({
+        $('#date').datepicker({
         format: "d/m/yyyy",
         uiLibrary: "bootstrap4",
         locale: "fr-fr",
         minDate: tomorow,
         weekStartDay: 1
-	});
+        });
 </script>
 
 {% endblock %}

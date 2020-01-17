@@ -25,7 +25,7 @@
       <tr>
          <td>{{ client.first_name }}</td>
          <td>{{ client.last_name }}</td>
-	 <td>{% if client.disabled %}Inactif{% else %}Actif{% endif %}</td>
+         <td>{% if client.disabled %}Inactif{% else %}Actif{% endif %}</td>
          <td><a href="{{ url("toggle_client", id=client.id) }}">Changer statut</a></td>
       </tr>
       {%- endfor %}

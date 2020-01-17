@@ -29,11 +29,11 @@
     {% endif %}
     <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         {{ form.date.label(for="date") }}
-	{% if form.date.data is none %}
-	<input id="date" name="date" readonly width="100%" placeholder="Entrez la date de livraison "/>
-	{% else %}
-	<input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" placeholder="Entrez la date de livraison" />
-	{% endif %}
+        {% if form.date.data is none %}
+        <input id="date" name="date" readonly width="100%" placeholder="Entrez la date de livraison "/>
+        {% else %}
+        <input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" placeholder="Entrez la date de livraison" />
+        {% endif %}
         <div class="help-text">
             {% for error in form.date.errors %}<p>{{ error }}</p>{% endfor %}
         </div>
@@ -61,13 +61,13 @@
     var date = new Date();
     date.setDate(date.getDate()+1);
     tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-	$('#date').datepicker({
+        $('#date').datepicker({
         format: "d/m/yyyy",
         uiLibrary: "bootstrap4",
         locale: "fr-fr",
         minDate: tomorow,
         weekStartDay: 1
-	});
+        });
 </script>
 
 {% endblock %}
