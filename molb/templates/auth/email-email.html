@@ -17,7 +17,7 @@
     {% endif %}
     <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
         {{ form.email_address.label(for="email_address") }}
-        {{ form.email_address(class="form-control", placeholder="_('Entrez votre adresse email')") }}
+        {{ form.email_address(class="form-control") }}
         {% if form.email_address.errors %}
         <div class="help-text">
             {% for error in form.email_address.errors %}<p>{{ error }}</p>{% endfor %}

@@ -22,12 +22,39 @@ from molb.views.utils import settings
 
 
 class ProductForm(CsrfForm):
-    name = StringField(_l("Nom"), validators=[Required(), Length(min=6, max=128)])
-    name_lang1 = StringField(_l("Nom"), validators=[Required(), Length(min=6, max=128)])
-    description = StringField(_l("Description"))
-    description_lang1 = StringField(_l("Description"))
-    price = DecimalField(_l("Prix"), validators=[Required()])
-    load = DecimalField(_l("Poids du pâton"), validators=[Required()])
+    name = StringField(
+        _l("Nom"),
+        validators=[
+            Required(),
+            Length(min=6, max=128)],
+        render_kw={"placeholder": _l("Entrez le nom")}
+    )
+    name_lang1 = StringField(
+        _l("Nom"),
+        validators=[
+            Required(),
+            Length(min=6, max=128)
+        ],
+        render_kw={"placeholder": _l("Entrez le nom")}
+    )
+    description = StringField(
+        _l("Description"),
+        render_kw={"placeholder": _l("Entrez la description")}
+    )
+    description_lang1 = StringField(
+        _l("Description"),
+        render_kw={"placeholder": _l("Entrez la description")}
+    )
+    price = DecimalField(
+        _l("Prix"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez le prix")}
+    )
+    load = DecimalField(
+        _l("Poids du pâton"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez le poids du pâton")}
+    )
     available = BooleanField(_l("Disponible"), default=True)
     submit = SubmitField(_l("Valider"))
 

@@ -69,12 +69,20 @@ async def handler(request):
 
 
 class PasswordForm(CsrfForm):
-    password = PasswordField(_l("Mot de passe"), validators=[
-        Required(),
-        EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
-        Length(min=6)
-    ])
-    password2 = PasswordField(_l("Répétition du mot de passe"), validators=[Required()])
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[
+            Required(),
+            EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
+            Length(min=6)
+        ],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
+    password2 = PasswordField(
+        _l("Répétition du mot de passe"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Répétez votre mot de passe")}
+    )
     submit = SubmitField(_l("Valider"))
 
 

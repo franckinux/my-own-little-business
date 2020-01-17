@@ -18,8 +18,16 @@ from molb.views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):
-    login = StringField(_l("Identifiant"), [Required()])
-    password = PasswordField(_l("Mot de passe"), [Required()])
+    login = StringField(
+        _l("Identifiant"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez votre identifiant")}
+    )
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
     submit = SubmitField(_l("Valider"))
 
 

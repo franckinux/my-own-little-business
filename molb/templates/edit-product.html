@@ -16,7 +16,7 @@
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
         {{ form.name.label(for="name") }}
-        {{ form.name(class="form-control", placeholder="_('Entrez le nom')") }}
+        {{ form.name(class="form-control") }}
         {% if form.name.errors %}
         <div class="help-text">
             {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
@@ -25,7 +25,7 @@
     </div>
     <div class="form-group{% if form.name_lang1.errors %} has-error{% endif %}">
         {{ form.name_lang1.label(for="name_lang1") }}
-        {{ form.name_lang1(class="form-control", placeholder="_('Entrez le nom')") }}
+        {{ form.name_lang1(class="form-control") }}
         {% if form.name_lang1.errors %}
         <div class="help-text">
             {% for error in form.name_lang1.errors %}<p>{{ error }}</p>{% endfor %}
@@ -34,7 +34,7 @@
     </div>
     <div class="form-group{% if form.description.errors %} has-error{% endif %}">
         {{ form.description.label(for="description") }}
-        {{ form.description(class="form-control", placeholder="_('Entrez la description')") }}
+        {{ form.description(class="form-control") }}
         {% if form.description.errors %}
         <div class="help-text">
             {% for error in form.description.errors %}<p>{{ error }}</p>{% endfor %}
@@ -43,7 +43,7 @@
     </div>
     <div class="form-group{% if form.description_lang1.errors %} has-error{% endif %}">
         {{ form.description_lang1.label(for="description_lang1") }}
-        {{ form.description_lang1(class="form-control", placeholder="_('Entrez la description')") }}
+        {{ form.description_lang1(class="form-control") }}
         {% if form.description_lang1.errors %}
         <div class="help-text">
             {% for error in form.description_lang1.errors %}<p>{{ error }}</p>{% endfor %}
@@ -52,7 +52,7 @@
     </div>
     <div class="form-group{% if form.price.errors %} has-error{% endif %}">
         {{ form.price.label(for="price") }}
-        {{ form.price(class="form-control", placeholder="_('Entrez le prix')") }}
+        {{ form.price(class="form-control") }}
         {% if form.price.errors %}
         <div class="help-text">
             {% for error in form.price.errors %}<p>{{ error }}</p>{% endfor %}
@@ -61,7 +61,7 @@
     </div>
     <div class="form-group{% if form.load.errors %} has-error{% endif %}">
         {{ form.load.label(for="load") }}
-        {{ form.load(class="form-control", placeholder="_('Entrez le poids du pâton')") }}
+        {{ form.load(class="form-control") }}
         {% if form.load.errors %}
         <div class="help-text">
             {% for error in form.load.errors %}<p>{{ error }}</p>{% endfor %}

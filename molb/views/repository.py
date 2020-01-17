@@ -23,7 +23,11 @@ from molb.views.utils import settings
 
 
 class RepositoryForm(CsrfForm):
-    name = StringField(_l("Nom"), validators=[Required(), Length(min=5, max=128)])
+    name = StringField(
+        _l("Nom"),
+        validators=[Required(), Length(min=5, max=128)],
+        render_kw={"placeholder": _l("Entrez le nom")}
+    )
     opened = BooleanField(_l("Ouvert"), default=True)
     monday = BooleanField(_l("Lundi"))
     tuesday = BooleanField(_l("Mardi"))

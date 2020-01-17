@@ -16,7 +16,7 @@
     {% endif %}
     <div class="form-group{% if form.name.errors %} has-error{% endif %}">
         {{ form.name.label(for="name") }}
-        {{ form.name(class="form-control", placeholder="_('Entrez le nom')") }}
+        {{ form.name(class="form-control") }}
         {% if form.name.errors %}
         <div class="help-text">
             {% for error in form.name.errors %}<p>{{ error }}</p>{% endfor %}
