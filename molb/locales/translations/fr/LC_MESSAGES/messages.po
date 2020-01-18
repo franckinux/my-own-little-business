@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 13:13+0100\n"
+"POT-Creation-Date: 2020-01-18 20:38+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr_FR\n"
@@ -155,6 +155,10 @@ msgstr ""
 msgid "Plan de fournée"
 msgstr ""
 
+#: templates/home.html:34 templates/mailing.html:2 templates/mailing.html:6
+msgid "Envoi de messages"
+msgstr ""
+
 #: templates/home.html:48
 msgid "Supprimez votre profil"
 msgstr ""
@@ -297,10 +301,6 @@ msgstr ""
 msgid "Envoyer la demande de confirmation"
 msgstr ""
 
-#: templates/mailing.html:2 templates/mailing.html:6
-msgid "Envoi de messages"
-msgstr ""
-
 #: templates/map.html:2
 msgid "Choisissez votre point de livraison dans la carte ci-dessous :"
 msgstr ""
@@ -377,6 +377,12 @@ msgstr ""
 msgid "pour confirmer votre changement d'adresse email."
 msgstr ""
 
+#: templates/auth/email-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre changement d'adresse email"
+msgstr ""
+
 #: templates/auth/email-email.html:2 templates/auth/email-email.html:6
 #: views/auth/email.py:41
 msgid "Changement d'adresse email"
@@ -399,12 +405,24 @@ msgstr ""
 msgid "pour saisir un nouveau mot de passe."
 msgstr ""
 
+#: templates/auth/password-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre changement de mot de passe"
+msgstr ""
+
 #: templates/auth/profile.html:2 templates/auth/profile.html:6
 msgid "Modification de votre profil"
 msgstr ""
 
 #: templates/auth/register-confirmation.html:3
 msgid "pour confirmer votre enregistrement."
+msgstr ""
+
+#: templates/auth/register-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre enregistrement"
 msgstr ""
 
 #: templates/auth/register.html:2 templates/auth/register.html:5

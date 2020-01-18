@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 13:13+0100\n"
+"POT-Creation-Date: 2020-01-18 20:38+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -155,6 +155,10 @@ msgstr "Production"
 msgid "Plan de fournée"
 msgstr "Production plan"
 
+#: templates/home.html:34 templates/mailing.html:2 templates/mailing.html:6
+msgid "Envoi de messages"
+msgstr "Mailing"
+
 #: templates/home.html:48
 msgid "Supprimez votre profil"
 msgstr "Delete your profile"
@@ -297,10 +301,6 @@ msgstr "Registering date"
 msgid "Envoyer la demande de confirmation"
 msgstr "Send confirmation"
 
-#: templates/mailing.html:2 templates/mailing.html:6
-msgid "Envoi de messages"
-msgstr "Mailing"
-
 #: templates/map.html:2
 msgid "Choisissez votre point de livraison dans la carte ci-dessous :"
 msgstr "Select your delivery place on the map:"
@@ -377,6 +377,14 @@ msgstr "link"
 msgid "pour confirmer votre changement d'adresse email."
 msgstr "in order to confirm your email address change."
 
+#: templates/auth/email-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre changement d'adresse email"
+msgstr ""
+"Copy the following link in the address bar of your web browser in order"
+"to confirm your email address change"
+
 #: templates/auth/email-email.html:2 templates/auth/email-email.html:6
 #: views/auth/email.py:41
 msgid "Changement d'adresse email"
@@ -399,6 +407,14 @@ msgstr "Connection"
 msgid "pour saisir un nouveau mot de passe."
 msgstr "in order to enter a new password"
 
+#: templates/auth/password-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre changement de mot de passe"
+msgstr ""
+"Copy the following link in the address bar of your web browser in order"
+"to confirm your password change"
+
 #: templates/auth/profile.html:2 templates/auth/profile.html:6
 msgid "Modification de votre profil"
 msgstr "Profile change"
@@ -406,6 +422,14 @@ msgstr "Profile change"
 #: templates/auth/register-confirmation.html:3
 msgid "pour confirmer votre enregistrement."
 msgstr "to confirm your registering."
+
+#: templates/auth/register-confirmation.txt:1
+msgid ""
+"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
+"confirmer votre enregistrement"
+msgstr ""
+"Copy the following link in the address bar of your web browser in order"
+"to confirm your registering"
 
 #: templates/auth/register.html:2 templates/auth/register.html:5
 msgid "Enregistrement"
