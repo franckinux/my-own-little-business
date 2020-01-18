@@ -4,7 +4,6 @@ from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from aiohttp_security import forget
-from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
 from passlib.hash import sha256_crypt
 from wtforms import BooleanField
@@ -18,6 +17,7 @@ from wtforms.validators import Regexp
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 from molb.views.utils import settings

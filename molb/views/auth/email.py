@@ -4,12 +4,12 @@ from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
-from aiohttp_session_flash import flash
 
 from molb.auth import require
 from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
 from molb.views.send_message import send_confirmation
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 
 

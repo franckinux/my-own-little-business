@@ -1,4 +1,5 @@
 from aiohttp_babel.middlewares import _
+from aiohttp_session_flash import flash as original_flash
 from aiohttp_session import get_session
 from babel.support import LazyProxy
 
@@ -57,3 +58,9 @@ def lazy_gettext(s):
 
 
 _l = lazy_gettext
+
+
+# convert lazy string to string as it cannot be stored in a session as is
+def flash(request, msg):
+    msg_ = (msg[0], str(msg[1]))
+    return original_flash(request, msg_)

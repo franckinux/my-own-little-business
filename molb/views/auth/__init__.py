@@ -4,7 +4,6 @@ from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import forget
 from aiohttp_security import remember
-from aiohttp_session_flash import flash
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -14,6 +13,7 @@ from molb.auth import require
 from molb.auth.db_auth import check_credentials
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 
 

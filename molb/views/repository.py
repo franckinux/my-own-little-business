@@ -2,7 +2,6 @@ from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
 from wtforms import BooleanField
 from wtforms import StringField
@@ -15,6 +14,7 @@ from molb.views.csrf_form import CsrfForm
 from molb.views.utils import _l
 from molb.views.utils import array_to_days
 from molb.views.utils import days_to_array
+from molb.views.utils import flash
 from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders

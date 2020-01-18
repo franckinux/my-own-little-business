@@ -7,13 +7,13 @@ from aiohttp_babel.middlewares import _
 from aiohttp_babel.middlewares import get_current_locale
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
-from aiohttp_session_flash import flash
 from wtforms import SelectField
 from wtforms import SubmitField
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
 from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
@@ -60,9 +60,9 @@ def products_for_context(rows, locale):
         dct = dict(r)
         n = dct.pop("name_lang1")
         d = dct.pop("description_lang1")
-        if locale == 'en':
-            d["name"] = n
-            d["description"] = d
+        if str(locale) == 'en':
+            dct["name"] = n
+            dct["description"] = d
         p[dct["id"]] = dct
     return p
 
