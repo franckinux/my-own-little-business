@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 21:29+0100\n"
+"POT-Creation-Date: 2020-01-18 22:22+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -134,6 +134,10 @@ msgstr "Delivery place edit"
 msgid "Erreur"
 msgstr "Error"
 
+#: templates/home.html:11
+msgid "Éléments de base"
+msgstr "Basic elements"
+
 #: templates/home.html:18 templates/list-client.html:2
 #: templates/list-client.html:6 templates/list-client.html:12
 msgid "Clients"
@@ -176,9 +180,7 @@ msgid "Suppression de votre profil"
 msgstr "Delete your profile"
 
 #: templates/home.html:61
-msgid ""
-"Attention, si vous supprimez votre profil, vous perdrez toutes vos "
-"commandes."
+msgid "Attention, si vous supprimez votre profil, vous perdrez toutes vos commandes."
 msgstr "Be careful, if you delete your profile, your orders will be canceled."
 
 #: templates/home.html:65 templates/list-batch.html:28
@@ -378,12 +380,8 @@ msgid "pour confirmer votre changement d'adresse email."
 msgstr "in order to confirm your email address change."
 
 #: templates/auth/email-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre changement d'adresse email"
-msgstr ""
-"Copy the following link in the address bar of your web browser in order "
-"to confirm your email address change"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre changement d'adresse email"
+msgstr "Copy the following link in the address bar of your web browser in order to confirm your email address change"
 
 #: templates/auth/email-email.html:2 templates/auth/email-email.html:6
 #: views/auth/email.py:41
@@ -408,12 +406,8 @@ msgid "pour saisir un nouveau mot de passe."
 msgstr "in order to enter a new password"
 
 #: templates/auth/password-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre changement de mot de passe"
-msgstr ""
-"Copy the following link in the address bar of your web browser in order"
-"to confirm your password change"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre changement de mot de passe"
+msgstr "Copy the following link in the address bar of your web browser in order to confirm your password change"
 
 #: templates/auth/profile.html:2 templates/auth/profile.html:6
 msgid "Modification de votre profil"
@@ -424,12 +418,8 @@ msgid "pour confirmer votre enregistrement."
 msgstr "to confirm your registering."
 
 #: templates/auth/register-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre enregistrement"
-msgstr ""
-"Copy the following link in the address bar of your web browser in order"
-"to confirm your registering"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre enregistrement"
+msgstr "Copy the following link in the address bar of your web browser in order to confirm your registering"
 
 #: templates/auth/register.html:2 templates/auth/register.html:5
 msgid "Enregistrement"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 21:29+0100\n"
+"POT-Creation-Date: 2020-01-18 22:22+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr_FR\n"
@@ -134,6 +134,10 @@ msgstr ""
 msgid "Erreur"
 msgstr ""
 
+#: templates/home.html:11
+msgid "Éléments de base"
+msgstr ""
+
 #: templates/home.html:18 templates/list-client.html:2
 #: templates/list-client.html:6 templates/list-client.html:12
 msgid "Clients"
@@ -176,9 +180,7 @@ msgid "Suppression de votre profil"
 msgstr ""
 
 #: templates/home.html:61
-msgid ""
-"Attention, si vous supprimez votre profil, vous perdrez toutes vos "
-"commandes."
+msgid "Attention, si vous supprimez votre profil, vous perdrez toutes vos commandes."
 msgstr ""
 
 #: templates/home.html:65 templates/list-batch.html:28
@@ -378,9 +380,7 @@ msgid "pour confirmer votre changement d'adresse email."
 msgstr ""
 
 #: templates/auth/email-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre changement d'adresse email"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre changement d'adresse email"
 msgstr ""
 
 #: templates/auth/email-email.html:2 templates/auth/email-email.html:6
@@ -406,9 +406,7 @@ msgid "pour saisir un nouveau mot de passe."
 msgstr ""
 
 #: templates/auth/password-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre changement de mot de passe"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre changement de mot de passe"
 msgstr ""
 
 #: templates/auth/profile.html:2 templates/auth/profile.html:6
@@ -420,9 +418,7 @@ msgid "pour confirmer votre enregistrement."
 msgstr ""
 
 #: templates/auth/register-confirmation.txt:1
-msgid ""
-"Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
-"confirmer votre enregistrement"
+msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre enregistrement"
 msgstr ""
 
 #: templates/auth/register.html:2 templates/auth/register.html:5

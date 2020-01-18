@@ -8,7 +8,7 @@
 
 {% block page_content %}
 {% if client.super_user %}
-<h3>Éléments de base</h3>
+<h3>{{ _("Éléments de base") }} </h3>
 <ul>
     <li><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
     <li><a href="{{ url("list_product") }}">{{ _("Produits") }}</a></li>

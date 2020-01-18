@@ -115,10 +115,10 @@ Internationalization
 
 Creation : ::
 
-     pybabel extract -F babel-mapping.ini -k _ -k _l -o locales/messages.pot .
+     pybabel extract -F babel-mapping.ini -k _ -k _l --no-wrap -o locales/messages.pot .
      pybabel init -i messages.pot -d translations -l en
      pybabel init -i messages.pot -d translations -l fr
      pybabel compile -d translations
 
 Update : ::
-    pybabel update -i messages.pot -d translations
+    pybabel update -i messages.pot --no-wrap -d translations
