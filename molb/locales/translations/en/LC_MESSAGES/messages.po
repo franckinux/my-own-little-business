@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 11:46+0100\n"
+"POT-Creation-Date: 2020-01-18 13:13+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -23,7 +23,7 @@ msgid "Déconnexion"
 msgstr "Deconnection"
 
 #: templates/base.html:28 templates/create-order.html:6
-#: templates/edit-order.html:6 templates/home.html:31 templates/home.html:34
+#: templates/edit-order.html:6 templates/home.html:37 templates/home.html:40
 #: templates/list-order.html:2 templates/list-order.html:6
 msgid "Commandes"
 msgstr "Orders"
@@ -37,10 +37,11 @@ msgstr "Batch creation"
 #: templates/create-repository.html:5 templates/edit-batch.html:18
 #: templates/edit-order.html:5 templates/edit-product.html:5
 #: templates/edit-repository.html:5 templates/home.html:2 templates/home.html:5
-#: templates/list-accounts.html:5 templates/list-batch.html:5
-#: templates/list-client.html:5 templates/list-order.html:5
-#: templates/list-product.html:5 templates/list-repository.html:5
-#: templates/plan.html:7 templates/start.html:2 templates/start.html:5
+#: templates/list-batch.html:5 templates/list-client.html:5
+#: templates/list-order.html:5 templates/list-product.html:5
+#: templates/list-repository.html:5 templates/list-unconfirmed.html:5
+#: templates/mailing.html:5 templates/plan.html:7 templates/start.html:2
+#: templates/start.html:5
 msgid "Accueil"
 msgstr "Home"
 
@@ -61,7 +62,7 @@ msgstr "Enter the delivery date"
 #: templates/create-product.html:77 templates/create-repository.html:70
 #: templates/edit-batch.html:49 templates/edit-order.html:57
 #: templates/edit-product.html:77 templates/edit-repository.html:70
-#: templates/home.html:58
+#: templates/home.html:64 templates/mailing.html:36
 msgid "Annuler"
 msgstr "Cancel"
 
@@ -154,67 +155,33 @@ msgstr "Production"
 msgid "Plan de fournée"
 msgstr "Production plan"
 
-#: templates/home.html:42
+#: templates/home.html:48
 msgid "Supprimez votre profil"
 msgstr "Delete your profile"
 
-#: templates/home.html:44
+#: templates/home.html:50
 msgid "Modifier votre profil"
 msgstr "Edit your profile"
 
-#: templates/home.html:45
+#: templates/home.html:51
 msgid "Modifier votre adresse email"
 msgstr "Modify your email address"
 
-#: templates/home.html:52
+#: templates/home.html:58
 msgid "Suppression de votre profil"
 msgstr "Delete your profile"
 
-#: templates/home.html:55
+#: templates/home.html:61
 msgid ""
 "Attention, si vous supprimez votre profil, vous perdrez toutes vos "
 "commandes."
 msgstr "Be careful, if you delete your profile, your orders will be canceled."
 
-#: templates/home.html:59 templates/list-accounts.html:32
-#: templates/list-batch.html:28 templates/list-order.html:36
-#: templates/list-product.html:30 templates/list-repository.html:26
+#: templates/home.html:65 templates/list-batch.html:28
+#: templates/list-order.html:36 templates/list-product.html:30
+#: templates/list-repository.html:26 templates/list-unconfirmed.html:34
 msgid "Supprimer"
 msgstr "Delete"
-
-#: templates/list-accounts.html:2 templates/list-accounts.html:6
-msgid "Profils"
-msgstr "Profiles"
-
-#: templates/list-accounts.html:11
-msgid "Profils non confirmés"
-msgstr "Not confirmed profiles"
-
-#: templates/list-accounts.html:16 templates/list-client.html:17
-#: views/auth/profile.py:39 views/auth/register.py:57
-msgid "Prénom"
-msgstr "First name"
-
-#: templates/list-accounts.html:17 templates/list-client.html:18
-#: templates/list-product.html:16 templates/list-repository.html:16
-#: views/auth/profile.py:43 views/auth/register.py:61 views/product.py:26
-#: views/product.py:33 views/repository.py:27
-msgid "Nom"
-msgstr "Name"
-
-#: templates/list-accounts.html:18 views/auth/email_form.py:13
-#: views/auth/register.py:65
-msgid "Adresse email"
-msgstr "Email address"
-
-#: templates/list-accounts.html:19 views/auth/profile.py:47
-#: views/auth/register.py:74
-msgid "Numéro de téléphone"
-msgstr "Phone number"
-
-#: templates/list-accounts.html:20
-msgid "Date d'enregistrement"
-msgstr "Registering date"
 
 #: templates/list-batch.html:11
 msgid "Créer une fournée"
@@ -232,19 +199,31 @@ msgstr "Capacity"
 msgid "Ouverte"
 msgstr "Open"
 
+#: templates/list-client.html:17 templates/list-unconfirmed.html:16
+#: views/auth/profile.py:39 views/auth/register.py:57
+msgid "Prénom"
+msgstr "First name"
+
+#: templates/list-client.html:18 templates/list-product.html:16
+#: templates/list-repository.html:16 templates/list-unconfirmed.html:17
+#: views/auth/profile.py:43 views/auth/register.py:61 views/product.py:26
+#: views/product.py:33 views/repository.py:27
+msgid "Nom"
+msgstr "Name"
+
 #: templates/list-client.html:19
 msgid "Statut"
 msgstr "Status"
 
-#: templates/list-client.html:29
+#: templates/list-client.html:28
 msgid "Inactif"
 msgstr "Inactive"
 
-#: templates/list-client.html:29
+#: templates/list-client.html:28
 msgid "Actif"
 msgstr "Active"
 
-#: templates/list-client.html:30
+#: templates/list-client.html:29
 msgid "Changer statut"
 msgstr "Change status"
 
@@ -291,6 +270,36 @@ msgstr "Delivery place creation"
 #: templates/list-repository.html:17 views/repository.py:31
 msgid "Ouvert"
 msgstr "Open"
+
+#: templates/list-unconfirmed.html:2 templates/list-unconfirmed.html:6
+msgid "Profils"
+msgstr "Profiles"
+
+#: templates/list-unconfirmed.html:11
+msgid "Profils non confirmés"
+msgstr "Not confirmed profiles"
+
+#: templates/list-unconfirmed.html:18 views/auth/email_form.py:13
+#: views/auth/register.py:65
+msgid "Adresse email"
+msgstr "Email address"
+
+#: templates/list-unconfirmed.html:19 views/auth/profile.py:47
+#: views/auth/register.py:74
+msgid "Numéro de téléphone"
+msgstr "Phone number"
+
+#: templates/list-unconfirmed.html:20
+msgid "Date d'enregistrement"
+msgstr "Registering date"
+
+#: templates/list-unconfirmed.html:33
+msgid "Envoyer la demande de confirmation"
+msgstr "Send confirmation"
+
+#: templates/mailing.html:2 templates/mailing.html:6
+msgid "Envoi de messages"
+msgstr "Mailing"
 
 #: templates/map.html:2
 msgid "Choisissez votre point de livraison dans la carte ci-dessous :"
@@ -408,8 +417,8 @@ msgstr "Enter the batch capacity"
 
 #: views/auth/__init__.py:31 views/auth/email_form.py:17
 #: views/auth/password.py:86 views/auth/profile.py:55 views/auth/register.py:82
-#: views/batch.py:32 views/order.py:23 views/order.py:27 views/plan.py:18
-#: views/product.py:59 views/repository.py:39
+#: views/batch.py:32 views/mailing.py:27 views/order.py:23 views/order.py:27
+#: views/plan.py:18 views/product.py:59 views/repository.py:39
 msgid "Valider"
 msgstr "Confirm"
 
@@ -419,9 +428,9 @@ msgstr "Null or negative value"
 
 #: views/auth/email.py:55 views/auth/password.py:62 views/auth/password.py:132
 #: views/auth/profile.py:95 views/auth/register.py:138 views/batch.py:49
-#: views/batch.py:123 views/order.py:134 views/order.py:291 views/plan.py:46
-#: views/product.py:81 views/product.py:129 views/repository.py:62
-#: views/repository.py:112
+#: views/batch.py:123 views/mailing.py:71 views/order.py:139 views/order.py:296
+#: views/plan.py:50 views/product.py:81 views/product.py:129
+#: views/repository.py:62 views/repository.py:112
 msgid "Le formulaire contient des erreurs."
 msgstr "There are errors in the form."
 
@@ -453,6 +462,30 @@ msgstr "The batch has been changed"
 msgid "Le statut du client a été modifié."
 msgstr "Customer status has been changed."
 
+#: views/mailing.py:23
+msgid "Tous les points de livraison"
+msgstr "All delivery places"
+
+#: views/auth/profile.py:53 views/auth/register.py:80 views/mailing.py:24
+msgid "Point de livraison"
+msgstr "Delivery place"
+
+#: views/mailing.py:25
+msgid "Sujet"
+msgstr "Subject"
+
+#: views/mailing.py:26
+msgid "Message"
+msgstr "Message"
+
+#: views/mailing.py:58
+msgid "Il n'y a pas de destinataire."
+msgstr "There's no recipient"
+
+#: views/mailing.py:68
+msgid "Les messages ont été envoyés."
+msgstr "Messages has been sent."
+
 #: views/order.py:22 views/plan.py:17
 msgid "Fournée"
 msgstr "Batch"
@@ -461,55 +494,59 @@ msgstr "Batch"
 msgid "Vous ne pouvez pas passer de commande."
 msgstr "You cannot order."
 
-#: views/order.py:145
+#: views/order.py:115
+msgid "Il n'y a pas de fournée disponible."
+msgstr "There's no batch available."
+
+#: views/order.py:150
 msgid "La fournée choisie ne permet de vous livrer."
 msgstr "The selected batch cannot be delivered."
 
-#: views/order.py:163 views/order.py:307
+#: views/order.py:168 views/order.py:312
 msgid "Quantité(s) invalide(s)."
 msgstr "Invalid quantity."
 
-#: views/order.py:171 views/order.py:315
+#: views/order.py:176 views/order.py:320
 msgid "Veuillez choisir au moins un produit"
 msgstr "Please, select at least one product"
 
-#: views/order.py:181 views/order.py:325
+#: views/order.py:186 views/order.py:330
 msgid "Votre commande dépasse la capacité de la fournée."
 msgstr "Your order overcome the batch capacity."
 
-#: views/order.py:207
+#: views/order.py:212
 msgid "Votre commande n'a pas pu être passée."
 msgstr "Your order cannot be created."
 
-#: views/order.py:210
+#: views/order.py:215
 msgid "Votre commande a été passée avec succès"
 msgstr "Your order has been created"
 
-#: views/order.py:240
+#: views/order.py:245
 msgid "Vous ne pouvez pas modifier votre commande."
 msgstr "Your cannot change your order."
 
-#: views/order.py:265
+#: views/order.py:270
 msgid "Il est trop tard pour modifier votre commande."
 msgstr "It's too late to change your order."
 
-#: views/order.py:358
+#: views/order.py:363
 msgid "Votre commande n'a pas pu être modifiée."
 msgstr "Your order cannot be changed."
 
-#: views/order.py:361
+#: views/order.py:366
 msgid "Votre commande a été modifiée."
 msgstr "Your order has been changed."
 
-#: views/order.py:403
+#: views/order.py:408
 msgid "Il est trop tard pour annuler votre commande."
 msgstr "It's too late to change your order."
 
-#: views/order.py:422
+#: views/order.py:427
 msgid "Votre commande a été supprimée."
 msgstr "Your order has been deleted."
 
-#: views/order.py:424
+#: views/order.py:429
 msgid "Votre commande n'a pas pu être supprimée."
 msgstr "Your order cannot be deleted."
 
@@ -699,10 +736,6 @@ msgstr "Enter your name"
 msgid "Entrez votre numéro de téléphone"
 msgstr "Enter your phone number"
 
-#: views/auth/profile.py:53 views/auth/register.py:80
-msgid "Point de livraison"
-msgstr "Delivery place"
-
 #: views/auth/profile.py:54 views/auth/register.py:81
 msgid "Réception de messages"
 msgstr "Message reception"
@@ -730,14 +763,6 @@ msgstr "Your profile cannot be deleted"
 #: views/auth/profile.py:147
 msgid "Votre profil a été supprimé"
 msgstr "Your profile has been deleted"
-
-#: views/auth/register.py:37
-msgid ""
-"L'identifiant ne doit contenir que des lettres non accentuées, des "
-"chiffres, '.'  et '_' et commencer par une lettre"
-msgstr ""
-"The id must contain only letters, figures, '.' and '_' and begin by a "
-"letter"
 
 #: views/auth/register.py:110
 msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"

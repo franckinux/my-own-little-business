@@ -1,7 +1,7 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
+from aiohttp_babel.middlewares import _
 from wtforms import BooleanField
 from wtforms import SelectField
 from wtforms import StringField
@@ -13,16 +13,18 @@ from molb.auth import require
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_mailing_message
 from molb.views.send_message import send_text_message
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
 
 class MailingForm(CsrfForm):
-    all_repositories = BooleanField("Tous les points de livraison", default=True)
-    repository_id = SelectField("Point de livraison", coerce=int)
-    subject = StringField("Sujet", validators=[Required()])
-    message = TextAreaField("Message", render_kw={"rows": 20, "cols": 50}, validators=[Required()])
-    submit = SubmitField("Valider")
+    all_repositories = BooleanField(_l("Tous les points de livraison"), default=True)
+    repository_id = SelectField(_l("Point de livraison"), coerce=int)
+    subject = StringField(_l("Sujet"), validators=[Required()])
+    message = TextAreaField(_l("Message"), render_kw={"rows": 10, "cols": 50}, validators=[Required()])
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")
@@ -53,7 +55,7 @@ async def mailing(request):
                     )
                     rows = await conn.fetch(q, repository_id)
                 if not rows:
-                    flash(request, ("warning", "Il n'y a pas de destinataire."))
+                    flash(request, ("warning", _("Il n'y a pas de destinataire.")))
                     return HTTPFound(request.app.router["mailing"].url_for())
 
                 if "<first_name>" in message:
@@ -63,10 +65,10 @@ async def mailing(request):
                 else:
                     email_addresses = ','.join([r["email_address"] for r in rows])
                     await send_mailing_message(request, email_addresses, subject, message)
-                flash(request, ("info", "Les messages ont été envoyés."))
+                flash(request, ("info", _("Les messages ont été envoyés.")))
                 return HTTPFound(request.app.router["mailing"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return HTTPFound(request.app.router["mailing"].url_for())
 
         elif request.method == "GET":

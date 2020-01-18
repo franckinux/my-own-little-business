@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Envoi de messages{% endblock %}
+{% block title %}{{ _("Envoi de messages") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Diffusion de messages</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Envoi de messages") }}</li>
 </ol>
 {% endblock %}
 
@@ -33,7 +33,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("home") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("home") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

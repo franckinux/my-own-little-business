@@ -112,7 +112,7 @@ async def create_order(request):
         batch_choices = [(row["batch_id"], row["batch_date"]) for row in rows]
 
         if not batch_choices:
-            flash(request, ("warning", "Il n'y a pas de fournée enregistrée."))
+            flash(request, ("warning", _("Il n'y a pas de fournée disponible.")))
             return HTTPFound(request.app.router["list_order"].url_for())
 
         # get all available products
