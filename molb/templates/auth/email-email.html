@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Changement d'adresse mail{% endblock %}
+{% block title %}{{ _("Changement d'adresse email") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Changement d'adresse mail</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Changement d'adresse email") }}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<p>Adresse email actuelle : <strong>{{ email }}</strong>.</p>
+<p>{{ _("Adresse email actuelle :") }} <strong>{{ email }}</strong>.</p>
 
 <form method="POST" action="{{ url("email") }}" role="form">
     {{ form.csrf_token }}
@@ -17,7 +17,7 @@
     {% endif %}
     <div class="form-group{% if form.email_address.errors %} has-error{% endif %}">
         {{ form.email_address.label(for="email_address") }}
-        {{ form.email_address(class="form-control", placeholder="Entrez votre adresse mail") }}
+        {{ form.email_address(class="form-control") }}
         {% if form.email_address.errors %}
         <div class="help-text">
             {% for error in form.email_address.errors %}<p>{{ error }}</p>{% endfor %}
@@ -26,7 +26,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("home") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("home") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Accueil{% endblock %}
+{% block title %}{{ _("Accueil") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item active">Accueil</li>
+    <li class="breadcrumb-item active">{{ _("Accueil") }}</li>
 </ol>
 {% endblock %}
 {% block page_content %}
 <div class="text-center">
     <div class="form-group">
-        Pas encore client ?
-        <a href={{ url("register") }} class="btn btn-primary">Enregistrez vous</a>
+        {{ _("Pas encore client ?") }}
+        <a href={{ url("register") }} class="btn btn-primary">{{ _("Enregistrez vous") }}</a>
     </div>
     <div class="form-group">
-        Déjà enregistré ?
-        <a href={{ url("login") }} class="btn btn-light">Connectez vous</a>
-        <small><a href="{{ url("password") }}">Mot de passe perdu</a></small>
+        {{ _("Déjà enregistré ?") }}
+        <a href={{ url("login") }} class="btn btn-light">{{ _("Connectez vous") }}</a>
+        <small><a href="{{ url("password") }}">{{ _("Mot de passe perdu") }}</a></small>
     </div>
     <p>
-        Pour tout problème concernant ce site, veuillez écrire à
+        {{ _("Pour tout problème concernant ce site, veuillez écrire à") }}
         <a href="mailto:{{ app.config.application.from }}?subject={{ app.config.application.site_name }}">{{ app.config.application.from }}</a>
     </p>
 </div>

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Saisie d'une commande{% endblock %}
+{% block title %}{{ _("Saisie d'une commande") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">Commandes</a></li>
-    <li class="breadcrumb-item active">Saisie d'une commande</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">{{ _("Commandes") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Saisie d'une commande") }}</li>
 </ol>
 {% endblock %}
 
@@ -30,9 +30,9 @@ $(document).ready(function(){
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Produit</th>
-                <th>Prix unitaire</th>
-                <th>Quantité</th>
+                <th>{{ _("Produit") }}</th>
+                <th>{{ _("Prix unitaire") }}</th>
+                <th>{{ _("Quantité") }}</th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +46,7 @@ $(document).ready(function(){
                 <td>{{ product.price }}</a></td>
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}"
-                    placeholder="Entrez la quantité"
+                    placeholder="{{ _("Entrez la quantité") }}"
                     type="number" step="1">
                 </td>
                 <td>{{ product.quantity }}</td>
@@ -55,7 +55,7 @@ $(document).ready(function(){
     </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_order") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("list_order") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

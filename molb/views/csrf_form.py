@@ -9,4 +9,3 @@ class CsrfForm(Form):
         csrf = True
         csrf_class = SessionCSRF
         csrf_time_limit = timedelta(minutes=10)
-        locales = ["fr", "en"]

@@ -1,0 +1,755 @@
+# French (France) translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-01-18 11:46+0100\n"
+"PO-Revision-Date: 2020-01-03 09:27+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr_FR\n"
+"Language-Team: fr_FR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: templates/base.html:25
+msgid "Déconnexion"
+msgstr ""
+
+#: templates/base.html:28 templates/create-order.html:6
+#: templates/edit-order.html:6 templates/home.html:31 templates/home.html:34
+#: templates/list-order.html:2 templates/list-order.html:6
+msgid "Commandes"
+msgstr ""
+
+#: templates/create-batch.html:8 templates/create-batch.html:20
+msgid "Création d'une fournée"
+msgstr ""
+
+#: templates/auth/email-email.html:5 templates/auth/profile.html:5
+#: templates/create-batch.html:18 templates/create-order.html:5
+#: templates/create-repository.html:5 templates/edit-batch.html:18
+#: templates/edit-order.html:5 templates/edit-product.html:5
+#: templates/edit-repository.html:5 templates/home.html:2 templates/home.html:5
+#: templates/list-accounts.html:5 templates/list-batch.html:5
+#: templates/list-client.html:5 templates/list-order.html:5
+#: templates/list-product.html:5 templates/list-repository.html:5
+#: templates/plan.html:7 templates/start.html:2 templates/start.html:5
+msgid "Accueil"
+msgstr ""
+
+#: templates/create-batch.html:19 templates/edit-batch.html:19
+#: templates/home.html:13 templates/list-batch.html:2
+#: templates/list-batch.html:6
+msgid "Fournées"
+msgstr ""
+
+#: templates/create-batch.html:33 templates/create-batch.html:35
+msgid "Entrez la date de livraison"
+msgstr ""
+
+#: templates/auth/email-email.html:29 templates/auth/email-password.html:26
+#: templates/auth/login.html:35 templates/auth/password.html:35
+#: templates/auth/profile.html:73 templates/auth/register.html:90
+#: templates/create-batch.html:56 templates/create-order.html:58
+#: templates/create-product.html:77 templates/create-repository.html:70
+#: templates/edit-batch.html:49 templates/edit-order.html:57
+#: templates/edit-product.html:77 templates/edit-repository.html:70
+#: templates/home.html:58
+msgid "Annuler"
+msgstr ""
+
+#: templates/create-order.html:2 templates/create-order.html:7
+msgid "Saisie d'une commande"
+msgstr ""
+
+#: templates/create-order.html:33 templates/edit-order.html:31
+msgid "Produit"
+msgstr ""
+
+#: templates/create-order.html:34 templates/edit-order.html:32
+msgid "Prix unitaire"
+msgstr ""
+
+#: templates/create-order.html:35 templates/edit-order.html:33
+#: templates/plan.html:35 templates/plan.html:59 templates/plan.html:86
+msgid "Quantité"
+msgstr ""
+
+#: templates/create-order.html:49 templates/edit-order.html:48
+msgid "Entrez la quantité"
+msgstr ""
+
+#: templates/create-product.html:2
+msgid "Création d'un produit"
+msgstr ""
+
+#: templates/create-repository.html:2 templates/create-repository.html:7
+msgid "Création d'un point de livraison"
+msgstr ""
+
+#: templates/create-repository.html:6 templates/edit-repository.html:6
+#: templates/home.html:15 templates/list-repository.html:2
+#: templates/list-repository.html:6
+msgid "Points de livraison"
+msgstr ""
+
+#: templates/create-repository.html:31 templates/edit-repository.html:31
+msgid "Jours de livraison"
+msgstr ""
+
+#: templates/edit-batch.html:8 templates/edit-batch.html:20
+msgid "Modification d'une fournée"
+msgstr ""
+
+#: templates/edit-order.html:2 templates/edit-order.html:7
+msgid "Modification d'une commande"
+msgstr ""
+
+#: templates/edit-order.html:21
+msgid "Fournée du"
+msgstr ""
+
+#: templates/edit-product.html:2 templates/edit-product.html:7
+msgid "Modification d'un produit"
+msgstr ""
+
+#: templates/edit-product.html:6 templates/home.html:14
+#: templates/list-product.html:2 templates/list-product.html:6
+msgid "Produits"
+msgstr ""
+
+#: templates/edit-repository.html:2 templates/edit-repository.html:7
+msgid "Modification d'un point de livraison"
+msgstr ""
+
+#: templates/error.html:2 templates/error.html:5
+msgid "Erreur"
+msgstr ""
+
+#: templates/home.html:18 templates/list-client.html:2
+#: templates/list-client.html:6 templates/list-client.html:12
+msgid "Clients"
+msgstr ""
+
+#: templates/home.html:21
+msgid "Non confirmés"
+msgstr ""
+
+#: templates/home.html:22
+msgid "Liste"
+msgstr ""
+
+#: templates/home.html:25
+msgid "Production"
+msgstr ""
+
+#: templates/home.html:28 templates/plan.html:3 templates/plan.html:8
+msgid "Plan de fournée"
+msgstr ""
+
+#: templates/home.html:42
+msgid "Supprimez votre profil"
+msgstr ""
+
+#: templates/home.html:44
+msgid "Modifier votre profil"
+msgstr ""
+
+#: templates/home.html:45
+msgid "Modifier votre adresse email"
+msgstr ""
+
+#: templates/home.html:52
+msgid "Suppression de votre profil"
+msgstr ""
+
+#: templates/home.html:55
+msgid ""
+"Attention, si vous supprimez votre profil, vous perdrez toutes vos "
+"commandes."
+msgstr ""
+
+#: templates/home.html:59 templates/list-accounts.html:32
+#: templates/list-batch.html:28 templates/list-order.html:36
+#: templates/list-product.html:30 templates/list-repository.html:26
+msgid "Supprimer"
+msgstr ""
+
+#: templates/list-accounts.html:2 templates/list-accounts.html:6
+msgid "Profils"
+msgstr ""
+
+#: templates/list-accounts.html:11
+msgid "Profils non confirmés"
+msgstr ""
+
+#: templates/list-accounts.html:16 templates/list-client.html:17
+#: views/auth/profile.py:39 views/auth/register.py:57
+msgid "Prénom"
+msgstr ""
+
+#: templates/list-accounts.html:17 templates/list-client.html:18
+#: templates/list-product.html:16 templates/list-repository.html:16
+#: views/auth/profile.py:43 views/auth/register.py:61 views/product.py:26
+#: views/product.py:33 views/repository.py:27
+msgid "Nom"
+msgstr ""
+
+#: templates/list-accounts.html:18 views/auth/email_form.py:13
+#: views/auth/register.py:65
+msgid "Adresse email"
+msgstr ""
+
+#: templates/list-accounts.html:19 views/auth/profile.py:47
+#: views/auth/register.py:74
+msgid "Numéro de téléphone"
+msgstr ""
+
+#: templates/list-accounts.html:20
+msgid "Date d'enregistrement"
+msgstr ""
+
+#: templates/list-batch.html:11
+msgid "Créer une fournée"
+msgstr ""
+
+#: templates/list-batch.html:16 views/batch.py:25
+msgid "Date"
+msgstr ""
+
+#: templates/list-batch.html:17 views/batch.py:27
+msgid "Capacité"
+msgstr ""
+
+#: templates/list-batch.html:18 views/batch.py:31
+msgid "Ouverte"
+msgstr ""
+
+#: templates/list-client.html:19
+msgid "Statut"
+msgstr ""
+
+#: templates/list-client.html:29
+msgid "Inactif"
+msgstr ""
+
+#: templates/list-client.html:29
+msgid "Actif"
+msgstr ""
+
+#: templates/list-client.html:30
+msgid "Changer statut"
+msgstr ""
+
+#: templates/list-order.html:12
+msgid "Vous n'avez pas la possibilité de passer une commande."
+msgstr ""
+
+#: templates/list-order.html:14
+msgid "Passer une commande"
+msgstr ""
+
+#: templates/list-order.html:20
+msgid "Date de la commande"
+msgstr ""
+
+#: templates/list-order.html:21
+msgid "Date de la fournée"
+msgstr ""
+
+#: templates/list-order.html:22
+msgid "Total"
+msgstr ""
+
+#: templates/list-product.html:11
+msgid "Créer un produit"
+msgstr ""
+
+#: templates/list-product.html:17 views/product.py:58
+msgid "Disponible"
+msgstr ""
+
+#: templates/list-product.html:18 views/product.py:49
+msgid "Prix"
+msgstr ""
+
+#: templates/list-product.html:19 views/product.py:54
+msgid "Poids du pâton"
+msgstr ""
+
+#: templates/list-repository.html:11
+msgid "Créer un point de livraison"
+msgstr ""
+
+#: templates/list-repository.html:17 views/repository.py:31
+msgid "Ouvert"
+msgstr ""
+
+#: templates/map.html:2
+msgid "Choisissez votre point de livraison dans la carte ci-dessous :"
+msgstr ""
+
+#: templates/map.html:4
+msgid "La carte des points de livraison"
+msgstr ""
+
+#: templates/plan.html:25
+msgid "Charge de la fournée"
+msgstr ""
+
+#: templates/plan.html:29
+msgid "Produits de la fournée"
+msgstr ""
+
+#: templates/plan.html:34 templates/plan.html:58 templates/plan.html:85
+msgid "Nom du produit"
+msgstr ""
+
+#: templates/plan.html:50
+msgid "Produits de la fournée par point de livraison"
+msgstr ""
+
+#: templates/plan.html:75
+msgid "Produits de la fournée par point de livraison et par client"
+msgstr ""
+
+#: templates/plan.html:83
+msgid "Nom du client"
+msgstr ""
+
+#: templates/plan.html:84
+msgid "Prénom du client"
+msgstr ""
+
+#: templates/start.html:11
+msgid "Pas encore client ?"
+msgstr ""
+
+#: templates/start.html:12
+msgid "Enregistrez vous"
+msgstr ""
+
+#: templates/start.html:15
+msgid "Déjà enregistré ?"
+msgstr ""
+
+#: templates/start.html:16
+msgid "Connectez vous"
+msgstr ""
+
+#: templates/start.html:17
+msgid "Mot de passe perdu"
+msgstr ""
+
+#: templates/start.html:20
+msgid "Pour tout problème concernant ce site, veuillez écrire à"
+msgstr ""
+
+#: templates/auth/email-confirmation.html:3
+#: templates/auth/password-confirmation.html:3
+#: templates/auth/register-confirmation.html:3
+msgid "Cliquez sur le"
+msgstr ""
+
+#: templates/auth/email-confirmation.html:3
+#: templates/auth/password-confirmation.html:3
+#: templates/auth/register-confirmation.html:3
+msgid "lien"
+msgstr ""
+
+#: templates/auth/email-confirmation.html:3
+msgid "pour confirmer votre changement d'adresse email."
+msgstr ""
+
+#: templates/auth/email-email.html:2 templates/auth/email-email.html:6
+#: views/auth/email.py:41
+msgid "Changement d'adresse email"
+msgstr ""
+
+#: templates/auth/email-email.html:11
+msgid "Adresse email actuelle :"
+msgstr ""
+
+#: templates/auth/email-password.html:2 templates/auth/email-password.html:5
+#: templates/auth/password.html:2 templates/auth/password.html:5
+msgid "Changement de mot de passe"
+msgstr ""
+
+#: templates/auth/login.html:2 templates/auth/login.html:5
+msgid "Connexion"
+msgstr ""
+
+#: templates/auth/password-confirmation.html:3
+msgid "pour saisir un nouveau mot de passe."
+msgstr ""
+
+#: templates/auth/profile.html:2 templates/auth/profile.html:6
+msgid "Modification de votre profil"
+msgstr ""
+
+#: templates/auth/register-confirmation.html:3
+msgid "pour confirmer votre enregistrement."
+msgstr ""
+
+#: templates/auth/register.html:2 templates/auth/register.html:5
+msgid "Enregistrement"
+msgstr ""
+
+#: views/batch.py:29
+msgid "Entrez la capacité de la fournée"
+msgstr ""
+
+#: views/auth/__init__.py:31 views/auth/email_form.py:17
+#: views/auth/password.py:86 views/auth/profile.py:55 views/auth/register.py:82
+#: views/batch.py:32 views/order.py:23 views/order.py:27 views/plan.py:18
+#: views/product.py:59 views/repository.py:39
+msgid "Valider"
+msgstr ""
+
+#: views/batch.py:36
+msgid "Valeur négative ou nulle"
+msgstr ""
+
+#: views/auth/email.py:55 views/auth/password.py:62 views/auth/password.py:132
+#: views/auth/profile.py:95 views/auth/register.py:138 views/batch.py:49
+#: views/batch.py:123 views/order.py:134 views/order.py:291 views/plan.py:46
+#: views/product.py:81 views/product.py:129 views/repository.py:62
+#: views/repository.py:112
+msgid "Le formulaire contient des erreurs."
+msgstr ""
+
+#: views/batch.py:65
+msgid "La fournée a été créée"
+msgstr ""
+
+#: views/batch.py:67
+msgid "La fournée ne peut pas être créée"
+msgstr ""
+
+#: views/batch.py:85 views/batch.py:87
+msgid "La fournée ne peut pas être supprimée"
+msgstr ""
+
+#: views/batch.py:89
+msgid "La fournée a été supprimée"
+msgstr ""
+
+#: views/batch.py:118
+msgid "La fournée ne peut pas être modifiée"
+msgstr ""
+
+#: views/batch.py:120
+msgid "La fournée a été modifiée"
+msgstr ""
+
+#: views/client.py:33
+msgid "Le statut du client a été modifié."
+msgstr ""
+
+#: views/order.py:22 views/plan.py:17
+msgid "Fournée"
+msgstr ""
+
+#: views/order.py:86
+msgid "Vous ne pouvez pas passer de commande."
+msgstr ""
+
+#: views/order.py:145
+msgid "La fournée choisie ne permet de vous livrer."
+msgstr ""
+
+#: views/order.py:163 views/order.py:307
+msgid "Quantité(s) invalide(s)."
+msgstr ""
+
+#: views/order.py:171 views/order.py:315
+msgid "Veuillez choisir au moins un produit"
+msgstr ""
+
+#: views/order.py:181 views/order.py:325
+msgid "Votre commande dépasse la capacité de la fournée."
+msgstr ""
+
+#: views/order.py:207
+msgid "Votre commande n'a pas pu être passée."
+msgstr ""
+
+#: views/order.py:210
+msgid "Votre commande a été passée avec succès"
+msgstr ""
+
+#: views/order.py:240
+msgid "Vous ne pouvez pas modifier votre commande."
+msgstr ""
+
+#: views/order.py:265
+msgid "Il est trop tard pour modifier votre commande."
+msgstr ""
+
+#: views/order.py:358
+msgid "Votre commande n'a pas pu être modifiée."
+msgstr ""
+
+#: views/order.py:361
+msgid "Votre commande a été modifiée."
+msgstr ""
+
+#: views/order.py:403
+msgid "Il est trop tard pour annuler votre commande."
+msgstr ""
+
+#: views/order.py:422
+msgid "Votre commande a été supprimée."
+msgstr ""
+
+#: views/order.py:424
+msgid "Votre commande n'a pas pu être supprimée."
+msgstr ""
+
+#: views/product.py:30 views/product.py:38 views/repository.py:29
+msgid "Entrez le nom"
+msgstr ""
+
+#: views/product.py:41 views/product.py:45
+msgid "Description"
+msgstr ""
+
+#: views/product.py:42 views/product.py:46
+msgid "Entrez la description"
+msgstr ""
+
+#: views/product.py:51
+msgid "Entrez le prix"
+msgstr ""
+
+#: views/product.py:56
+msgid "Entrez le poids du pâton"
+msgstr ""
+
+#: views/product.py:76
+msgid "Le produit ne peut pas être créé"
+msgstr ""
+
+#: views/product.py:78
+msgid "Le produit a été créé"
+msgstr ""
+
+#: views/product.py:97
+msgid "Le produit ne peut pas être supprimé"
+msgstr ""
+
+#: views/product.py:99
+msgid "Le produit a été supprimé"
+msgstr ""
+
+#: views/product.py:124
+msgid "Le produit ne peut pas être modifié"
+msgstr ""
+
+#: views/product.py:126
+msgid "Le produit a été modifié"
+msgstr ""
+
+#: views/repository.py:32
+msgid "Lundi"
+msgstr ""
+
+#: views/repository.py:33
+msgid "Mardi"
+msgstr ""
+
+#: views/repository.py:34
+msgid "Mercredi"
+msgstr ""
+
+#: views/repository.py:35
+msgid "Jeudi"
+msgstr ""
+
+#: views/repository.py:36
+msgid "Vendredi"
+msgstr ""
+
+#: views/repository.py:37
+msgid "Samedi"
+msgstr ""
+
+#: views/repository.py:38
+msgid "Dimanche"
+msgstr ""
+
+#: views/repository.py:57
+msgid "Le point de livraison ne peut pas être créé"
+msgstr ""
+
+#: views/repository.py:59
+msgid "Le point de livraison a été créé"
+msgstr ""
+
+#: views/repository.py:78
+msgid "Le point de livraison ne peut pas être supprimé"
+msgstr ""
+
+#: views/repository.py:80
+msgid "Le point de livraison a été supprimé"
+msgstr ""
+
+#: views/repository.py:107
+msgid "Le point de livraison ne peut pas être modifié"
+msgstr ""
+
+#: views/repository.py:109
+msgid "Le point de livraison a été modifié"
+msgstr ""
+
+#: views/auth/__init__.py:22 views/auth/register.py:32
+msgid "Identifiant"
+msgstr ""
+
+#: views/auth/__init__.py:24 views/auth/register.py:40
+msgid "Entrez votre identifiant"
+msgstr ""
+
+#: views/auth/__init__.py:27 views/auth/password.py:73 views/auth/profile.py:28
+#: views/auth/register.py:43
+msgid "Mot de passe"
+msgstr ""
+
+#: views/auth/__init__.py:29 views/auth/password.py:79 views/auth/profile.py:32
+#: views/auth/register.py:49
+msgid "Entrez votre mot de passe"
+msgstr ""
+
+#: views/auth/__init__.py:56
+msgid "Bonjour {} ! Ravi de vous revoir à nouveau"
+msgstr ""
+
+#: views/auth/__init__.py:61
+msgid "La combinaison identifiant/mot de passe est invalide"
+msgstr ""
+
+#: views/auth/__init__.py:74
+msgid "Vous êtes déconnecté"
+msgstr ""
+
+#: views/auth/email.py:33
+msgid "Veuillez choisir une autre adresse email"
+msgstr ""
+
+#: views/auth/email.py:48 views/auth/password.py:55 views/auth/register.py:129
+msgid "Un email de confirmation a été envoyé à {}"
+msgstr ""
+
+#: views/auth/email.py:71 views/auth/password.py:98 views/auth/register.py:155
+msgid "Le lien est invalide ou a expiré"
+msgstr ""
+
+#: views/auth/email.py:79
+msgid "Votre adresse email ne peut pas être modifiée"
+msgstr ""
+
+#: views/auth/email.py:81
+msgid "Votre adresse email a été modifiée"
+msgstr ""
+
+#: views/auth/email_form.py:15 views/auth/register.py:71
+msgid "Entrez votre adresse email"
+msgstr ""
+
+#: views/auth/password.py:37
+msgid "Il n'y a pas de profil dont l'adresse email est {}"
+msgstr ""
+
+#: views/auth/password.py:76 views/auth/profile.py:30 views/auth/register.py:46
+msgid "Les mots de passe doivent être identiques"
+msgstr ""
+
+#: views/auth/password.py:82 views/auth/profile.py:35 views/auth/register.py:52
+msgid "Répétition du mot de passe"
+msgstr ""
+
+#: views/auth/password.py:84 views/auth/profile.py:36 views/auth/register.py:54
+msgid "Répétez votre mot de passe"
+msgstr ""
+
+#: views/auth/password.py:115
+msgid "Votre mot de passe ne peut être modifié"
+msgstr ""
+
+#: views/auth/password.py:124
+msgid "Votre mot de passe a été modifié, vous pouvez vous connecter"
+msgstr ""
+
+#: views/auth/profile.py:40 views/auth/register.py:58
+msgid "Entrez votre prénom"
+msgstr ""
+
+#: views/auth/profile.py:44 views/auth/register.py:62
+msgid "Entrez votre nom"
+msgstr ""
+
+#: views/auth/profile.py:51 views/auth/register.py:78
+msgid "Entrez votre numéro de téléphone"
+msgstr ""
+
+#: views/auth/profile.py:53 views/auth/register.py:80
+msgid "Point de livraison"
+msgstr ""
+
+#: views/auth/profile.py:54 views/auth/register.py:81
+msgid "Réception de messages"
+msgstr ""
+
+#: views/auth/profile.py:81
+msgid "Le mot de passe est trop court"
+msgstr ""
+
+#: views/auth/profile.py:90
+msgid "Votre profil ne peut être modifié"
+msgstr ""
+
+#: views/auth/profile.py:92
+msgid "Votre profil a été modifié"
+msgstr ""
+
+#: views/auth/profile.py:120
+msgid "Un administrateur ne peut pas supprimer son profil."
+msgstr ""
+
+#: views/auth/profile.py:143
+msgid "Votre profil ne peut être supprimé"
+msgstr ""
+
+#: views/auth/profile.py:147
+msgid "Votre profil a été supprimé"
+msgstr ""
+
+#: views/auth/register.py:37
+msgid ""
+"L'identifiant ne doit contenir que des lettres non accentuées, des "
+"chiffres, '.'  et '_' et commencer par une lettre"
+msgstr ""
+
+#: views/auth/register.py:110
+msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"
+msgstr ""
+
+#: views/auth/register.py:122
+msgid "Confirmation de votre enregistrement"
+msgstr ""
+
+#: views/auth/register.py:165
+msgid "Vous ne pouvez pas être enregistré."
+msgstr ""
+
+#: views/auth/register.py:172
+msgid "Votre enregistrement est confirmé, vous pouvez vous connecter."
+msgstr ""
+

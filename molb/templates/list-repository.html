@@ -1,20 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Points de livraison{% endblock %}
+{% block title %}{{ _("Points de livraison") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Points de livraison</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Points de livraison") }}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-light">Créer un point de livraison</a></div>
+<div class="form-group"><a href="{{ url("create_repository") }}" class="btn btn-light">{{ _("Créer un point de livraison") }}</a></div>
 
 <table class="table table-hover">
    <thead>
       <tr>
-         <th>Nom</th>
-         <th>Ouvert</th>
+         <th>{{ _("Nom") }}</th>
+         <th>{{ _("Ouvert") }}</th>
          <th></th>
       </tr>
    </thead>
@@ -23,7 +23,7 @@
       <tr>
          <td><a href="{{ url("edit_repository", id=repo.id) }}">{{ repo.name }}</a></td>
          <td>{{ repo.opened }}</td>
-         <td><a href="{{ url("delete_repository", id=repo.id) }}">Supprimer</a></td>
+         <td><a href="{{ url("delete_repository", id=repo.id) }}">{{ _("Supprimer") }}</a></td>
       </tr>
       {% endfor %}
    </tbody>

@@ -5,7 +5,7 @@
 <link href="/static/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}Modification d'une fournée{% endblock %}
+{% block title %}{{ _("Modification d'une fournée") }}{% endblock %}
 
 {% block scripts %}
 {{ super() }}
@@ -15,9 +15,9 @@
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">Fournées</a></li>
-    <li class="breadcrumb-item active">Modification d'une fournée</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Modification d'une fournée") }}</li>
 </ol>
 {% endblock %}
 
@@ -29,11 +29,11 @@
     {% endif %}
     <div class="form-group">
         {{ form.date.label(for="date") }}
-        <input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d/%m/%Y") }}" />
+        <input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d-%m-%Y") }}" />
     </div>
     <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
         {{ form.capacity.label(for="capacity") }}
-        {{ form.capacity(class="form-control", placeholder="Entrez la capacité de la fournée") }}
+        {{ form.capacity(class="form-control") }}
         {% if form.capacity.errors %}
         <div class="help-text">
             {% for error in form.capacity.errors %}<p>{{ error }}</p>{% endfor %}
@@ -46,7 +46,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_batch") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("list_batch") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 
@@ -54,13 +54,13 @@
     var date = new Date();
     date.setDate(date.getDate()+1);
     tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        $('#date').datepicker({
-        format: "d/m/yyyy",
+    $('#date').datepicker({
+        format: "d-m-yyyy",
         uiLibrary: "bootstrap4",
         locale: "fr-fr",
         minDate: tomorow,
         weekStartDay: 1
-        });
+    });
 </script>
 
 {% endblock %}

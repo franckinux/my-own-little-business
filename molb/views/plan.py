@@ -1,19 +1,21 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
 from wtforms import SelectField
 from wtforms import SubmitField
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 
 
 class PlanForm(CsrfForm):
-    batch_id = SelectField("Fournée", coerce=int)
-    submit = SubmitField("Valider")
+    batch_id = SelectField(_l("Fournée"), coerce=int)
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")
@@ -45,7 +47,7 @@ async def plan(request):
 
             # just for csrf !
             if not form.validate():
-                flash(request, ("danger", "Le formulaire comporte des erreurs."))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return HTTPFound(request.app.router["plan"].url_for())
 
             # get the number of products to make from the batch

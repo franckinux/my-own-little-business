@@ -1,9 +1,9 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import forget
 from aiohttp_security import remember
-from aiohttp_session_flash import flash
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -12,13 +12,23 @@ from wtforms.validators import Required
 from molb.auth import require
 from molb.auth.db_auth import check_credentials
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 
 
 class LoginForm(CsrfForm):
-    login = StringField("Identifiant", [Required()])
-    password = PasswordField("Mot de passe", [Required()])
-    submit = SubmitField("Valider")
+    login = StringField(
+        _l("Identifiant"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez votre identifiant")}
+    )
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/login.html")
@@ -43,12 +53,12 @@ async def login(request):
                         request,
                         (
                             "info",
-                            "Bonjour {} ! Ravi de vous revoir à nouveau".format(
+                            _("Bonjour {} ! Ravi de vous revoir à nouveau").format(
                                 client["first_name"])
                         )
                     )
                 return response
-        flash(request, ("danger", "La combinaison identifiant/mot de passe est invalide"))
+        flash(request, ("danger", _("La combinaison identifiant/mot de passe est invalide")))
         return {"form": form}
     elif request.method == "GET":
         form = LoginForm(meta=await generate_csrf_meta(request))
@@ -61,5 +71,5 @@ async def login(request):
 async def logout(request):
     response = HTTPFound(request.app.router["login"].url_for())
     await forget(request, response)
-    flash(request, ("info", "Vous êtes déconnecté"))
+    flash(request, ("info", _("Vous êtes déconnecté")))
     return response

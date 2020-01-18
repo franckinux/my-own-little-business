@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Modification d'une commande{% endblock %}
+{% block title %}{{ _("Modification d'une commande") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">Commandes</a></li>
-    <li class="breadcrumb-item active">Modification d'une commande</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url("list_order") }}">{{ _("Commandes") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Modification d'une commande") }}</li>
 </ol>
 {% endblock %}
 
@@ -18,7 +18,7 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block page_content %}
-<p><b>Fournée du {{ batch_date.strftime("%d-%m-%Y") }}</b></p>
+<p><b>{{ _("Fournée du") }} {{ batch_date.strftime("%d-%m-%YM") }}</b></p>
 
 <form method="POST" action="{{ url("edit_fill_order", id=order_id) }}" role="form">
     {{ form.csrf_token }}
@@ -28,9 +28,9 @@ $(document).ready(function(){
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Produit</th>
-                <th>Prix unitaire</th>
-                <th>Quantité</th>
+                <th>{{ _("Produit") }}</th>
+                <th>{{ _("Prix unitaire") }}</th>
+                <th>{{ _("Quantité") }}</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@ $(document).ready(function(){
                 <td>
                     <input class="form-control" name="product_qty_{{ product.id }}"
                     value="{{ product.ordered }}"
-                    placeholder="Entrez la quantité"
+                    placeholder="{{ _("Entrez la quantité") }}"
                     type="number" step="1">
                 </td>
                 <td>{{ product.quantity }} </td>
@@ -54,7 +54,7 @@ $(document).ready(function(){
     </table>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("list_order") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("list_order") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

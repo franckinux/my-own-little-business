@@ -1,9 +1,9 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_security import authorized_userid
 from aiohttp_security import forget
-from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
 from passlib.hash import sha256_crypt
 from wtforms import BooleanField
@@ -16,24 +16,43 @@ from wtforms.validators import Regexp
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import remove_special_data
 from molb.views.utils import settings
 
 
 class ProfileForm(CsrfForm):
-    password = PasswordField("Mot de passe", validators=[
-        EqualTo("password2", message="Les mots de passe doivent être identiques"),
-    ])
-    password2 = PasswordField("Répétition du mot de passe")
-    first_name = StringField("Prénom")
-    last_name = StringField("Nom")
-    phone_number = StringField("Numéro de téléphone", validators=[
-        Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
-    ])
-    repository_id = SelectField("Point de livraison", coerce=int)
-    mailing = BooleanField("Réception de messages")
-    submit = SubmitField("Valider")
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[
+            EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
+        ],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
+    password2 = PasswordField(
+        _l("Répétition du mot de passe"),
+        render_kw={"placeholder": _l("Répétez votre mot de passe")}
+    )
+    first_name = StringField(
+        _l("Prénom"),
+        render_kw={"placeholder": _l("Entrez votre prénom")}
+    )
+    last_name = StringField(
+        _l("Nom"),
+        render_kw={"placeholder": _l("Entrez votre nom")}
+    )
+    phone_number = StringField(
+        _l("Numéro de téléphone"),
+        validators=[
+            Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
+        ],
+        render_kw={"placeholder": _l("Entrez votre numéro de téléphone")}
+    )
+    repository_id = SelectField(_l("Point de livraison"), coerce=int)
+    mailing = BooleanField(_l("Réception de messages"))
+    submit = SubmitField(_l("Valider"))
 
 
 @require("client")
@@ -59,7 +78,7 @@ async def edit_profile(request):
                 password = data.pop("password")
                 if password:
                     if len(password) < 6:
-                        flash(request, ("warning", "Le mot de passe est trop court"))
+                        flash(request, ("warning", _("Le mot de passe est trop court")))
                         return {"form": form}
                     data["password_hash"] = sha256_crypt.hash(password)
                 q = "UPDATE client SET {} WHERE login = ${}".format(
@@ -68,12 +87,12 @@ async def edit_profile(request):
                 try:
                     await conn.execute(q, *data.values(), login)
                 except UniqueViolationError:
-                    flash(request, ("warning", "Votre profil ne peut être modifié"))
+                    flash(request, ("warning", _("Votre profil ne peut être modifié")))
                 else:
-                    flash(request, ("success", "Votre profil a bien été modifié"))
+                    flash(request, ("success", _("Votre profil a été modifié")))
                     return HTTPFound(request.app.router["home"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire comporte des erreurs"))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form}
         elif request.method == "GET":
             form = ProfileForm(data=data, meta=await generate_csrf_meta(request))
@@ -98,7 +117,7 @@ async def delete_profile(request):
                 request,
                 (
                     "warning",
-                    "Un administrateur ne peut pas supprimer son profil."
+                    _("Un administrateur ne peut pas supprimer son profil.")
                 )
             )
             return HTTPFound(request.app.router["home"].url_for())
@@ -121,11 +140,11 @@ async def delete_profile(request):
                 q = "DELETE FROM client WHERE id = $1"
                 await conn.execute(q, client_id)
         except Exception:
-            flash(request, ("warning", "Votre profil ne peut être détruit"))
+            flash(request, ("warning", _("Votre profil ne peut être supprimé")))
         else:
             response = HTTPFound(request.app.router["login"].url_for())
             await forget(request, response)
-            flash(request, ("success", "Votre profil a été détruit"))
+            flash(request, ("success", _("Votre profil a été supprimé")))
             return response
 
         return HTTPFound(request.app.router["home"].url_for())

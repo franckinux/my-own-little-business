@@ -1,8 +1,8 @@
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
 from asyncpg.exceptions import UniqueViolationError
 from passlib.hash import sha256_crypt
 from wtforms import BooleanField
@@ -19,6 +19,8 @@ from wtforms.validators import Required
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_confirmation
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import field_list
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
@@ -26,32 +28,58 @@ from molb.views.utils import remove_special_data
 
 
 class RegisterForm(CsrfForm):
-    login = StringField("Identifiant", validators=[
-        Required(),
-        Length(min=1, max=64),
-        Regexp("^[A-Za-z][A-Za-z0-9_.-@]*$", 0,
-            "L'identifiant ne doit comporter que des lettres non accentuées, "
-            "des chiffres, '.', '-', '_' et '@' et commencer par une lettre")
-    ])
-    password = PasswordField("Mot de passe", validators=[
-        Required(),
-        EqualTo("password2", message="Les mots de passe doivent correspondre"),
-        Length(min=6)
-    ])
-    password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
-    first_name = StringField("Prénom")
-    last_name = StringField("Nom")
-    email_address = StringField("Adresse email", validators=[
-        Required(),
-        Length(min=1, max=64),
-        Email()
-    ])
-    phone_number = StringField("Numéro de téléphone", validators=[
-        Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
-    ])
-    repository_id = SelectField("Point de livraison", coerce=int)
-    mailing = BooleanField("Réception de messages", default=True)
-    submit = SubmitField("Valider")
+    login = StringField(
+        _l("Identifiant"),
+        validators=[
+            Required(),
+            Length(min=1, max=64),
+            Regexp("^[A-Za-z][A-Za-z0-9_.-@]*$", 0,
+                "L'identifiant ne doit comporter que des lettres non accentuées, "
+                "des chiffres, '.', '-', '_' et '@' et commencer par une lettre")
+        ],
+        render_kw={"placeholder": _l("Entrez votre identifiant")}
+    )
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[
+            Required(),
+            EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
+            Length(min=6)
+        ],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
+    password2 = PasswordField(
+        _l("Répétition du mot de passe"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Répétez votre mot de passe")}
+    )
+    first_name = StringField(
+        _l("Prénom"),
+        render_kw={"placeholder": _l("Entrez votre prénom")}
+    )
+    last_name = StringField(
+        _l("Nom"),
+        render_kw={"placeholder": _l("Entrez votre nom")}
+    )
+    email_address = StringField(
+        _l("Adresse email"),
+        validators=[
+            Required(),
+            Length(min=1, max=64),
+            Email()
+        ],
+        render_kw={"placeholder": _l("Entrez votre adresse email")}
+    )
+    phone_number = StringField(
+        _l("Numéro de téléphone"),
+        validators=[
+            Regexp("^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$", 0)
+        ],
+        render_kw={"placeholder": _l("Entrez votre numéro de téléphone")}
+    )
+    repository_id = SelectField(_l("Point de livraison"), coerce=int)
+    mailing = BooleanField(_l("Réception de messages"), default=True)
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/register.html")
@@ -79,8 +107,8 @@ async def handler(request):
                                 request,
                                 (
                                     "warning",
-                                    (
-                                        "Votre compte ne peut être créé, cet "
+                                    _(
+                                        "Votre profil ne peut être créé, cet "
                                         "identifiant est déjà utilisé"
                                     )
                                 )
@@ -91,14 +119,14 @@ async def handler(request):
                             client["email_address"],
                             {"id": client["id"]},
                             "confirm_register",
-                            "Confirmation de votre enregistrement",
+                            _("Confirmation de votre enregistrement"),
                             "register-confirmation"
                         )
                         flash(
                             request,
                             (
                                 "info",
-                                "Un message de confirmation a été envoyé à {}".format(
+                                _("Un email de confirmation a été envoyé à {}").format(
                                     client["email_address"]
                                 )
                             )
@@ -107,7 +135,7 @@ async def handler(request):
                 except Exception:
                     return HTTPFound(request.app.router["register"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire comporte des erreurs"))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
@@ -124,7 +152,7 @@ async def confirm(request):
         token_data = get_token_data(token, request.app["config"]["application"]["secret_key"])
         id_ = token_data["id"]
     except Exception:
-        flash(request, ("danger", "Le lien est invalide ou a expiré"))
+        flash(request, ("danger", _("Le lien est invalide ou a expiré")))
         raise HTTPBadRequest()
 
     async with request.app["db-pool"].acquire() as conn:
@@ -134,14 +162,14 @@ async def confirm(request):
             if updated is None:
                 raise
         except Exception:
-            flash(request, ("danger", "Vous ne pouvez pas être enregistré."))
+            flash(request, ("danger", _("Vous ne pouvez pas être enregistré.")))
             return HTTPFound(request.app.router["register"].url_for())
         else:
             flash(
                 request,
                 (
                     "info",
-                    "Votre enregistrement est confirmé, vous pouvez vous connecter."
+                    _("Votre enregistrement est confirmé, vous pouvez vous connecter.")
                 )
             )
             return HTTPFound(request.app.router["login"].url_for())

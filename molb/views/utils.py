@@ -1,4 +1,7 @@
+from aiohttp_babel.middlewares import _
+from aiohttp_session_flash import flash as original_flash
 from aiohttp_session import get_session
+from babel.support import LazyProxy
 
 
 DAYS = ("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")
@@ -48,3 +51,16 @@ def place_holders(data):
 def settings(data):
     """Return field1 = $1, ..., fieldn = $n"""
     return ", ".join([k + " = $" + str(i + 1) for i, k in enumerate(data.keys())])
+
+
+def lazy_gettext(s):
+    return LazyProxy(_, s, enable_cache=False)
+
+
+_l = lazy_gettext
+
+
+# convert lazy string to string as it cannot be stored in a session as is
+def flash(request, msg):
+    msg_ = (msg[0], str(msg[1]))
+    return original_flash(request, msg_)

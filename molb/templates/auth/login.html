@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Connexion{% endblock %}
+{% block title %}{{ _("Connexion") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item active">Connexion</li>
+    <li class="breadcrumb-item active">{{ _("Connexion") }}</li>
 </ol>
 {% endblock %}
+
 {% block page_content %}
 <form method="POST" action="{{ url("login") }}" role="form">
     {{ form.csrf_token }}
@@ -13,7 +14,7 @@
     {% endif %}
     <div class="form-group{% if form.login.errors %} has-error{% endif %}">
         {{ form.login.label(for="login") }}
-        {{ form.login(class="form-control", placeholder="Entrez votre identifiant") }}
+        {{ form.login(class="form-control") }}
         {% if form.login.errors %}
         <div class="help-text">
             {% for error in form.login.errors %}<p>{{ error }}</p>{% endfor %}
@@ -22,7 +23,7 @@
     </div>
     <div class="form-group{% if form.password.errors %} has-error{% endif %}">
         {{ form.password.label(for="password") }}
-        {{ form.password(class="form-control", placeholder="Entrez votre mot de passe") }}
+        {{ form.password(class="form-control") }}
         {% if form.password.errors %}
         <div class="help-text">
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
@@ -31,7 +32,7 @@
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("start") }}" class="btn btn-light">Annuler</a>
+        <a href="{{ url("start") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
 {% endblock %}

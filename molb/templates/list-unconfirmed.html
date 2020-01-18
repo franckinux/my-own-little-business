@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Comptes{% endblock %}
+{% block title %}{{ _("Profils") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url("home") }}">Accueil</a></li>
-    <li class="breadcrumb-item active">Comptes</li>
+    <li class="breadcrumb-item"><a href="{{ url("home") }}">{{ _("Accueil") }}</a></li>
+    <li class="breadcrumb-item active">{{ _("Profils") }}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<h3>Comptes non confirmés</h3>
+<h3>{{ _("Profils non confirmés") }}</h3>
 
 <table class="table table-hover">
    <thead>
       <tr>
-         <th>Prénom</th>
-         <th>Nom</th>
-         <th>Adresse email</th>
-         <th>Numéro de téléphone</th>
-         <th>Date d'enregistrement</th>
+         <th>{{ _("Prénom") }}</th>
+         <th>{{ _("Nom") }}</th>
+         <th>{{ _("Adresse email") }}</th>
+         <th>{{ _("Numéro de téléphone") }}</th>
+         <th>{{ _("Date d'enregistrement") }}</th>
          <th></th>
          <th></th>
       </tr>
@@ -30,8 +30,8 @@
          <td>{{ client.email_address }}</td>
          <td>{{ client.phone_number }}</td>
          <td>{{ client.created_at.strftime("%d-%m-%Y %H:%M") }}</td>
-         <td><a href="{{ url("send_unconfirmed", id=client.id) }}">Envoyer la demande de confirmation</a></td>
-         <td><a href="{{ url("delete_unconfirmed", id=client.id) }}">Supprimer</a></td>
+	 <td><a href="{{ url("send_unconfirmed", id=client.id) }}">{{ _("Envoyer la demande de confirmation") }}</a></td>
+         <td><a href="{{ url("delete_unconfirmed", id=client.id) }}">{{ _("Supprimer") }}</a></td>
       </tr>
       {% endfor %}
    </tbody>

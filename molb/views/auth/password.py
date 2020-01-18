@@ -1,8 +1,8 @@
 from aiohttp.web import HTTPBadRequest
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
 from passlib.hash import sha256_crypt
 from wtforms import PasswordField
 from wtforms import SubmitField
@@ -14,6 +14,8 @@ from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
 from molb.views.send_message import send_confirmation
+from molb.views.utils import _l
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 
 
@@ -32,7 +34,7 @@ async def handler(request):
                     request,
                     (
                         "danger",
-                        "Il n'y a pas de compte dont l'adresse email est {}".format(
+                        _("Il n'y a pas de profil dont l'adresse email est {}").format(
                             email_address
                         )
                     )
@@ -50,14 +52,14 @@ async def handler(request):
                     request,
                     (
                         "info",
-                        "Un message de confirmation a été envoyé à {}".format(
+                        _("Un email de confirmation a été envoyé à {}").format(
                             email_address
                         )
                     )
                 )
                 return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", "Le formulaire comporte des erreurs"))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
         return {"form": form}
     elif request.method == "GET":
         form = EmailForm(meta=await generate_csrf_meta(request))
@@ -67,13 +69,21 @@ async def handler(request):
 
 
 class PasswordForm(CsrfForm):
-    password = PasswordField("Mot de passe", validators=[
-        Required(),
-        EqualTo("password2", message="Les mots de passe doivent être identiques"),
-        Length(min=6)
-    ])
-    password2 = PasswordField("Répétition du mot de passe", validators=[Required()])
-    submit = SubmitField("Valider")
+    password = PasswordField(
+        _l("Mot de passe"),
+        validators=[
+            Required(),
+            EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
+            Length(min=6)
+        ],
+        render_kw={"placeholder": _l("Entrez votre mot de passe")}
+    )
+    password2 = PasswordField(
+        _l("Répétition du mot de passe"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Répétez votre mot de passe")}
+    )
+    submit = SubmitField(_l("Valider"))
 
 
 @aiohttp_jinja2.template("auth/password.html")
@@ -85,7 +95,7 @@ async def confirm(request):
         )
         id_ = token_data["id"]
     except Exception:
-        flash(request, ("danger", "Le lien est invalide ou a expiré"))
+        flash(request, ("danger", _("Le lien est invalide ou a expiré")))
         raise HTTPBadRequest()
 
     if request.method == "POST":
@@ -98,22 +108,28 @@ async def confirm(request):
                 try:
                     await conn.execute(q, password_hash, id_)
                 except Exception:
-                    flash(request, ("danger", "Votre mot de passe ne peut être modifié"))
+                    flash(
+                        request,
+                        (
+                            "danger",
+                            _("Votre mot de passe ne peut être modifié")
+                        )
+                    )
                     return {"form": form, "token": token}
                 else:
                     flash(
                         request,
                         (
                             "info",
-                            (
-                                "Votre mot de passe a bien été modifié, "
+                            _(
+                                "Votre mot de passe a été modifié, "
                                 "vous pouvez vous connecter"
                             )
                         )
                     )
                     return HTTPFound(request.app.router["login"].url_for())
         else:
-            flash(request, ("danger", "there are some fields in error"))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
         return {"form": form, "token": token}
     elif request.method == "GET":
         form = PasswordForm(meta=await generate_csrf_meta(request))

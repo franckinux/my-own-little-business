@@ -1,7 +1,7 @@
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
-from aiohttp_session_flash import flash
 from asyncpg.exceptions import IntegrityConstraintViolationError
 from wtforms import BooleanField
 from wtforms import DecimalField
@@ -12,7 +12,9 @@ from wtforms.validators import Required
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
+from molb.views.utils import _l
 from molb.views.utils import field_list
+from molb.views.utils import flash
 from molb.views.utils import generate_csrf_meta
 from molb.views.utils import place_holders
 from molb.views.utils import remove_special_data
@@ -20,12 +22,41 @@ from molb.views.utils import settings
 
 
 class ProductForm(CsrfForm):
-    name = StringField("Nom", validators=[Required(), Length(min=6, max=128)])
-    description = StringField("Description")
-    price = DecimalField("Prix", validators=[Required()])
-    load = DecimalField("Poids pâton", validators=[Required()])
-    available = BooleanField("Disponible", default=True)
-    submit = SubmitField("Valider")
+    name = StringField(
+        _l("Nom"),
+        validators=[
+            Required(),
+            Length(min=6, max=128)],
+        render_kw={"placeholder": _l("Entrez le nom")}
+    )
+    name_lang1 = StringField(
+        _l("Nom"),
+        validators=[
+            Required(),
+            Length(min=6, max=128)
+        ],
+        render_kw={"placeholder": _l("Entrez le nom")}
+    )
+    description = StringField(
+        _l("Description"),
+        render_kw={"placeholder": _l("Entrez la description")}
+    )
+    description_lang1 = StringField(
+        _l("Description"),
+        render_kw={"placeholder": _l("Entrez la description")}
+    )
+    price = DecimalField(
+        _l("Prix"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez le prix")}
+    )
+    load = DecimalField(
+        _l("Poids du pâton"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez le poids du pâton")}
+    )
+    available = BooleanField(_l("Disponible"), default=True)
+    submit = SubmitField(_l("Valider"))
 
 
 @require("admin")
@@ -42,12 +73,12 @@ async def create_product(request):
                 try:
                     await conn.execute(q, *data.values())
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "Le produit ne peut pas être créé"))
+                    flash(request, ("warning", _("Le produit ne peut pas être créé")))
                     return {"form": form}
-            flash(request, ("success", "Le produit a bien été créé"))
+            flash(request, ("success", _("Le produit a été créé")))
             return HTTPFound(request.app.router["list_product"].url_for())
         else:
-            flash(request, ("danger", "Le formulaire contient des erreurs"))
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"form": form}
     elif request.method == "GET":
         form = ProductForm(meta=await generate_csrf_meta(request))
@@ -63,9 +94,9 @@ async def delete_product(request):
         try:
             await conn.execute("DELETE FROM product WHERE id = $1", id_)
         except IntegrityConstraintViolationError:
-            flash(request, ("warning", "Le produit ne peut pas être supprimé"))
+            flash(request, ("warning", _("Le produit ne peut pas être supprimé")))
         else:
-            flash(request, ("success", "Le produit a bien supprimé"))
+            flash(request, ("success", _("Le produit a été supprimé")))
         finally:
             return HTTPFound(request.app.router["list_product"].url_for())
 
@@ -90,12 +121,12 @@ async def edit_product(request):
                 try:
                     await conn.execute(q, *data.values(), id_)
                 except IntegrityConstraintViolationError:
-                    flash(request, ("warning", "Le produit ne peut pas être modifé"))
+                    flash(request, ("warning", _("Le produit ne peut pas être modifié")))
                 else:
-                    flash(request, ("success", "Le produit a bien été modifié"))
+                    flash(request, ("success", _("Le produit a été modifié")))
                     return HTTPFound(request.app.router["list_product"].url_for())
             else:
-                flash(request, ("danger", "Le formulaire contient des erreurs"))
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
             form = ProductForm(data=data, meta=await generate_csrf_meta(request))

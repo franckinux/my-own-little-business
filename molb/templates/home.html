@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Accueil{% endblock %}
+{% block title %}{{ _("Accueil") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li class="breadcrumb-item active">Accueil</li>
+    <li class="breadcrumb-item active">{{ _("Accueil") }}</li>
 </ol>
 {% endblock %}
 
@@ -10,22 +10,22 @@
 {% if client.super_user %}
 <h3>Éléments de base</h3>
 <ul>
-    <li><a href="{{ url("list_batch") }}">Fournées</a></li>
-    <li><a href="{{ url("list_product") }}">Produits</a></li>
-    <li><a href="{{ url("list_repository") }}">Points de livraison</a></li>
+    <li><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
+    <li><a href="{{ url("list_product") }}">{{ _("Produits") }}</a></li>
+    <li><a href="{{ url("list_repository") }}">{{ _("Points de livraison") }}</a></li>
 </ul>
 
-<h3>Clients</h3>
+<h3>{{ _("Clients") }}</h3>
 
 <ul>
-    <li><a href="{{ url("list_unconfirmed") }}">Non confirmés</a></li>
-    <li><a href="{{ url("list_client") }}">Liste</a></li>
+    <li><a href="{{ url("list_unconfirmed") }}">{{ _("Non confirmés") }}</a></li>
+    <li><a href="{{ url("list_client") }}">{{ _("Liste") }}</a></li>
 </ul>
 
-<h3>Production</h3>
+<h3>{{ _("Production") }}</h3>
 
 <ul>
-    <li><a href="{{ url("plan") }}">Plan de fournée</a></li>
+    <li><a href="{{ url("plan") }}">{{ _("Plan de fournée") }}</a></li>
 </ul>
 
 <h3>Messages</h3>
@@ -34,10 +34,10 @@
     <li><a href="{{ url("mailing") }}">Diffusion de messages</a></li>
 </ul>
 {% else %}
-<h3>Commandes</h3>
+<h3>{{ _("Commandes") }}</h3>
 
 <ul>
-    <li><a href="{{ url("list_order") }}">Commandes</a></li>
+    <li><a href="{{ url("list_order") }}">{{ _("Commandes") }}</a></li>
 </ul>
 {% endif %}
 
@@ -45,25 +45,24 @@
 
 <ul>
 {% if not client.super_user %}
-    <li><a href="#" data-href="{{ url("delete_profile") }}" data-toggle="modal" data-target="#confirm-delete">Supprimez votre profil</a></li>
+    <li><a href="#" data-href="{{ url("delete_profile") }}" data-toggle="modal" data-target="#confirm-delete">{{ _("Supprimez votre profil") }}</a></li>
 {% endif %}
-    <li><a href="{{ url("edit_profile") }}">Modifier votre profil</a></li>
-    <li><a href="{{ url("email") }}">Changer d'email</a></li>
+    <li><a href="{{ url("edit_profile") }}">{{ _("Modifier votre profil") }}</a></li>
+    <li><a href="{{ url("email") }}">{{ _("Modifier votre adresse email") }}</a></li>
 </ul>
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                Suppression de votre profil
+                {{ _("Suppression de votre profil") }}
             </div>
             <div class="modal-body">
-                Attention, si vous supprimez votre profil, vous perdrez toutes
-                vos commandes et paiements passés.
+                {{ _("Attention, si vous supprimez votre profil, vous perdrez toutes vos commandes.") }}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Annuler</button>
-                <a class="btn btn-danger btn-ok">Supprimer</a>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{{ _("Annuler") }}</button>
+                <a class="btn btn-danger btn-ok">{{ _("Supprimer") }}</a>
             </div>
         </div>
     </div>
