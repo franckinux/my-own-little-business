@@ -45,14 +45,14 @@ async def send_unconfirmed(request):
         email_address,
         {"id": client_id},
         "confirm_register",
-        "Confirmation de votre enregistrement",
+        _("Confirmation de votre enregistrement"),
         "register-confirmation"
     )
     flash(
         request,
         (
             "info",
-            "Un message de confirmation a été envoyé à {}".format(email_address)
+            _("Un message de confirmation a été envoyé à {}").format(email_address)
         )
     )
     return HTTPFound(request.app.router["list_unconfirmed"].url_for())

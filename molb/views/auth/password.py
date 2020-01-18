@@ -45,7 +45,7 @@ async def handler(request):
                     client["email_address"],
                     {"id": client["id"]},
                     "confirm_password",
-                    "Modification de mot de passe",
+                    _("Modification de mot de passe"),
                     "password-confirmation"
                 )
                 flash(
