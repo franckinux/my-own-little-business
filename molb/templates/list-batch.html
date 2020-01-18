@@ -22,7 +22,7 @@
    <tbody>
       {% for batch in batches %}
       <tr>
-         <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date.strftime("%d/%m/%Y") }}</a></td>
+         <td><a href="{{ url("edit_batch", id=batch.id) }}">{{ batch.date.strftime("%d-%m-%Y") }}</a></td>
          <td>{{ batch.capacity }}</td>
          <td>{{ batch.opened }}</td>
          <td><a href="{{ url("delete_batch", id=batch.id) }}">{{ _("Supprimer") }}</a></td>

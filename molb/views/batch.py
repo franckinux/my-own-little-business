@@ -22,7 +22,7 @@ from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
-    date = DateField(_l("Date"), id="date", format="%d/%m/%Y", validators=[Required()])
+    date = DateField(_l("Date"), id="date", format="%d-%m-%Y", validators=[Required()])
     capacity = DecimalField(
         _l("Capacité"),
         validators=[Required()],
