@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 20:38+0100\n"
+"POT-Creation-Date: 2020-01-18 21:29+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr_FR\n"
@@ -664,6 +664,14 @@ msgstr ""
 msgid "Le point de livraison a été modifié"
 msgstr ""
 
+#: views/auth/register.py:122 views/unconfirmed.py:48
+msgid "Confirmation de votre enregistrement"
+msgstr ""
+
+#: views/unconfirmed.py:55
+msgid "Un message de confirmation a été envoyé à {}"
+msgstr ""
+
 #: views/auth/__init__.py:22 views/auth/register.py:32
 msgid "Identifiant"
 msgstr ""
@@ -720,6 +728,10 @@ msgstr ""
 
 #: views/auth/password.py:37
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
+msgstr ""
+
+#: views/auth/password.py:48
+msgid "Modification de mot de passe"
 msgstr ""
 
 #: views/auth/password.py:76 views/auth/profile.py:30 views/auth/register.py:46
@@ -784,10 +796,6 @@ msgstr ""
 
 #: views/auth/register.py:110
 msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"
-msgstr ""
-
-#: views/auth/register.py:122
-msgid "Confirmation de votre enregistrement"
 msgstr ""
 
 #: views/auth/register.py:165

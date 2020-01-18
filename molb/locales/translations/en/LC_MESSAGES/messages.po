@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 20:38+0100\n"
+"POT-Creation-Date: 2020-01-18 21:29+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -382,7 +382,7 @@ msgid ""
 "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour "
 "confirmer votre changement d'adresse email"
 msgstr ""
-"Copy the following link in the address bar of your web browser in order"
+"Copy the following link in the address bar of your web browser in order "
 "to confirm your email address change"
 
 #: templates/auth/email-email.html:2 templates/auth/email-email.html:6
@@ -670,6 +670,14 @@ msgstr "The delivery place cannot be changed"
 msgid "Le point de livraison a été modifié"
 msgstr "The delivery place has been changed"
 
+#: views/auth/register.py:122 views/unconfirmed.py:48
+msgid "Confirmation de votre enregistrement"
+msgstr "Registering confirmation"
+
+#: views/unconfirmed.py:55
+msgid "Un message de confirmation a été envoyé à {}"
+msgstr "A confirmation message has been sent to {}"
+
 #: views/auth/__init__.py:22 views/auth/register.py:32
 msgid "Identifiant"
 msgstr "Id"
@@ -727,6 +735,10 @@ msgstr "Enter your email address"
 #: views/auth/password.py:37
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
 msgstr "There's no profile whose email address is {}"
+
+#: views/auth/password.py:48
+msgid "Modification de mot de passe"
+msgstr "Password change"
 
 #: views/auth/password.py:76 views/auth/profile.py:30 views/auth/register.py:46
 msgid "Les mots de passe doivent être identiques"
@@ -791,10 +803,6 @@ msgstr "Your profile has been deleted"
 #: views/auth/register.py:110
 msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"
 msgstr "Your profile cannot be created, id already in use"
-
-#: views/auth/register.py:122
-msgid "Confirmation de votre enregistrement"
-msgstr "Registering confirmation"
 
 #: views/auth/register.py:165
 msgid "Vous ne pouvez pas être enregistré."
