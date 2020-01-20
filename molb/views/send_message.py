@@ -13,10 +13,10 @@ async def send_mailing_message(request, to, subject, text):
 
     message = MIMEText(text, "plain")
     message["subject"] = "[{}] {}".format(config["application"]["site_name"], subject)
-    message["cci"] = to
+    message["bcc"] = ','.join(to)
     message["to"] = config["application"]["from"]
     message["from"] = config["application"]["from"]
-    await request.app["mailer"].send_message(message)
+    await request.app["mailer"].send_message(message, to)
 
 
 async def send_text_message(request, to, subject, text):
@@ -26,7 +26,7 @@ async def send_text_message(request, to, subject, text):
     message["subject"] = "[{}] {}".format(config["application"]["site_name"], subject)
     message["to"] = to
     message["from"] = config["application"]["from"]
-    await request.app["mailer"].send_message(message)
+    await request.app["mailer"].send_message(message, to)
 
 
 async def send_confirmation(
@@ -52,7 +52,7 @@ async def send_confirmation(
     message["from"] = config["application"]["from"]
     message.attach(text_message)
     message.attach(html_message)
-    await request.app["mailer"].send_urgent_message(message)
+    await request.app["mailer"].send_urgent_message(message, email_address)
 
 
 class PriorityWrapper:
@@ -85,8 +85,8 @@ class SmtpMailer:
         self.smtp.close()
         self.timer = None
 
-    async def smtp_send(self, msg):
-        await self.smtp.send_message(msg)
+    async def smtp_send(self, msg, rcp):
+        await self.smtp.send_message(message=msg, recipients=rcp)
 
     async def process_queue(self):
         while True:
@@ -99,7 +99,7 @@ class SmtpMailer:
                 self.timer = self.loop.call_later(self.delay, self.deconnect)
                 await self.connect()
 
-            await self.smtp_send(item.obj)
+            await self.smtp_send(item.obj["message"], item.obj["recipients"])
 
     def close(self):
         if self.timer is not None:
@@ -117,11 +117,11 @@ class MassMailer:
         for _ in range(nbr_tasks):
             self.mailers.append(SmtpMailer(self.queue, delay, loop))
 
-    async def send_urgent_message(self, msg):
-        await self.queue.put(PriorityWrapper(0, msg))
+    async def send_urgent_message(self, msg, rcp):
+        await self.queue.put(PriorityWrapper(0, {"message": msg, "recipients": rcp}))
 
-    async def send_message(self, msg):
-        await self.queue.put(PriorityWrapper(1, msg))
+    async def send_message(self, msg, rcp):
+        await self.queue.put(PriorityWrapper(1, {"message": msg, "recipients": rcp}))
 
     def close(self):
         for mailer in self.mailers:

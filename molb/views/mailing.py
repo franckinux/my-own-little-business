@@ -63,7 +63,7 @@ async def mailing(request):
                         message_ = message.replace("<first_name>", r["first_name"])
                         await send_text_message(request, r["email_address"], subject, message_)
                 else:
-                    email_addresses = ','.join([r["email_address"] for r in rows])
+                    email_addresses = [r["email_address"] for r in rows]
                     await send_mailing_message(request, email_addresses, subject, message)
                 flash(request, ("info", _("Les messages ont été envoyés.")))
                 return HTTPFound(request.app.router["mailing"].url_for())
