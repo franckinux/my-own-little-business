@@ -45,38 +45,10 @@
 
 <ul>
 {% if not client.super_user %}
-    <li><a href="#" data-href="{{ url("delete_profile") }}" data-toggle="modal" data-target="#confirm-delete">{{ _("Supprimez votre profil") }}</a></li>
+<li><a href="{{ url("delete_profile") }}" onclick="return confirm('{{ _("Êtes vous sûr ?") }}')">{{ _("Supprimez votre profil") }}</a></li>
 {% endif %}
     <li><a href="{{ url("edit_profile") }}">{{ _("Modifier votre profil") }}</a></li>
     <li><a href="{{ url("email") }}">{{ _("Modifier votre adresse email") }}</a></li>
 </ul>
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                {{ _("Suppression de votre profil") }}
-            </div>
-            <div class="modal-body">
-                {{ _("Attention, si vous supprimez votre profil, vous perdrez toutes vos commandes.") }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">{{ _("Annuler") }}</button>
-                <a class="btn btn-danger btn-ok">{{ _("Supprimer") }}</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-<script>
-$('#confirm-delete').on(
-    'show.bs.modal',
-    function(e) {
-        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-    }
-);
-</script>
 {% endblock %}
