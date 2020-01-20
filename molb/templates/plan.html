@@ -18,6 +18,8 @@
     <div class="form-group">
         {{ form.batch_id.label }}
         {{ form.batch_id(class="form-control") }}
+        {{ form.export.label(for="export") }}
+        {{ form.export(class="form-control") }}
         {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
