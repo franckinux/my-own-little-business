@@ -1,9 +1,9 @@
-from aiohttp import MultiDict
 from aiohttp.web import HTTPFound
 from aiohttp.web import HTTPMethodNotAllowed
 from aiohttp.web import Response
 from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
+from multidict import MultiDict
 from wtforms import BooleanField
 from wtforms import SelectField
 from wtforms import SubmitField
