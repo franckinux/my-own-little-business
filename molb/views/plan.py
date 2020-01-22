@@ -46,7 +46,7 @@ async def plan(request):
             form = PlanForm(await request.post(), meta=await generate_csrf_meta(request))
             form.batch_id.choices = batch_choices
 
-            data = remove_special_data(await request.post())
+            data = remove_special_data(form.data)
             batch_id = int(data["batch_id"])
 
             # just for csrf !
@@ -54,11 +54,12 @@ async def plan(request):
                 flash(request, ("danger", _("Le formulaire contient des erreurs.")))
                 return HTTPFound(request.app.router["plan"].url_for())
 
-            if form.export:
+            if data["export"]:
                 # get the number of products by repository by clients to make from the batch
                 q = (
                     "SELECT r.name AS repository_name, c.last_name, c.first_name,"
-                    "       p.name AS product_name, SUM(opa.quantity) AS quantity "
+                    "       p.name AS product_name, "
+                    "       CAST(SUM(opa.quantity) AS TEXT) AS quantity "
                     "FROM order_product_association AS opa "
                     "INNER JOIN product AS p ON opa.product_id = p.id "
                     "INNER JOIN order_ AS o ON opa.order_id = o.id "
