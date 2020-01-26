@@ -65,7 +65,7 @@ async def create_product(request):
     if request.method == "POST":
         form = ProductForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
-            data = remove_special_data(form.data.items())
+            data = remove_special_data(form.data)
             async with request.app["db-pool"].acquire() as conn:
                 q = "INSERT INTO product ({}) VALUES ({})".format(
                     field_list(data), place_holders(data)
@@ -114,7 +114,7 @@ async def edit_product(request):
                 meta=await generate_csrf_meta(request)
             )
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 q = "UPDATE product SET {} WHERE id = ${:d}".format(
                     settings(data), len(data) + 1
                 )

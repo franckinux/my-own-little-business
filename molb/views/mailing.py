@@ -38,7 +38,7 @@ async def mailing(request):
             form = MailingForm(await request.post(), meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 subject = data["subject"]
                 message = data["message"]
                 if data["all_repositories"]:

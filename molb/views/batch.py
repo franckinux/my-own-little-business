@@ -42,7 +42,7 @@ async def create_batch(request):
     async with request.app["db-pool"].acquire() as conn:
         if request.method == "POST":
             form = BatchForm(await request.post(), meta=await generate_csrf_meta(request))
-            data = remove_special_data(form.data.items())
+            data = remove_special_data(form.data)
 
             # just for csrf !
             if not form.validate():
@@ -105,7 +105,7 @@ async def edit_batch(request):
                 meta=await generate_csrf_meta(request)
             )
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 # as the date only is chosen by the user, the time part is set to 6:00 am
                 data["date"] = datetime.combine(data["date"], time(hour=6))
 

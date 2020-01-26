@@ -73,7 +73,7 @@ async def edit_profile(request):
             )
             form.repository_id.choices = repository_choices
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 del data["password2"]
                 password = data.pop("password")
                 if password:

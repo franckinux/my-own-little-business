@@ -11,8 +11,7 @@ class RollbackTransactionException(Exception):
     pass
 
 
-def remove_special_data(items):
-    dico = dict(items)
+def remove_special_data(dico):
     del dico["csrf_token"]
     del dico["submit"]
     return dico

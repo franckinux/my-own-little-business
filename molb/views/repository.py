@@ -45,7 +45,7 @@ async def create_repository(request):
     if request.method == "POST":
         form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
         if form.validate():
-            data = remove_special_data(form.data.items())
+            data = remove_special_data(form.data)
             data = days_to_array(data)
             async with request.app["db-pool"].acquire() as conn:
                 q = "INSERT INTO repository ({}) VALUES ({})".format(
@@ -96,7 +96,7 @@ async def edit_repository(request):
                 meta=await generate_csrf_meta(request)
             )
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 data = days_to_array(data)
                 q = "UPDATE repository SET {} WHERE id = ${:d}".format(
                     settings(data), len(data) + 1

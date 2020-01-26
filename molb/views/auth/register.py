@@ -92,7 +92,7 @@ async def handler(request):
             form = RegisterForm(await request.post(), meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
             if form.validate():
-                data = remove_special_data(form.data.items())
+                data = remove_special_data(form.data)
                 del data["password2"]
                 data["password_hash"] = sha256_crypt.hash(data.pop("password"))
                 try:
