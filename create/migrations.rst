@@ -19,5 +19,12 @@ Second migration : add coordinates to repository places
 
 Fields creation : ::
 
-    ALTER TABLE repository ADD latitude NUMERIC(9, 6);
-    ALTER TABLE repository ADD longitude NUMERIC(9, 6);
+    ALTER TABLE repository ADD latitude NUMERIC(9, 6) DEFAULT 0;
+    ALTER TABLE repository ADD longitude NUMERIC(9, 6) DEFAULT 0;
+
+Update all records latitude and longitude fields.
+
+Add contraints to name field: ::
+
+    ALTER TABLE repository ALTER COLUMN latitude SET NOT NULL;
+    ALTER TABLE repository ALTER COLUMN longitude SET NOT NULL;
