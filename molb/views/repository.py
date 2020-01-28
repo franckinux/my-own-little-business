@@ -4,10 +4,12 @@ from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from asyncpg.exceptions import IntegrityConstraintViolationError
 from wtforms import BooleanField
+from wtforms import DecimalField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Length
 from wtforms.validators import Required
+from wtforms.validators import ValidationError
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
@@ -37,17 +39,38 @@ class RepositoryForm(CsrfForm):
     saturday = BooleanField(_l("Samedi"))
     sunday = BooleanField(_l("Dimanche"))
     submit = SubmitField(_l("Valider"))
+    latitude = DecimalField(
+        _l("Latitude"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez la latitude")}
+    )
+    longitude = DecimalField(
+        _l("Longitude"),
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez la longitude")}
+    )
+
+    def validate_latitude(form, field):
+        if -90 <= float(field.data) <= 90:
+            raise ValidationError(_l("Valeur incorrecte"))
+
+    def validate_longitude(form, field):
+        if -180 <= float(field.data) <= 180:
+            raise ValidationError(_l("Valeur incorrecte"))
 
 
 @require("admin")
 @aiohttp_jinja2.template("create-repository.html")
 async def create_repository(request):
-    if request.method == "POST":
-        form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
-        if form.validate():
-            data = remove_special_data(form.data)
-            data = days_to_array(data)
-            async with request.app["db-pool"].acquire() as conn:
+    async with request.app["db-pool"].acquire() as conn:
+        if request.method == "POST":
+            form = RepositoryForm(
+                await request.post(),
+                meta=await generate_csrf_meta(request)
+            )
+            if form.validate():
+                data = remove_special_data(form.data)
+                data = days_to_array(data)
                 q = "INSERT INTO repository ({}) VALUES ({})".format(
                     field_list(data), place_holders(data)
                 )
@@ -56,16 +79,19 @@ async def create_repository(request):
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", _("Le point de livraison ne peut pas être créé")))
                     return {"form": form}
-            flash(request, ("success", _("Le point de livraison a été créé")))
-            return HTTPFound(request.app.router["list_repository"].url_for())
+                flash(request, ("success", _("Le point de livraison a été créé")))
+                return HTTPFound(request.app.router["list_repository"].url_for())
+            else:
+                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
+                return {"form": form}
+        elif request.method == "GET":
+            form = RepositoryForm(meta=await generate_csrf_meta(request))
+            rows = await conn.fetch(
+                "SELECT id, name, latitude, longitude FROM repository"
+            )
+            return {"form": form, "repositories": rows}
         else:
-            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
-            return {"form": form}
-    elif request.method == "GET":
-        form = RepositoryForm(meta=await generate_csrf_meta(request))
-        return {"form": form}
-    else:
-        raise HTTPMethodNotAllowed()
+            raise HTTPMethodNotAllowed()
 
 
 @require("admin")
@@ -112,8 +138,11 @@ async def edit_repository(request):
                 flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
+            rows = await conn.fetch(
+                "SELECT id, name, latitude, longitude FROM repository"
+            )
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
-            return {"id": str(id_), "form": form}
+            return {"id": str(id_), "form": form, "repositories": rows}
         else:
             raise HTTPMethodNotAllowed()
 

@@ -91,5 +91,7 @@
     </div>
 </form>
 
+{% if app.config.map %}
 {% include "map.html" %}
+{% endif %}
 {% endblock %}

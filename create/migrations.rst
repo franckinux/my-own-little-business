@@ -1,5 +1,5 @@
-First migration
----------------
+First migration : internationalization
+---------------------------------------
 
 Fields creation : ::
 
@@ -13,3 +13,11 @@ Add contraints to name field: ::
     ALTER TABLE product ALTER COLUMN name_lang1 SET NOT NULL;
     ALTER TABLE product ADD CONSTRAINT product_name_lang1_key UNIQUE (name_lang1);
 
+
+Second migration : add coordinates to repository places
+-------------------------------------------------------
+
+Fields creation : ::
+
+    ALTER TABLE repository ADD latitude NUMERIC(9, 6);
+    ALTER TABLE repository ADD longitude NUMERIC(9, 6);

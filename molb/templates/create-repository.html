@@ -23,6 +23,24 @@
         </div>
         {% endif %}
     </div>
+    <div class="form-group{% if form.latitude.errors %} has-error{% endif %}">
+        {{ form.latitude.label(for="latitude") }}
+        {{ form.latitude(class="form-control") }}
+        {% if form.latitude.errors %}
+        <div class="help-text">
+            {% for error in form.latitude.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.longitude.errors %} has-error{% endif %}">
+        {{ form.longitude.label(for="longitude") }}
+        {{ form.longitude(class="form-control") }}
+        {% if form.longitude.errors %}
+        <div class="help-text">
+            {% for error in form.longitude.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
     <div class="form-group">
         {{ form.opened() }}
         {{ form.opened.label(for="opened") }}

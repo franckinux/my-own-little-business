@@ -2,7 +2,9 @@ CREATE TABLE repository (
     id SERIAL PRIMARY KEY NOT NULL,
     name character varying UNIQUE NOT NULL,
     opened boolean DEFAULT TRUE,
-    days BOOLEAN ARRAY[7] DEFAULT '{t,t,t,t,t,t,t}'
+    days BOOLEAN ARRAY[7] DEFAULT '{t,t,t,t,t,t,t}',
+    latitude numeric(9,6),
+    longitude numeric(9,6)
 );
 
 
