@@ -17,9 +17,9 @@
     map.addLayer(markers);
 
     {% for poi in repositories %}
-    position = new OpenLayers.LonLat(poi.longitude, poi.latitude).transform(fromProjection, toProjection);
+    position = new OpenLayers.LonLat({{ poi.longitude }}, {{ poi.latitude }}).transform(fromProjection, toProjection);
     markers.addMarker(new OpenLayers.Marker(position));
-    popup = new OpenLayers.Popup({{ "id_%d" | format(poi.id) }}, position, new OpenLayers.Size(200, 50), poi.name, true);
+    popup = new OpenLayers.Popup("{{ "id_%d" | format(poi.id) }}", position, new OpenLayers.Size(200, 50), "{{ poi.name }}", true);
     map.addPopup(popup);
     {% endfor %}
 

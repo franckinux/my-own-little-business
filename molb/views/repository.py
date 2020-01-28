@@ -30,6 +30,26 @@ class RepositoryForm(CsrfForm):
         validators=[Required(), Length(min=5, max=128)],
         render_kw={"placeholder": _l("Entrez le nom")}
     )
+    latitude = DecimalField(
+        _l("Latitude"),
+        places=6,
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez la latitude")}
+    )
+    longitude = DecimalField(
+        _l("Longitude"),
+        places=6,
+        validators=[Required()],
+        render_kw={"placeholder": _l("Entrez la longitude")}
+    )
+
+    def validate_latitude(form, field):
+        if not -90 <= float(field.data) <= 90:
+            raise ValidationError(_l("Valeur incorrecte"))
+
+    def validate_longitude(form, field):
+        if not -180 <= float(field.data) <= 180:
+            raise ValidationError(_l("Valeur incorrecte"))
     opened = BooleanField(_l("Ouvert"), default=True)
     monday = BooleanField(_l("Lundi"))
     tuesday = BooleanField(_l("Mardi"))
@@ -39,38 +59,17 @@ class RepositoryForm(CsrfForm):
     saturday = BooleanField(_l("Samedi"))
     sunday = BooleanField(_l("Dimanche"))
     submit = SubmitField(_l("Valider"))
-    latitude = DecimalField(
-        _l("Latitude"),
-        validators=[Required()],
-        render_kw={"placeholder": _l("Entrez la latitude")}
-    )
-    longitude = DecimalField(
-        _l("Longitude"),
-        validators=[Required()],
-        render_kw={"placeholder": _l("Entrez la longitude")}
-    )
-
-    def validate_latitude(form, field):
-        if -90 <= float(field.data) <= 90:
-            raise ValidationError(_l("Valeur incorrecte"))
-
-    def validate_longitude(form, field):
-        if -180 <= float(field.data) <= 180:
-            raise ValidationError(_l("Valeur incorrecte"))
 
 
 @require("admin")
 @aiohttp_jinja2.template("create-repository.html")
 async def create_repository(request):
-    async with request.app["db-pool"].acquire() as conn:
-        if request.method == "POST":
-            form = RepositoryForm(
-                await request.post(),
-                meta=await generate_csrf_meta(request)
-            )
-            if form.validate():
-                data = remove_special_data(form.data)
-                data = days_to_array(data)
+    if request.method == "POST":
+        form = RepositoryForm(await request.post(), meta=await generate_csrf_meta(request))
+        if form.validate():
+            data = remove_special_data(form.data)
+            data = days_to_array(data)
+            async with request.app["db-pool"].acquire() as conn:
                 q = "INSERT INTO repository ({}) VALUES ({})".format(
                     field_list(data), place_holders(data)
                 )
@@ -79,19 +78,16 @@ async def create_repository(request):
                 except IntegrityConstraintViolationError:
                     flash(request, ("warning", _("Le point de livraison ne peut pas être créé")))
                     return {"form": form}
-                flash(request, ("success", _("Le point de livraison a été créé")))
-                return HTTPFound(request.app.router["list_repository"].url_for())
-            else:
-                flash(request, ("danger", _("Le formulaire contient des erreurs.")))
-                return {"form": form}
-        elif request.method == "GET":
-            form = RepositoryForm(meta=await generate_csrf_meta(request))
-            rows = await conn.fetch(
-                "SELECT id, name, latitude, longitude FROM repository"
-            )
-            return {"form": form, "repositories": rows}
+            flash(request, ("success", _("Le point de livraison a été créé")))
+            return HTTPFound(request.app.router["list_repository"].url_for())
         else:
-            raise HTTPMethodNotAllowed()
+            flash(request, ("danger", _("Le formulaire contient des erreurs.")))
+            return {"form": form}
+    elif request.method == "GET":
+        form = RepositoryForm(meta=await generate_csrf_meta(request))
+        return {"form": form}
+    else:
+        raise HTTPMethodNotAllowed()
 
 
 @require("admin")
@@ -138,11 +134,8 @@ async def edit_repository(request):
                 flash(request, ("danger", _("Le formulaire contient des erreurs.")))
             return {"id": str(id_), "form": form}
         elif request.method == "GET":
-            rows = await conn.fetch(
-                "SELECT id, name, latitude, longitude FROM repository"
-            )
             form = RepositoryForm(data=data, meta=await generate_csrf_meta(request))
-            return {"id": str(id_), "form": form, "repositories": rows}
+            return {"id": str(id_), "form": form}
         else:
             raise HTTPMethodNotAllowed()
 

@@ -59,7 +59,9 @@ class ProfileForm(CsrfForm):
 @aiohttp_jinja2.template("auth/profile.html")
 async def edit_profile(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name FROM repository WHERE opened")
+        rows = await conn.fetch(
+            "SELECT id, name, latitude, longitude FROM repository WHERE opened"
+        )
         repository_choices = [(row["id"], row["name"]) for row in rows]
 
         login = await authorized_userid(request)
@@ -93,11 +95,11 @@ async def edit_profile(request):
                     return HTTPFound(request.app.router["home"].url_for())
             else:
                 flash(request, ("danger", _("Le formulaire contient des erreurs.")))
-            return {"form": form}
+            return {"form": form, "repositories": rows}
         elif request.method == "GET":
             form = ProfileForm(data=data, meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
-            return {"form": form}
+            return {"form": form, "repositories": rows}
         else:
             raise HTTPMethodNotAllowed()
 

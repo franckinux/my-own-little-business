@@ -85,7 +85,7 @@ class RegisterForm(CsrfForm):
 @aiohttp_jinja2.template("auth/register.html")
 async def handler(request):
     async with request.app["db-pool"].acquire() as conn:
-        rows = await conn.fetch("SELECT id, name FROM repository WHERE opened")
+        rows = await conn.fetch("SELECT id, name, latitude, longitude FROM repository WHERE opened")
         repository_choices = [(row["id"], row["name"]) for row in rows]
 
         if request.method == "POST":
@@ -136,11 +136,11 @@ async def handler(request):
                     return HTTPFound(request.app.router["register"].url_for())
             else:
                 flash(request, ("danger", _("Le formulaire contient des erreurs.")))
-            return {"form": form}
+            return {"form": form, "repositories": rows}
         elif request.method == "GET":
             form = RegisterForm(meta=await generate_csrf_meta(request))
             form.repository_id.choices = repository_choices
-            return {"form": form}
+            return {"form": form, "repositories": rows}
         else:
             raise HTTPMethodNotAllowed()
 
