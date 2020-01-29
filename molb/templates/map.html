@@ -1,34 +1,41 @@
 <p class="row top-margin-25">{{ _("Choisissez votre point de livraison dans la carte ci-dessous :") }}</p>
 
-<div id="Map" height="480" width="640px"></div>
+<div id="mapid" height="480" width="640px"></div>
 <style>
     #mapid { height: 680px; }
 </style>
-<link rel="stylesheet" href="static/leaflet/leaflet.css" />
-<script src="static/leaflet/leaflet.js"></script>
+<link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+<script src="/static/leaflet/leaflet.js"></script>
 <script type="text/javascript">
     const pois = [
     {% for poi in repositories %}
         {
+            id: "{{ poi.id }}",
             lon: {{ poi.longitude }},
             lat: {{ poi.latitude }},
-            name: {{ poi.name }}
+            name: "{{ poi.name }}"
         },
     {% endfor %}
-    ];
+    ]
 
-    var mymap = L.map("mapid").setView([{{ app.config.map.lat }, {{ app.config.map.lon }], {{ app.config.map.zoom }});
+    var mymap = L.map("mapid").setView([{{ app.config.map.lat }}, {{ app.config.map.lon }}], {{ app.config.map.zoom }});
 
     L.tileLayer(
-            "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            {
-                attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
-                subdomains: ['a','b','c']
-            }
+        "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+            subdomains: ['a','b','c']
+        }
     ).addTo(mymap);
 
+    function markerOnClick(i) {
+        function changeRepositoryValue() {
+            document.getElementById("repository_id").value = i;
+        }
+        return changeRepositoryValue
+    }
     for(i = 0; i < pois.length; i++) {
-        var marker = L.marker([pois[i].lat, pois[i].lon]).addTo(mymap);
-        marker.bindPopup(pois[i].name).openPopup();
+        var marker = L.marker([pois[i].lat, pois[i].lon]).on("click", markerOnClick(pois[i].id)).addTo(mymap);
+        marker.bindTooltip(pois[i].name, {permanent: true});
     }
 </script>
