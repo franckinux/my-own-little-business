@@ -1,28 +1,34 @@
 <p class="row top-margin-25">{{ _("Choisissez votre point de livraison dans la carte ci-dessous :") }}</p>
 
 <div id="Map" height="480" width="640px"></div>
-<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-<script>
-    var position;
-    var popup;
-
-    var map = new OpenLayers.Map({div: "Map", center: new OpenLayers.LonLat(0, 0)});
-    var mapnik = new OpenLayers.Layer.OSM();
-    map.addLayer(mapnik);
-
-    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-    var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-
-    var markers = new OpenLayers.Layer.Markers("Markers");
-    map.addLayer(markers);
-
+<style>
+    #mapid { height: 680px; }
+</style>
+<link rel="stylesheet" href="static/leaflet/leaflet.css" />
+<script src="static/leaflet/leaflet.js"></script>
+<script type="text/javascript">
+    const pois = [
     {% for poi in repositories %}
-    position = new OpenLayers.LonLat({{ poi.longitude }}, {{ poi.latitude }}).transform(fromProjection, toProjection);
-    markers.addMarker(new OpenLayers.Marker(position));
-    popup = new OpenLayers.Popup("{{ "id_%d" | format(poi.id) }}", position, new OpenLayers.Size(200, 50), "{{ poi.name }}", true);
-    map.addPopup(popup);
+        {
+            lon: {{ poi.longitude }},
+            lat: {{ poi.latitude }},
+            name: {{ poi.name }}
+        },
     {% endfor %}
+    ];
 
-    var position = new OpenLayers.LonLat({{ app.config.map.lon }}, {{ app.config.map.lat }}).transform(fromProjection, toProjection);
-    map.setCenter(position, {{ app.config.map.zoom }});
+    var mymap = L.map("mapid").setView([{{ app.config.map.lat }, {{ app.config.map.lon }], {{ app.config.map.zoom }});
+
+    L.tileLayer(
+            "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+                subdomains: ['a','b','c']
+            }
+    ).addTo(mymap);
+
+    for(i = 0; i < pois.length; i++) {
+        var marker = L.marker([pois[i].lat, pois[i].lon]).addTo(mymap);
+        marker.bindPopup(pois[i].name).openPopup();
+    }
 </script>
