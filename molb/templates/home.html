@@ -9,46 +9,46 @@
 {% block page_content %}
 {% if client.super_user %}
 <h3>{{ _("Éléments de base") }} </h3>
-<ul>
-    <li><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
-    <li><a href="{{ url("list_product") }}">{{ _("Produits") }}</a></li>
-    <li><a href="{{ url("list_repository") }}">{{ _("Points de livraison") }}</a></li>
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{ url("list_batch") }}">{{ _("Fournées") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("list_product") }}">{{ _("Produits") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("list_repository") }}">{{ _("Points de livraison") }}</a></li>
 </ul>
 
 <h3>{{ _("Clients") }}</h3>
 
-<ul>
-    <li><a href="{{ url("list_unconfirmed") }}">{{ _("Non confirmés") }}</a></li>
-    <li><a href="{{ url("list_client") }}">{{ _("Liste") }}</a></li>
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{ url("list_unconfirmed") }}">{{ _("Non confirmés") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("list_client") }}">{{ _("Liste") }}</a></li>
 </ul>
 
 <h3>{{ _("Production") }}</h3>
 
-<ul>
-    <li><a href="{{ url("plan") }}">{{ _("Plan de fournée") }}</a></li>
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{ url("plan") }}">{{ _("Plan de fournée") }}</a></li>
 </ul>
 
 <h3>Messages</h3>
 
-<ul>
-    <li><a href="{{ url("mailing") }}">{{ _("Envoi de messages") }}</a></li>
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{ url("mailing") }}">{{ _("Envoi de messages") }}</a></li>
 </ul>
 {% else %}
 <h3>{{ _("Commandes") }}</h3>
 
-<ul>
-    <li><a href="{{ url("list_order") }}">{{ _("Commandes") }}</a></li>
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{ url("list_order") }}">{{ _("Commandes") }}</a></li>
 </ul>
 {% endif %}
 
 <h3>Profil</h3>
 
-<ul>
+<ul class="list-group">
 {% if not client.super_user %}
-<li><a href="{{ url("delete_profile") }}" onclick="return confirm('{{ _("Êtes vous sûr ?") }}')">{{ _("Supprimez votre profil") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("delete_profile") }}" onclick="return confirm('{{ _("Êtes vous sûr ?") }}')">{{ _("Supprimez votre profil") }}</a></li>
 {% endif %}
-    <li><a href="{{ url("edit_profile") }}">{{ _("Modifier votre profil") }}</a></li>
-    <li><a href="{{ url("email") }}">{{ _("Modifier votre adresse email") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("edit_profile") }}">{{ _("Modifier votre profil") }}</a></li>
+    <li class="list-group-item"><a href="{{ url("email") }}">{{ _("Modifier votre adresse email") }}</a></li>
 </ul>
 
 {% endblock %}
