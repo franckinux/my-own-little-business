@@ -1,4 +1,5 @@
 from aiohttp.web import HTTPFound
+from aiohttp_babel.middlewares import _
 import aiohttp_jinja2
 from aiohttp_session_flash import flash
 
