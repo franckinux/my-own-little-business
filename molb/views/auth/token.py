@@ -1,7 +1,7 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
-def generate_token(secret_key, expiration=3600, **token):
+def generate_token(secret_key, expiration=86400, **token):
     s = Serializer(secret_key, expiration)
     return s.dumps(token).decode("ascii")
 
