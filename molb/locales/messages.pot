@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-31 14:41+0100\n"
+"POT-Creation-Date: 2020-02-02 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,6 +162,10 @@ msgstr ""
 msgid "Envoi de messages"
 msgstr ""
 
+#: templates/home.html:44
+msgid "Profil"
+msgstr ""
+
 #: templates/home.html:48
 msgid "Êtes vous sûr ?"
 msgstr ""
@@ -176,6 +180,18 @@ msgstr ""
 
 #: templates/home.html:51
 msgid "Modifier votre adresse email"
+msgstr ""
+
+#: templates/home.html:55
+msgid "Informations techniques"
+msgstr ""
+
+#: templates/home.html:58
+msgid "Version"
+msgstr ""
+
+#: templates/home.html:59
+msgid "Version Python"
 msgstr ""
 
 #: templates/list-batch.html:11

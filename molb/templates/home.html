@@ -41,7 +41,7 @@
 </ul>
 {% endif %}
 
-<h3>Profil</h3>
+<h3>{{ _("Profil") }}</h3>
 
 <ul class="list-group">
 {% if not client.super_user %}
@@ -50,5 +50,14 @@
     <li class="list-group-item"><a href="{{ url("edit_profile") }}">{{ _("Modifier votre profil") }}</a></li>
     <li class="list-group-item"><a href="{{ url("email") }}">{{ _("Modifier votre adresse email") }}</a></li>
 </ul>
+
+{% if client.super_user %}
+<h3>{{ _("Informations techniques") }}</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">{{ _("Version")}} : {{ version }}</a></li>
+    <li class="list-group-item">{{ _("Version Python")}} : {{ version_python }}</a></li>
+</ul>
+{% endif %}
 
 {% endblock %}
