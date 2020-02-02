@@ -131,7 +131,7 @@ async def create_order(request):
             form = CreateOrderForm(data, meta=await generate_csrf_meta(request))
             form.batch_id.choices = batch_choices
 
-            data = remove_special_data(data.items())
+            data = remove_special_data(dict(data))
             batch_id = int(data["batch_id"])
 
             # just for csrf !
@@ -287,7 +287,7 @@ async def edit_order(request):
         if request.method == "POST":
             data = await request.post()
             form = FillOrderForm(await request.post(), meta=await generate_csrf_meta(request))
-            data = remove_special_data(data)
+            data = remove_special_data(dict(data))
 
             template_context["form"] = form
 
