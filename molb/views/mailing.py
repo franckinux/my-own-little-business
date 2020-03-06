@@ -43,14 +43,14 @@ async def mailing(request):
                 message = data["message"]
                 if data["all_repositories"]:
                     q = (
-                        "SELECT first_name, email_address FROM client "
+                        "SELECT first_name, email_address, login FROM client "
                         "WHERE confirmed AND mailing"
                         )
                     rows = await conn.fetch(q)
                 else:
                     repository_id = data.get("repository_id")
                     q = (
-                        "SELECT first_name, email_address FROM client "
+                        "SELECT first_name, email_address, login FROM client "
                         "WHERE confirmed AND mailing AND repository_id = $1"
                     )
                     rows = await conn.fetch(q, repository_id)
@@ -58,9 +58,10 @@ async def mailing(request):
                     flash(request, ("warning", _("Il n'y a pas de destinataire.")))
                     return HTTPFound(request.app.router["mailing"].url_for())
 
-                if "<first_name>" in message:
+                if "<first_name>" in message or "<login>" in message:
                     for r in rows:
                         message_ = message.replace("<first_name>", r["first_name"])
+                        message_ = message_.replace("<login>", r["login"])
                         await send_text_message(request, r["email_address"], subject, message_)
                 else:
                     email_addresses = [r["email_address"] for r in rows]
