@@ -12,6 +12,10 @@
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
+    <div class="form-group">
+        {{ _("Pas encore client ?") }}
+        <a href={{ url("register") }} class="btn btn-secondary">{{ _("Enregistrez vous") }}</a>
+    </div>
     <div class="form-group{% if form.login.errors %} has-error{% endif %}">
         {{ form.login.label(for="login") }}
         {{ form.login(class="form-control") }}
@@ -29,10 +33,14 @@
             {% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}
         </div>
         {% endif %}
+        <small><a href="{{ url("password") }}">{{ _("Mot de passe perdu") }}</a></small>
     </div>
     <div>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url("start") }}" class="btn btn-light">{{ _("Annuler") }}</a>
     </div>
 </form>
+<p>
+    <small>{{ _("Pour tout problème concernant ce site, veuillez écrire à") }}
+    <a href="mailto:{{ app.config.application.from }}?subject={{ app.config.application.site_name }}">{{ app.config.application.from }}</a></small>
+</p>
 {% endblock %}

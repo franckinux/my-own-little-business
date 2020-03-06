@@ -32,7 +32,6 @@ from molb.views.repository import create_repository
 from molb.views.repository import edit_repository
 from molb.views.repository import delete_repository
 from molb.views.repository import list_repository
-from molb.views.start import start
 from molb.views.unconfirmed import list_unconfirmed
 from molb.views.unconfirmed import delete_unconfirmed
 from molb.views.unconfirmed import send_unconfirmed
@@ -44,11 +43,8 @@ def setup_routes(app):
         static_dir = op.join(op.dirname(op.abspath(__file__)), "static")
         app.router.add_static("/static", static_dir)
 
-    # starting page
-    app.router.add_get('/', start, name="start")
-
     # auth
-    app.router.add_route('*', "/login/", login, name="login")
+    app.router.add_route('*', "/", login, name="login")
     app.router.add_route('*', "/logout/", logout, name="logout")
     app.router.add_route('*', "/email/", email, name="email")
     app.router.add_get("/email/{token}/", confirm_email, name="confirm_email")
