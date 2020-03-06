@@ -14,6 +14,7 @@
 <table class="table table-hover">
    <thead>
       <tr>
+          <th>{{ _("Identifiant") }}</th>
           <th>{{ _("Prénom") }}</th>
           <th>{{ _("Nom") }}</th>
           <th>{{ _("Statut") }}</th>
@@ -23,6 +24,7 @@
    <tbody>
       {% for client in clients -%}
       <tr>
+         <td>{{ client.login }}</td>
          <td>{{ client.first_name }}</td>
          <td>{{ client.last_name }}</td>
          <td>{% if client.disabled %}{{ _("Inactif") }}{% else %}{{ _("Actif") }}{% endif %}</td>

@@ -13,7 +13,7 @@ async def list_client(request):
     if request.method == "GET":
         async with request.app["db-pool"].acquire() as conn:
             q = (
-                "SELECT id, first_name, last_name, confirmed, disabled "
+                "SELECT id, first_name, last_name, login, confirmed, disabled "
                 "FROM client "
                 "WHERE NOT super_user "
                 "ORDER BY last_name, first_name"
