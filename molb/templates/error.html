@@ -4,6 +4,8 @@
 {{ super() }}
 {% if not authorized_userid %}
    <meta http-equiv="refresh" content="5; url={{ url("start") }}">
+{% else %}
+   <meta http-equiv="refresh" content="5; url={{ url("home") }}">
 {% endif %}
 {% endblock %}
 
