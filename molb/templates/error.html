@@ -1,7 +1,16 @@
 {% extends "base.html" %}
+
+{% block metas %}
+{{ super() }}
+{% if not authorized_userid %}
+   <meta http-equiv="refresh" content="5; url={{ url("start") }}">
+{% endif %}
+{% endblock %}
+
 {% block title %}{{ _("Erreur") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li class="breadcrumb-item">{{ _("Erreur") }}</li>
 </ol>
 {% endblock %}
+
