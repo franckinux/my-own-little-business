@@ -1,4 +1,4 @@
-# English (United Kingdom) translations for PROJECT.
+username English (United Kingdom) translations for PROJECT.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
@@ -219,7 +219,7 @@ msgstr "Delete"
 #: templates/list-client.html:17 views/auth/__init__.py:22
 #: views/auth/register.py:32
 msgid "Identifiant"
-msgstr "Id"
+msgstr "Username"
 
 #: templates/list-client.html:18 templates/list-unconfirmed.html:16
 #: views/auth/profile.py:39 views/auth/register.py:57
@@ -386,7 +386,7 @@ msgstr "Current email address:"
 
 #: templates/auth/email-id.html:2 templates/auth/email-id.html:6
 msgid "Rappel d'identifiant"
-msgstr ""
+msgstr "Username reminder"
 
 #: templates/auth/email-id.html:5 templates/auth/email-password.html:5
 #: templates/auth/login.html:2 templates/auth/login.html:5
@@ -409,7 +409,7 @@ msgstr "Register"
 
 #: templates/auth/login.html:27
 msgid "Identifiant oublié"
-msgstr "Forgotten id"
+msgstr "Forgotten username"
 
 #: templates/auth/login.html:37
 msgid "Mot de passe oublié"
@@ -713,7 +713,7 @@ msgstr "A confirmation message has been sent to {}"
 
 #: views/auth/__init__.py:24 views/auth/register.py:40
 msgid "Entrez votre identifiant"
-msgstr "Enter your id"
+msgstr "Enter your username"
 
 #: views/auth/__init__.py:27 views/auth/password.py:73 views/auth/profile.py:28
 #: views/auth/register.py:43
@@ -731,7 +731,7 @@ msgstr "Hello {} ! Nice to see you again"
 
 #: views/auth/__init__.py:61
 msgid "La combinaison identifiant/mot de passe est invalide"
-msgstr "Invalid id or password"
+msgstr "Invalid username or password"
 
 #: views/auth/__init__.py:74
 msgid "Vous êtes déconnecté"
@@ -767,12 +767,12 @@ msgid "Il n'y a pas de profil dont l'adresse email est {}"
 msgstr "There's no profile whose email address is {}"
 
 #: views/auth/id.py:36
-msgid "Rappel de Votre identifiant"
-msgstr "Recover your id"
+msgid "Rappel de votre identifiant"
+msgstr "Username reminder"
 
 #: views/auth/id.py:37
 msgid "Votre identifiant est {}"
-msgstr "Your id is {}"
+msgstr "Your username is {}"
 
 #: views/auth/password.py:48
 msgid "Modification de mot de passe"
@@ -840,7 +840,7 @@ msgstr "Your profile has been deleted"
 
 #: views/auth/register.py:110
 msgid "Votre profil ne peut être créé, cet identifiant est déjà utilisé"
-msgstr "Your profile cannot be created, id already in use"
+msgstr "Your profile cannot be created, username already in use"
 
 #: views/auth/register.py:165
 msgid "Vous ne pouvez pas être enregistré."
