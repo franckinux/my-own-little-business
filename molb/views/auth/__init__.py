@@ -73,3 +73,11 @@ async def logout(request):
     await forget(request, response)
     flash(request, ("info", _("Vous êtes déconnecté")))
     return response
+
+
+@require("admin")
+async def switch(request):
+    login = request.match_info["login"]
+    response = HTTPFound(request.app.router["home"].url_for())
+    await remember(request, response, login)
+    return response

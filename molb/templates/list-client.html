@@ -19,6 +19,7 @@
           <th>{{ _("Nom") }}</th>
           <th>{{ _("Statut") }}</th>
          <th></th>
+         <th></th>
       </tr>
    </thead>
    <tbody>
@@ -29,6 +30,7 @@
          <td>{{ client.last_name }}</td>
          <td>{% if client.disabled %}{{ _("Inactif") }}{% else %}{{ _("Actif") }}{% endif %}</td>
          <td><a href="{{ url("toggle_client", id=client.id) }}">{{ _("Changer statut") }}</a></td>
+         <td><a href="{{ url("switch_client", login=client.login) }}">{{ _("Aller vers") }}</a></td>
       </tr>
       {%- endfor %}
    </tbody>

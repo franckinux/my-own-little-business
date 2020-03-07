@@ -14,16 +14,16 @@
 {{ super() }}
 <div class="container">
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <h2>{{ app.config.application.site_name }} <small>{{ _("Commandes") }}</small></h2>
         </div>
         <div class="col-lg-2">
             <a href="{{ url("en") }}"><img src="/static/english-flag.png"></a>
             <a href="{{ url("fr") }}"><img src="/static/france-flag.png"></a>
         </div>
-        <div class="col-lg-2 btn-toolbar">
+        <div class="col-lg-3">
 {% if authorized_userid %}
-            <a href="{{ url("logout") }}" class="btn btn-light">{{ _("Déconnexion") }}</a>
+            {{ authorized_userid }}&nbsp;<a href="{{ url("logout") }}" class="btn btn-light">{{ _("Déconnexion") }}</a>
 {% endif %}
         </div>
     </div>

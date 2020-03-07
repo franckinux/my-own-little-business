@@ -2,6 +2,7 @@ import os.path as op
 
 from molb.views.auth import login
 from molb.views.auth import logout
+from molb.views.auth import switch
 from molb.views.auth.email import confirm as confirm_email
 from molb.views.auth.email import handler as email
 from molb.views.auth.id import handler as id_
@@ -56,6 +57,7 @@ def setup_routes(app):
     app.router.add_route('*', "/profile/edit/", edit_profile, name="edit_profile")
     app.router.add_route('*', "/register/", register, name="register")
     app.router.add_get("/register/{token}/", confirm_register, name="confirm_register")
+    app.router.add_get("/switch/{login}/", switch, name="switch_client")
 
     # batches
     app.router.add_route('*', "/batch/create/", create_batch, name="create_batch")
