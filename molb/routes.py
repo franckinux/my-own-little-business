@@ -4,6 +4,7 @@ from molb.views.auth import login
 from molb.views.auth import logout
 from molb.views.auth.email import confirm as confirm_email
 from molb.views.auth.email import handler as email
+from molb.views.auth.id import handler as id_
 from molb.views.auth.password import confirm as confirm_password
 from molb.views.auth.password import handler as password
 from molb.views.auth.profile import delete_profile
@@ -48,6 +49,7 @@ def setup_routes(app):
     app.router.add_route('*', "/logout/", logout, name="logout")
     app.router.add_route('*', "/email/", email, name="email")
     app.router.add_get("/email/{token}/", confirm_email, name="confirm_email")
+    app.router.add_route('*', "/id/", id_, name="id")
     app.router.add_route('*', "/password/", password, name="password")
     app.router.add_route('*', "/password/{token}/", confirm_password, name="confirm_password")
     app.router.add_route('*', "/profile/delete/", delete_profile, name="delete_profile")

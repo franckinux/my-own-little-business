@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}{{ _("Changement de mot de passe") }}{% endblock %}
+{% block title %}{{ _("Rappel d'identifiant") }}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ url("login") }}">{{ _("Connexion") }}</a></li>
-    <li class="breadcrumb-item active">{{ _("Changement de mot de passe") }}</li>
+    <li class="breadcrumb-item active">{{ _("Rappel d'identifiant") }}</li>
 </ol>
 {% endblock %}
 
 {% block page_content %}
-<form method="POST" action="{{ url("password") }}" role="form">
+<form method="POST" action="{{ url("id") }}" role="form">
     {{ form.csrf_token }}
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
