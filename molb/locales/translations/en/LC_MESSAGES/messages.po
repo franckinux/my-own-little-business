@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-02 19:45+0100\n"
+"POT-Creation-Date: 2020-03-07 23:02+0100\n"
 "PO-Revision-Date: 2020-01-03 09:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_GB\n"
@@ -40,8 +40,7 @@ msgstr "Batch creation"
 #: templates/list-batch.html:5 templates/list-client.html:5
 #: templates/list-order.html:5 templates/list-product.html:5
 #: templates/list-repository.html:5 templates/list-unconfirmed.html:5
-#: templates/mailing.html:5 templates/plan.html:7 templates/start.html:2
-#: templates/start.html:5
+#: templates/mailing.html:5 templates/plan.html:7
 msgid "Accueil"
 msgstr "Home"
 
@@ -55,9 +54,9 @@ msgstr "Batches"
 msgid "Entrez la date de livraison"
 msgstr "Enter the delivery date"
 
-#: templates/auth/email-email.html:29 templates/auth/email-password.html:26
-#: templates/auth/login.html:35 templates/auth/password.html:35
-#: templates/auth/profile.html:73 templates/auth/register.html:90
+#: templates/auth/email-email.html:29 templates/auth/email-id.html:27
+#: templates/auth/email-password.html:27 templates/auth/password.html:35
+#: templates/auth/profile.html:73 templates/auth/register.html:91
 #: templates/create-batch.html:56 templates/create-order.html:58
 #: templates/create-product.html:77 templates/create-repository.html:88
 #: templates/edit-batch.html:49 templates/edit-order.html:57
@@ -130,7 +129,7 @@ msgstr "Products"
 msgid "Modification d'un point de livraison"
 msgstr "Delivery place edit"
 
-#: templates/error.html:2 templates/error.html:5
+#: templates/error.html:12 templates/error.html:15
 msgid "Erreur"
 msgstr "Error"
 
@@ -169,7 +168,7 @@ msgstr "Profile"
 
 #: templates/home.html:48
 msgid "Êtes vous sûr ?"
-msgstr "Are you sure ?"
+msgstr "Are you sure?"
 
 #: templates/home.html:48
 msgid "Supprimez votre profil"
@@ -217,33 +216,42 @@ msgstr "Open"
 msgid "Supprimer"
 msgstr "Delete"
 
-#: templates/list-client.html:17 templates/list-unconfirmed.html:16
+#: templates/list-client.html:17 views/auth/__init__.py:22
+#: views/auth/register.py:32
+msgid "Identifiant"
+msgstr "Id"
+
+#: templates/list-client.html:18 templates/list-unconfirmed.html:16
 #: views/auth/profile.py:39 views/auth/register.py:57
 msgid "Prénom"
 msgstr "First name"
 
-#: templates/list-client.html:18 templates/list-product.html:16
+#: templates/list-client.html:19 templates/list-product.html:16
 #: templates/list-repository.html:16 templates/list-unconfirmed.html:17
 #: views/auth/profile.py:43 views/auth/register.py:61 views/product.py:26
 #: views/product.py:33 views/repository.py:29
 msgid "Nom"
 msgstr "Name"
 
-#: templates/list-client.html:19
+#: templates/list-client.html:20
 msgid "Statut"
 msgstr "Status"
 
-#: templates/list-client.html:28
+#: templates/list-client.html:31
 msgid "Inactif"
 msgstr "Inactive"
 
-#: templates/list-client.html:28
+#: templates/list-client.html:31
 msgid "Actif"
 msgstr "Active"
 
-#: templates/list-client.html:29
+#: templates/list-client.html:32
 msgid "Changer statut"
 msgstr "Change status"
+
+#: templates/list-client.html:33
+msgid "Aller vers"
+msgstr "Switch to"
 
 #: templates/list-order.html:12
 msgid "Vous n'avez pas la possibilité de passer une commande."
@@ -347,30 +355,6 @@ msgstr "Customer last name"
 msgid "Prénom du client"
 msgstr "Customer first name"
 
-#: templates/start.html:11
-msgid "Pas encore client ?"
-msgstr "Not yet a customer ?"
-
-#: templates/start.html:12
-msgid "Enregistrez vous"
-msgstr "Register"
-
-#: templates/start.html:15
-msgid "Déjà enregistré ?"
-msgstr "Already registered ?"
-
-#: templates/start.html:16
-msgid "Connectez vous"
-msgstr "Connect"
-
-#: templates/start.html:17
-msgid "Mot de passe perdu"
-msgstr "Forgotten password"
-
-#: templates/start.html:20
-msgid "Pour tout problème concernant ce site, veuillez écrire à"
-msgstr "For any problem regarding this web site, please send an email to"
-
 #: templates/auth/email-confirmation.html:3
 #: templates/auth/password-confirmation.html:3
 #: templates/auth/register-confirmation.html:3
@@ -400,14 +384,40 @@ msgstr "Email address change"
 msgid "Adresse email actuelle :"
 msgstr "Current email address:"
 
-#: templates/auth/email-password.html:2 templates/auth/email-password.html:5
+#: templates/auth/email-id.html:2 templates/auth/email-id.html:6
+msgid "Rappel d'identifiant"
+msgstr ""
+
+#: templates/auth/email-id.html:5 templates/auth/email-password.html:5
+#: templates/auth/login.html:2 templates/auth/login.html:5
+#: templates/auth/register.html:5
+msgid "Connexion"
+msgstr "Connection"
+
+#: templates/auth/email-password.html:2 templates/auth/email-password.html:6
 #: templates/auth/password.html:2 templates/auth/password.html:5
 msgid "Changement de mot de passe"
 msgstr "Password change"
 
-#: templates/auth/login.html:2 templates/auth/login.html:5
-msgid "Connexion"
-msgstr "Connection"
+#: templates/auth/login.html:16
+msgid "Pas encore client ?"
+msgstr "Not yet a customer ?"
+
+#: templates/auth/login.html:17
+msgid "Enregistrez vous"
+msgstr "Register"
+
+#: templates/auth/login.html:27
+msgid "Identifiant oublié"
+msgstr "Forgotten id"
+
+#: templates/auth/login.html:37
+msgid "Mot de passe oublié"
+msgstr "Forgotten password"
+
+#: templates/auth/login.html:44
+msgid "Pour tout problème concernant ce site, veuillez écrire à"
+msgstr "For any problem regarding this web site, please send an email to"
 
 #: templates/auth/password-confirmation.html:3
 msgid "pour saisir un nouveau mot de passe."
@@ -429,7 +439,7 @@ msgstr "to confirm your registering."
 msgid "Copiez le lien suivant dans la barre d'adresse de votre navigateur pour confirmer votre enregistrement"
 msgstr "Copy the following link in the address bar of your web browser in order to confirm your registering"
 
-#: templates/auth/register.html:2 templates/auth/register.html:5
+#: templates/auth/register.html:2 templates/auth/register.html:6
 msgid "Enregistrement"
 msgstr "Registering"
 
@@ -448,11 +458,12 @@ msgstr "Confirm"
 msgid "Valeur négative ou nulle"
 msgstr "Null or negative value"
 
-#: views/auth/email.py:55 views/auth/password.py:62 views/auth/password.py:132
-#: views/auth/profile.py:97 views/auth/register.py:138 views/batch.py:49
-#: views/batch.py:123 views/mailing.py:71 views/order.py:139 views/order.py:296
-#: views/plan.py:54 views/product.py:81 views/product.py:129
-#: views/repository.py:84 views/repository.py:134
+#: views/auth/email.py:55 views/auth/id.py:50 views/auth/password.py:62
+#: views/auth/password.py:132 views/auth/profile.py:97
+#: views/auth/register.py:138 views/batch.py:49 views/batch.py:123
+#: views/mailing.py:72 views/order.py:139 views/order.py:296 views/plan.py:54
+#: views/product.py:81 views/product.py:129 views/repository.py:84
+#: views/repository.py:134
 msgid "Le formulaire contient des erreurs."
 msgstr "There are errors in the form."
 
@@ -504,7 +515,7 @@ msgstr "Message"
 msgid "Il n'y a pas de destinataire."
 msgstr "There's no recipient"
 
-#: views/mailing.py:68
+#: views/mailing.py:69
 msgid "Les messages ont été envoyés."
 msgstr "Messages has been sent."
 
@@ -590,7 +601,7 @@ msgstr "Enter the description"
 
 #: views/product.py:51
 msgid "Entrez le prix"
-msgstr "enter the price"
+msgstr "Enter the price"
 
 #: views/product.py:56
 msgid "Entrez le poids du pâton"
@@ -700,10 +711,6 @@ msgstr "Registering confirmation"
 msgid "Un message de confirmation a été envoyé à {}"
 msgstr "A confirmation message has been sent to {}"
 
-#: views/auth/__init__.py:22 views/auth/register.py:32
-msgid "Identifiant"
-msgstr "Id"
-
 #: views/auth/__init__.py:24 views/auth/register.py:40
 msgid "Entrez votre identifiant"
 msgstr "Enter your id"
@@ -734,7 +741,8 @@ msgstr "You are disconnected"
 msgid "Veuillez choisir une autre adresse email"
 msgstr "Please, select another email address"
 
-#: views/auth/email.py:48 views/auth/password.py:55 views/auth/register.py:129
+#: views/auth/email.py:48 views/auth/id.py:43 views/auth/password.py:55
+#: views/auth/register.py:129
 msgid "Un email de confirmation a été envoyé à {}"
 msgstr "A confirmation email has been sent to {}"
 
@@ -754,9 +762,17 @@ msgstr "Your email address has been changed"
 msgid "Entrez votre adresse email"
 msgstr "Enter your email address"
 
-#: views/auth/password.py:37
+#: views/auth/id.py:27 views/auth/password.py:37
 msgid "Il n'y a pas de profil dont l'adresse email est {}"
 msgstr "There's no profile whose email address is {}"
+
+#: views/auth/id.py:36
+msgid "Rappel de Votre identifiant"
+msgstr "Recover your id"
+
+#: views/auth/id.py:37
+msgid "Votre identifiant est {}"
+msgstr "Your id is {}"
 
 #: views/auth/password.py:48
 msgid "Modification de mot de passe"
