@@ -26,15 +26,15 @@ class PlanForm(CsrfForm):
 @aiohttp_jinja2.template("plan.html")
 async def plan(request):
     async with request.app["db-pool"].acquire() as conn:
-        # select opened batches whose date is in the future and that have orders
-        # on them
+        # select last 10 opened batches that have orders on them
         q = (
             "WITH sq AS ("
             "    SELECT DISTINCT b.id AS batch_id, b.date AS batch_date_ "
             "    FROM order_ AS o "
             "    INNER JOIN batch AS b ON o.batch_id = b.id "
-            "    WHERE b.opened AND b.date > NOW() "
-            "    ORDER BY b.date"
+            "    WHERE b.opened "
+            "    ORDER BY b.date DESC "
+            "    LIMIT 10"
             ") "
             "SELECT batch_id, TO_CHAR(batch_date_::DATE, 'dd-mm-yyyy') AS batch_date "
             "FROM sq"
