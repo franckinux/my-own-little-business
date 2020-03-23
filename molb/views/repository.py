@@ -26,7 +26,7 @@ from molb.views.utils import settings
 
 class RepositoryForm(CsrfForm):
     name = StringField(
-        _l("Nom"),
+        _l("Dénomination"),
         validators=[Required(), Length(min=5, max=128)],
         render_kw={"placeholder": _l("Entrez le nom")}
     )
