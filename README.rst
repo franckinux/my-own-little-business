@@ -106,10 +106,10 @@ Downloads
 These softwares are already present in molb, this is just a reminder on where they
 have been downloaded from :
 
-- `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.5.0 ;
-- `Bootstrap <http://getbootstrap.com/>`_ - Version 4.4.1 ;
+- `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.5.1 ;
+- `Bootstrap <http://getbootstrap.com/>`_ - Version 4.5.2 ;
 - `Gijgo <https://gijgo.com/>`_ - Version 1.9.13 ;
-- `Leaflet <https://leafletjs.com/>`_ - Version 1.6.0 ;
+- `Leaflet <https://leafletjs.com/>`_ - Version 1.7.1 ;
 
 Internationalization
 ====================
