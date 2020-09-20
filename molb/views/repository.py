@@ -8,7 +8,7 @@ from wtforms import DecimalField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Length
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 from wtforms.validators import ValidationError
 
 from molb.auth import require
@@ -27,19 +27,19 @@ from molb.views.utils import settings
 class RepositoryForm(CsrfForm):
     name = StringField(
         _l("Dénomination"),
-        validators=[Required(), Length(min=5, max=128)],
+        validators=[DataRequired(), Length(min=5, max=128)],
         render_kw={"placeholder": _l("Entrez le nom")}
     )
     latitude = DecimalField(
         _l("Latitude"),
         places=6,
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez la latitude")}
     )
     longitude = DecimalField(
         _l("Longitude"),
         places=6,
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez la longitude")}
     )
 

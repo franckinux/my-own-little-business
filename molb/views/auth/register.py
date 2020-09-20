@@ -14,7 +14,7 @@ from wtforms.validators import Email
 from wtforms.validators import EqualTo
 from wtforms.validators import Length
 from wtforms.validators import Regexp
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 from molb.views.auth.token import get_token_data
 from molb.views.csrf_form import CsrfForm
@@ -31,7 +31,7 @@ class RegisterForm(CsrfForm):
     login = StringField(
         _l("Identifiant"),
         validators=[
-            Required(),
+            DataRequired(),
             Length(min=1, max=64),
             Regexp("^[A-Za-z][A-Za-z0-9_.-@]*$", 0,
                 "L'identifiant ne doit comporter que des lettres non accentuées, "
@@ -42,7 +42,7 @@ class RegisterForm(CsrfForm):
     password = PasswordField(
         _l("Mot de passe"),
         validators=[
-            Required(),
+            DataRequired(),
             EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
             Length(min=6)
         ],
@@ -50,7 +50,7 @@ class RegisterForm(CsrfForm):
     )
     password2 = PasswordField(
         _l("Répétition du mot de passe"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Répétez votre mot de passe")}
     )
     first_name = StringField(
@@ -64,7 +64,7 @@ class RegisterForm(CsrfForm):
     email_address = StringField(
         _l("Adresse email"),
         validators=[
-            Required(),
+            DataRequired(),
             Length(min=1, max=64),
             Email()
         ],

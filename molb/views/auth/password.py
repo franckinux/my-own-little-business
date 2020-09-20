@@ -8,7 +8,7 @@ from wtforms import PasswordField
 from wtforms import SubmitField
 from wtforms.validators import EqualTo
 from wtforms.validators import Length
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 from molb.views.auth.email_form import EmailForm
 from molb.views.auth.token import get_token_data
@@ -72,7 +72,7 @@ class PasswordForm(CsrfForm):
     password = PasswordField(
         _l("Mot de passe"),
         validators=[
-            Required(),
+            DataRequired(),
             EqualTo("password2", message=_l("Les mots de passe doivent être identiques")),
             Length(min=6)
         ],
@@ -80,7 +80,7 @@ class PasswordForm(CsrfForm):
     )
     password2 = PasswordField(
         _l("Répétition du mot de passe"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Répétez votre mot de passe")}
     )
     submit = SubmitField(_l("Valider"))

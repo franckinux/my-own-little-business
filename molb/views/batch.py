@@ -9,7 +9,7 @@ from wtforms import BooleanField
 from wtforms import DateField
 from wtforms import DecimalField
 from wtforms import SubmitField
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 from wtforms.validators import ValidationError
 
 from molb.auth import require
@@ -22,10 +22,10 @@ from molb.views.utils import settings
 
 
 class BatchForm(CsrfForm):
-    date = DateField(_l("Date"), id="date", format="%d-%m-%Y", validators=[Required()])
+    date = DateField(_l("Date"), id="date", format="%d-%m-%Y", validators=[DataRequired()])
     capacity = DecimalField(
         _l("Capacité"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez la capacité de la fournée")}
     )
     opened = BooleanField(_l("Ouverte"), default=True)

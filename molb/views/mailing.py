@@ -7,7 +7,7 @@ from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import TextAreaField
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
@@ -22,8 +22,8 @@ from molb.views.utils import remove_special_data
 class MailingForm(CsrfForm):
     all_repositories = BooleanField(_l("Tous les points de livraison"), default=True)
     repository_id = SelectField(_l("Point de livraison"), coerce=int)
-    subject = StringField(_l("Sujet"), validators=[Required()])
-    message = TextAreaField(_l("Message"), render_kw={"rows": 10, "cols": 50}, validators=[Required()])
+    subject = StringField(_l("Sujet"), validators=[DataRequired()])
+    message = TextAreaField(_l("Message"), render_kw={"rows": 10, "cols": 50}, validators=[DataRequired()])
     submit = SubmitField(_l("Valider"))
 
 

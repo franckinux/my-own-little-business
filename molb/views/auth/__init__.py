@@ -7,7 +7,7 @@ from aiohttp_security import remember
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 from molb.auth import require
 from molb.auth.db_auth import check_credentials
@@ -20,12 +20,12 @@ from molb.views.utils import generate_csrf_meta
 class LoginForm(CsrfForm):
     login = StringField(
         _l("Identifiant"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez votre identifiant")}
     )
     password = PasswordField(
         _l("Mot de passe"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez votre mot de passe")}
     )
     submit = SubmitField(_l("Valider"))

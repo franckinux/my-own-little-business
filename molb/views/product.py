@@ -8,7 +8,7 @@ from wtforms import DecimalField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Length
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 from molb.auth import require
 from molb.views.csrf_form import CsrfForm
@@ -25,14 +25,14 @@ class ProductForm(CsrfForm):
     name = StringField(
         _l("Dénomination"),
         validators=[
-            Required(),
+            DataRequired(),
             Length(min=6, max=128)],
         render_kw={"placeholder": _l("Entrez le nom")}
     )
     name_lang1 = StringField(
         _l("Dénomination"),
         validators=[
-            Required(),
+            DataRequired(),
             Length(min=6, max=128)
         ],
         render_kw={"placeholder": _l("Entrez le nom")}
@@ -47,12 +47,12 @@ class ProductForm(CsrfForm):
     )
     price = DecimalField(
         _l("Prix"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez le prix")}
     )
     load = DecimalField(
         _l("Poids du pâton"),
-        validators=[Required()],
+        validators=[DataRequired()],
         render_kw={"placeholder": _l("Entrez le poids du pâton")}
     )
     available = BooleanField(_l("Disponible"), default=True)
