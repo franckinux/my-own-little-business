@@ -2,15 +2,15 @@
 
 {% block styles %}
 {{ super() }}
-<link href="/static/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css">
+    <link type="text/css" href="/static/fontawesome-free/css/all.css" rel="stylesheet">
+    <link type="text/css" href="/static/tempusdominus-bootstrap4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block title %}{{ _("Modification d'une fournée") }}{% endblock %}
 
 {% block scripts %}
 {{ super() }}
-<script src="/static/gijgo/js/gijgo.min.js" type="text/javascript"></script>
-<script src="/static/gijgo/js/messages/messages.fr-fr.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/static/tempusdominus-bootstrap4/js/tempusdominus-bootstrap-4.min.js"></script>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -27,9 +27,19 @@
     {% if form.csrf_token.errors %}
         <p>You have submitted an invalid CSRF token</p>
     {% endif %}
-    <div class="form-group">
+    <div class="form-group{% if form.date.errors %} has-error{% endif %}">
         {{ form.date.label(for="date") }}
-        <input id="date" name="date" readonly width="100%" value="{{ form.date.data.strftime("%d-%m-%Y") }}" />
+        <div class="input-group date" id="date" data-target-input="nearest">
+            <input type="text" id="date" name="date" class="form-control datetimepicker-input" data-target="#date" value="{{ form.date.data.strftime("%d/%m/%Y") }}" />
+            <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="far fa-calendar"></i></div>
+            </div>
+        </div>
+        {% if form.date.errors %}
+        <div class="help-text">
+            {% for error in form.date.errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
     </div>
     <div class="form-group{% if form.capacity.errors %} has-error{% endif %}">
         {{ form.capacity.label(for="capacity") }}
@@ -51,16 +61,28 @@
 </form>
 
 <script>
-    var date = new Date();
-    date.setDate(date.getDate()+1);
-    tomorow = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    $('#date').datepicker({
-        format: "d-m-yyyy",
-        uiLibrary: "bootstrap4",
-        locale: "fr-fr",
-        minDate: tomorow,
-        weekStartDay: 1
+$.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
+    icons: {
+        time: "far fa-clock",
+        date: "far fa-calendar",
+        up: "fas fa-arrow-up",
+        down: "fas fa-arrow-down",
+        previous: "fas fa-chevron-left",
+        next: "fas fa-chevron-right",
+        today: "far fa-calendar-check-o",
+        clear: "far fa-trash",
+        close: "far fa-times"
+    }
+});
+
+$(function() {
+    $("#date").datepicker({
+        locale: "fr",
+        allowInputToggle: true,
+        minDate: moment().add(1, "days"),
+        format: "L"
     });
+});
 </script>
 
 {% endblock %}

@@ -29,7 +29,7 @@
          <td>{{ client.last_name }}</td>
          <td>{{ client.email_address }}</td>
          <td>{{ client.phone_number }}</td>
-         <td>{{ client.created_at.strftime("%d-%m-%Y %H:%M") }}</td>
+         <td>{{ client.created_at.strftime("%d/%m/%Y %H:%M") }}</td>
 	 <td><a href="{{ url("send_unconfirmed", id=client.id) }}">{{ _("Envoyer la demande de confirmation") }}</a></td>
          <td><a href="{{ url("delete_unconfirmed", id=client.id) }}">{{ _("Supprimer") }}</a></td>
       </tr>

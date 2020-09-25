@@ -7,7 +7,14 @@
 
 {% block styles %}
 {{ super() }}
-    <link href="/static/css/styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/ico" href="/static/favicon.ico"/>
+    <link type="text/css" href="/static/css/styles.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script type="text/javascript" src="/static/popper/popper.min.js"></script>
+    <script type="text/javascript" src="/static/moment/moment-with-locales.min.js"></script>
 {% endblock %}
 
 {% block content %}
