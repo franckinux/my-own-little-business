@@ -8,5 +8,5 @@ build/
 molb.egg-info/
 .env
 dist/
-tags
+tags*
 logo.png
