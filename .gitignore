@@ -10,3 +10,5 @@ molb.egg-info/
 dist/
 tags*
 logo.png
+.vscode
+.venv

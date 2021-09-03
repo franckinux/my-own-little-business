@@ -1,38 +1,72 @@
 Packages to install
 ===================
 
-Install pip : ::
+Update the package list:
 
-    # apt install python3-pip
+.. code-block:: console
 
-For cryptography python module : ::
+    sudo apt-get update
 
-    # apt install libssl-dev
+For python installation (see [1]_):
 
-For printing the sources : ::
+.. code-block:: console
 
-    # apt install enscript
-    # apt install psutils
+    sudo apt-get install make build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev \
+    liblzma-dev checkinstall
 
-Install pipenv in user environment : ::
+For cryptography python module: ::
 
-    $ python3 -m pip install pipenv
+.. code-block:: console
 
-and update your PATH environment variable (possibly in your bashrc) :
+    sudo apt install libssl-dev
+
+For printing the sources: ::
+
+.. code-block:: console
+
+    sudo apt install enscript psutils
+
+Python 3.9.7 installation
+=========================
+
+Download python 3.9.7 (see [3]_):
+
+.. code-block:: console
+
+    cd tmp
+    wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz
+    cd Python-3.9.7
+    ./configure --prefix=/usr --enable-optimizations --enable-shared \
+    --with-system-expat --with-system-ffi --with-ensurepip=yes
+    make
+    sudo make altinstall
+    cd ..
+    sudo rm -rf Python-3.9.7
+
+Python packages to install
+==========================
+
+Update your PATH environment variable (possibly in your bashrc):
+
+.. code-block:: console
 
     $ export PATH=~/.local/bin:$PATH
 
 Install molb
 ============
 
-**Note** : if your user is not called molb as in the following instructions, add
+**Note**: if your user is not called molb as in the following instructions, add
 "-U user" and "-W" options to dropdb, creatdb and psql commands.
 
-**Note** : in order for the postgresql authentication to work, you may have to
+**Note**: in order for the postgresql authentication to work, you may have to
 change the authentication method from *peer* to *md5* in PostgreSQL pg_hba.conf
 configuration file for all users except postgres user.
 
-Create a database user : ::
+Create a database user: ::
+
+.. code-block:: console
 
     molb@hostname$ sudo -i -u postgres
     [sudo] Mot de passe de molb :
@@ -42,49 +76,78 @@ Create a database user : ::
     postgres@hostname:~$ déconnexion
     molb@hostname$
 
-Create a virtual env, install molb and its dependencies : ::
+Create a virtual env, install molb and its dependencies: ::
+
+.. code-block:: console
 
     $ git clone https://github.com/franckinux/my-own-little-business.git
     $ cd /path/to/my-own-little-business
-    $ pipenv install -e .
+    $ python3 -venv --prompt molb --upgrade-deps
 
-Drop the database if it exists : ::
+Activate the virtualenv: ::
+
+.. code-block:: console
+
+    $ source .venv/bin/activate
+    $ pip install -r requirements.txt
+
+Drop the database if it exists: ::
+
+.. code-block:: console
 
     $ dropdb molb
 
-Create the database : ::
+Create the database: ::
+
+.. code-block:: console
 
     $ createdb molb
 
 Export the path to the config file in an environment variable. Put it in your
-~/.bashrc file or better in a .env file in your project's directory : ::
+~/.bashrc file or better in a .env file in your project's directory: ::
+
+.. code-block:: console
 
     $ export MOLB_CONFIG=/path/to/molb.conf
 
-Define the keys and passwords : ::
+Define the keys and passwords: ::
+
+.. code-block:: console
 
     $ psql molb < /path/to/create/schema.sql
-    $ pipenv shell
     $ python3 create/create.py
     > Admin password = sa2cPKHD
     $ python3 create/secret_keys.py
     $ exit
 
-Remove useless directory : ::
+Remove useless directory: ::
+
+.. code-block:: console
 
     $ rm -rf /path/to/my-own-little-business
 
-Launch the server : ::
+Launch the server: ::
+
+.. code-block:: console
 
     $ gunicorn molb.main:app --bind 127.0.0.1:8080 --workers 3 --worker-class aiohttp.GunicornWebWorker
 
+
+pre-commit installation
+=======================
+
+.. code-block:: console
+
+    $ pre-commit install --install-hooks
 
 Tools
 =====
 
 They are located in the tools directory.
 
-Compute password hash : ::
+Compute password hash: ::
+
+.. code-block:: console
 
     $ password_hash.py "password_to_hash"
     > password = password_to_hash
@@ -95,7 +158,9 @@ create.py script launched above generates a new admin password each time, these
 scripts enable to use always the same.
 
 For formatting the source files in a unique pdf document having 2 pages per
-sheet : ::
+sheet: ::
+
+.. code-block:: console
 
     $ make print_sources
     > Pages printed in sources.pdf
@@ -104,7 +169,7 @@ Downloads
 =========
 
 These softwares are stored in the static directory. This is just a reminder on
-where they have been taken and what are the versions used here :
+where they have been taken and what are the versions used here:
 
 - `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.5.1 ;
 - `Bootstrap 4 <http://getbootstrap.com/>`_ - Version 4.5.2 ;
@@ -117,15 +182,24 @@ where they have been taken and what are the versions used here :
 Internationalization
 ====================
 
-Creation : ::
+Creation: ::
+
+.. code-block:: console
 
     pybabel extract -F babel-mapping.ini -k _ -k _l --no-wrap -o locales/messages.pot .
     pybabel init -i messages.pot -d translations -l en
     pybabel init -i messages.pot -d translations -l fr
     pybabel compile -d translations
 
-Update : ::
+Update: ::
+
+.. code-block:: console
 
     pybabel extract -F babel-mapping.ini -k _ -k _l --no-wrap -o locales/messages.pot .
     pybabel update -i messages.pot --no-wrap -d translations
     pybabel compile -d translations
+
+
+.. [1] `Suggested build environment <https://github.com/pyenv/pyenv/wiki#suggested-build-environment>`_
+.. [2] `How To Update All Python Packages <https://www.activestate.com/resources/quick-reads/how-to-update-all-python-packages>`_
+.. [3] `How To Install Python 3.9 on Ubuntu 20.04 <https://tecadmin.net/how-to-install-python-3-9-on-ubuntu-20-04/>`_
