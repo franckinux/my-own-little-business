@@ -6,7 +6,6 @@ my-own-little-business~*.ini
 my-own-little-business.ini
 build/
 molb.egg-info/
-.env
 dist/
 tags*
 logo.png
