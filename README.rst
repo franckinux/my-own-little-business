@@ -37,13 +37,20 @@ Download python 3.9.7 (see [3]_):
 
     cd tmp
     wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz
+    tar xzf Python-3.9.7.tgz
     cd Python-3.9.7
-    ./configure --prefix=/usr --enable-optimizations --enable-shared \
-    --with-system-expat --with-system-ffi --with-ensurepip=yes
+    ./configure --prefix=/usr/local --enable-optimizations --enable-shared \
+    --with-system-expat --with-system-ffi --with-ensurepip=install
     make
-    sudo make altinstall
+    sudo make install
     cd ..
     sudo rm -rf Python-3.9.7
+
+Run the command: ::
+
+.. code-block:: console
+
+    sudo ldconfig
 
 Python packages to install
 ==========================
