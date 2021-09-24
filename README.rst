@@ -35,22 +35,40 @@ Download python 3.9.7 (see [3]_):
 
 .. code-block:: console
 
+    sudo mkdir /opt/python3.9
     cd tmp
     wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz
     tar xzf Python-3.9.7.tgz
     cd Python-3.9.7
-    ./configure --prefix=/usr/local --enable-optimizations --enable-shared \
+    ./configure --prefix=/opt/python3.9 --enable-optimizations --enable-shared \
     --with-system-expat --with-system-ffi --with-ensurepip=install
     make
     sudo make install
     cd ..
     sudo rm -rf Python-3.9.7
 
-Run the command: ::
+- Update the library search path:
+
+  Create the /etc/ld.so.conf.d/python3.9.conf file containing this line:
+
+.. code-block:: console
+
+  /opt/python3.9/lib
+
+ and run this command:
 
 .. code-block:: console
 
     sudo ldconfig
+
+- Update the environment variable PATH. Add this line to your ~/.profile
+  file:
+
+.. code-block:: console
+
+    if [ -d "/opt/python3.9/bin" ] ; then
+        PATH="/opt/python3.9/bin:$PATH"
+    fi
 
 Python packages to install
 ==========================
