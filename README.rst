@@ -61,24 +61,6 @@ Download python 3.9.7 (see [3]_):
 
     sudo ldconfig
 
-- Update the environment variable PATH. Add this line to your ~/.profile
-  file:
-
-.. code-block:: console
-
-    if [ -d "/opt/python3.9/bin" ] ; then
-        PATH="/opt/python3.9/bin:$PATH"
-    fi
-
-Python packages to install
-==========================
-
-Update your PATH environment variable (possibly in your bashrc):
-
-.. code-block:: console
-
-    $ export PATH=~/.local/bin:$PATH
-
 Install molb
 ============
 
@@ -107,7 +89,7 @@ Create a virtual env, install molb and its dependencies: ::
 
     $ git clone https://github.com/franckinux/my-own-little-business.git
     $ cd /path/to/my-own-little-business
-    $ python3 -venv --prompt molb --upgrade-deps
+    $ /opt/python3.9/bin/python3 -m venv .venv --prompt molb --upgrade-deps
 
 Activate the virtualenv: ::
 
@@ -129,7 +111,7 @@ Create the database: ::
     $ createdb molb
 
 Export the path to the config file in an environment variable. Put it in your
-~/.bashrc file or better in a .env file in your project's directory: ::
+~/.bashrc file: ::
 
 .. code-block:: console
 
