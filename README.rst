@@ -1,3 +1,28 @@
+Git configuration
+=================
+
+Name and email:
+
+.. code-block:: console
+
+    git config --global user.name "MY Name"
+    git config --global user.email my.name@evbox.com
+
+Aliases:
+
+.. code-block:: console
+
+    git config --global alias.co checkout
+    git config --global alias.br branch
+    git config --global alias.ci commit
+    git config --global alias.st status
+
+Credentials:
+
+.. code-block:: console
+
+    git config credential.helper 'cache --timeout=86400'
+
 Packages to install
 ===================
 
@@ -47,15 +72,14 @@ Download python 3.9.7 (see [3]_):
     cd ..
     sudo rm -rf Python-3.9.7
 
-- Update the library search path:
-
-  Create the /etc/ld.so.conf.d/python3.9.conf file containing this line:
+Update the library search path. Create the /etc/ld.so.conf.d/python3.9.conf file
+containing this line:
 
 .. code-block:: console
 
   /opt/python3.9/lib
 
- and run this command:
+and run this command:
 
 .. code-block:: console
 
@@ -139,6 +163,49 @@ Launch the server: ::
 
     $ gunicorn molb.main:app --bind 127.0.0.1:8080 --workers 3 --worker-class aiohttp.GunicornWebWorker
 
+Autoactivation of the python virtual environment
+================================================
+
+Create this script in your home directory (autoactivate_venv.sh):
+
+.. code-block:: console
+
+    # auto activate virtualenv
+    # Modified solution based on https://stackoverflow.com/questions/45216663/how-to-automatically-activate-virtualenvs-when-cding-into-a-directory/56309561#56309561
+    function cd() {
+      builtin cd "$@"
+
+      ## Default path to virtualenv in your projects
+      DEFAULT_ENV_PATH="./.venv"
+
+      ## If env folder is found then activate the vitualenv
+      function activate_venv() {
+        if [[ -f "${DEFAULT_ENV_PATH}/bin/activate" ]] ; then
+          source "${DEFAULT_ENV_PATH}/bin/activate"
+          echo "Activating ${VIRTUAL_ENV}"
+        fi
+      }
+
+      if [[ -z "$VIRTUAL_ENV" ]] ; then
+        activate_venv
+      else
+        ## check the current folder belong to earlier VIRTUAL_ENV folder
+        # if yes then do nothing
+        # else deactivate then run a new env folder check
+        parentdir="$(dirname ${VIRTUAL_ENV})"
+        if [[ "$PWD"/ != "$parentdir"/* ]] ; then
+          echo "Deactivating ${VIRTUAL_ENV}"
+          deactivate
+          activate_venv
+        fi
+      fi
+    }
+
+And add this line at the end of your ~/.bashrc file:
+
+.. code-block:: console
+
+    source ~/autoactivate_venv.sh
 
 pre-commit installation
 =======================
@@ -180,10 +247,10 @@ where they have been taken and what are the versions used here:
 
 - `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.5.1 ;
 - `Bootstrap 4 <http://getbootstrap.com/>`_ - Version 4.5.2 ;
-- `Popper <https://popper.js.org/>`_- Version 2.5.1 ;
-- `Moment <https://momentjs.com/>`_- Version 2.29.0 ;
-- `Tempus Dominus - Bootstrap 4 <htpp://>`_ - Version 5.1.2 ;
-- `Font Awesome <https://fontawesome.com/>`_- Version 5.14.0 ;
+- `Popper <https://popper.js.org/>`_ - Version 2.5.1 ;
+- `Moment <https://momentjs.com/>`_ - Version 2.29.0 ;
+- `Tempus Dominus - Bootstrap 4 <https://github.com/tempusdominus/bootstrap-4>`_ - Version 5.1.2 ;
+- `Font Awesome <https://fontawesome.com/>`_ - Version 5.14.0 ;
 - `Leaflet <https://leafletjs.com/>`_ - Version 1.7.1 ;
 
 Internationalization
