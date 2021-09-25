@@ -53,6 +53,12 @@ For printing the sources: ::
 
     sudo apt install enscript psutils
 
+For pipdeptree Python module module:
+
+.. code-block:: console
+
+    sudo apt install graphviz
+
 Python 3.9.7 installation
 =========================
 
@@ -72,8 +78,8 @@ Download python 3.9.7 (see [3]_):
     cd ..
     sudo rm -rf Python-3.9.7
 
-Update the library search path. Create the /etc/ld.so.conf.d/python3.9.conf file
-containing this line:
+Update the library search path. Create the /etc/ld.so.conf.d/python3.9.conf
+file containing this line:
 
 .. code-block:: console
 
