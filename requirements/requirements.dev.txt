@@ -4,15 +4,15 @@ cfgv==3.3.1
 distlib==0.3.3
 doc8==0.9.1
 docutils==0.18
-filelock==3.3.1
+filelock==3.3.2
 flake8==4.0.1
 graphviz==0.17
-identify==2.3.0
+identify==2.3.4
 jedi==0.18.0
 mccabe==0.6.1
 nodeenv==1.6.0
 parso==0.8.2
-pbr==5.6.0
+pbr==5.7.0
 pipdeptree==2.2.0
 platformdirs==2.4.0
 pre-commit==2.15.0
@@ -27,4 +27,4 @@ six==1.16.0
 stevedore==3.5.0
 stdlib-list==0.8.0
 toml==0.10.2
-virtualenv==20.8.1
+virtualenv==20.10.0
