@@ -62,7 +62,7 @@ For pipdeptree Python module module:
 Python 3.9.7 installation
 =========================
 
-Download python 3.9.7 (see [3]_):
+- Download and install python 3.9.7 (see [3]_):
 
 .. code-block:: console
 
@@ -78,18 +78,37 @@ Download python 3.9.7 (see [3]_):
     cd ..
     sudo rm -rf Python-3.9.7
 
-Update the library search path. Create the /etc/ld.so.conf.d/python3.9.conf
-file containing this line:
+- Update the library search path:
+
+  Create the /etc/ld.so.conf.d/python3.9.conf file containing this line:
 
 .. code-block:: console
 
   /opt/python3.9/lib
 
-and run this command:
+ and run this command:
 
 .. code-block:: console
 
     sudo ldconfig
+
+- Update the environment variable PATH. Add this line to your ~/.profile
+  file:
+
+.. code-block:: console
+
+    if [ -d "/opt/python3.9/bin" ] ; then
+        PATH="/opt/python3.9/bin:$PATH"
+    fi
+
+Python packages to install
+==========================
+
+Update your PATH environment variable (possibly in your bashrc):
+
+.. code-block:: console
+
+    $ export PATH=~/.local/bin:$PATH
 
 Install molb
 ============
