@@ -6,7 +6,7 @@ doc8==0.9.1
 docutils==0.18
 filelock==3.3.2
 flake8==4.0.1
-graphviz==0.17
+graphviz==0.18
 identify==2.3.4
 jedi==0.18.0
 mccabe==0.6.1
@@ -17,7 +17,7 @@ pipdeptree==2.2.0
 platformdirs==2.4.0
 pre-commit==2.15.0
 pycodestyle==2.8.0
-pycparser==2.20
+pycparser==2.21
 pydeps==1.10.12
 pyflakes==2.4.0
 Pygments==2.10.0
