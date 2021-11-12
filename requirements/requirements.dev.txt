@@ -2,7 +2,7 @@ backports.entry-points-selectable==1.1.1
 cffi==1.15.0
 cfgv==3.3.1
 distlib==0.3.3
-doc8==0.9.1
+doc8==0.10.1
 docutils==0.18
 filelock==3.3.2
 flake8==4.0.1

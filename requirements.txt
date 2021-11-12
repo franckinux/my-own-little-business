@@ -1,2 +1,3 @@
-# -r requirements/requirements.dev.txt
 -r requirements/requirements.prod.txt
+# -r requirements/requirements.dev.txt
+# -r requirements/requirements.vim.txt
