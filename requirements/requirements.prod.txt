@@ -1,4 +1,4 @@
-aiohttp==3.8.0
+aiohttp==3.8.1
 aiohttp-babel==0.0.6
 aiohttp-jinja2==1.5
 aiohttp-security==0.4.0
@@ -7,7 +7,7 @@ aiohttp-session-flash==0.0.4
 aiosignal==1.2.0
 aiosmtplib==1.1.6
 async-timeout==4.0.1
-asyncpg==0.24.0
+asyncpg==0.25.0
 attrs==21.2.0
 Babel==2.9.1
 chardet==4.0.0
@@ -25,6 +25,6 @@ multidict==5.2.0
 passlib==1.7.4
 pytz==2021.3
 speaklater==1.3
-typing-extensions==3.10.0.2
+typing_extensions==4.0.0
 WTForms==3.0.0
 yarl==1.7.2
