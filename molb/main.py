@@ -49,7 +49,18 @@ async def attach_db(config):
         config["database"]["host"], config["database"]["port"],
         config["database"]["database"]
     )
-    return await create_pool(dsn=dsn, loop=loop)
+    return await create_pool(dsn=dsn)
+
+
+async def startup(app):
+    db_pool = await attach_db(app["config"])
+    app["db-pool"] = db_pool
+
+    setup_security(
+        app,
+        SessionIdentityPolicy(),
+        DBAuthorizationPolicy(db_pool)
+    )
 
 
 async def cleanup(app):
@@ -63,21 +74,14 @@ async def authorized_userid_context_processor(request):
 
 async def create_app():
     config = read_configuration_file()
-    db_pool = await attach_db(config)
 
     app = web.Application(middlewares=[error_middleware, babel_middleware])
     app["config"] = config
-    app["db-pool"] = db_pool
 
     app["mailer"] = MassMailer()
 
     # beware of order !
     setup_session(app)
-    setup_security(
-        app,
-        SessionIdentityPolicy(),
-        DBAuthorizationPolicy(db_pool)
-    )
     app.middlewares.append(aiohttp_session_flash.middleware)
 
     template_dir = op.join(op.dirname(op.abspath(__file__)), "templates")
@@ -94,6 +98,7 @@ async def create_app():
 
     setup_routes(app)
 
+    app.on_startup.append(startup)
     app.on_cleanup.append(cleanup)
 
     return app

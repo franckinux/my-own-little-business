@@ -1,28 +1,3 @@
-Git configuration
-=================
-
-Name and email:
-
-.. code-block:: console
-
-    git config --global user.name "MY Name"
-    git config --global user.email my.name@evbox.com
-
-Aliases:
-
-.. code-block:: console
-
-    git config --global alias.co checkout
-    git config --global alias.br branch
-    git config --global alias.ci commit
-    git config --global alias.st status
-
-Credentials:
-
-.. code-block:: console
-
-    git config credential.helper 'cache --timeout=86400'
-
 Packages to install
 ===================
 
@@ -31,15 +6,6 @@ Update the package list:
 .. code-block:: console
 
     sudo apt-get update
-
-For python installation (see [1]_):
-
-.. code-block:: console
-
-    sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev \
-    liblzma-dev
 
 For cryptography python module: ::
 
@@ -59,48 +25,6 @@ For pipdeptree Python module module:
 
     sudo apt install graphviz
 
-Python 3.9.7 installation
-=========================
-
-- Download and install python 3.9.7 (see [3]_):
-
-.. code-block:: console
-
-    sudo mkdir /opt/python3.9
-    cd tmp
-    wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz
-    tar xzf Python-3.9.7.tgz
-    cd Python-3.9.7
-    ./configure --prefix=/opt/python3.9 --enable-optimizations --enable-shared \
-    --with-system-expat --with-system-ffi --with-ensurepip=install
-    make
-    sudo make install
-    cd ..
-    sudo rm -rf Python-3.9.7
-
-- Update the library search path:
-
-  Create the /etc/ld.so.conf.d/python3.9.conf file containing this line:
-
-.. code-block:: console
-
-  /opt/python3.9/lib
-
- and run this command:
-
-.. code-block:: console
-
-    sudo ldconfig
-
-- Update the environment variable PATH. Add this line to your ~/.profile
-  file:
-
-.. code-block:: console
-
-    if [ -d "/opt/python3.9/bin" ] ; then
-        PATH="/opt/python3.9/bin:$PATH"
-    fi
-
 Python packages to install
 ==========================
 
@@ -113,12 +37,12 @@ Update your PATH environment variable (possibly in your bashrc):
 Install molb
 ============
 
-**Note**: if your user is not called molb as in the following instructions, add
-"-U user" and "-W" options to dropdb, creatdb and psql commands.
+**Note**: if your user is not called `molb` as in the following instructions,
+add "-U user" and "-W" options to dropdb, creatdb and psql commands.
 
 **Note**: in order for the postgresql authentication to work, you may have to
-change the authentication method from *peer* to *md5* in PostgreSQL pg_hba.conf
-configuration file for all users except postgres user.
+change the authentication method from *peer* to *scram-sha-256* in PostgreSQL
+`pg_hba.conf` configuration file for all users except postgres user.
 
 Create a database user: ::
 
@@ -129,7 +53,8 @@ Create a database user: ::
     postgres@hostname:~$ createuser --pwprompt --createdb molb
     Enter password for new role:
     Enter it again:
-    postgres@hostname:~$ déconnexion
+    postgres@hostname:~$ exit
+    logout
     molb@hostname$
 
 Create a virtual env, install molb and its dependencies: ::
@@ -138,7 +63,7 @@ Create a virtual env, install molb and its dependencies: ::
 
     $ git clone https://github.com/franckinux/my-own-little-business.git
     $ cd /path/to/my-own-little-business
-    $ /opt/python3.9/bin/python3 -m venv .venv --prompt molb --upgrade-deps
+    $ python3 -m venv .venv --prompt molb --upgrade-deps
 
 Activate the virtualenv: ::
 
@@ -191,46 +116,38 @@ Launch the server: ::
 Autoactivation of the python virtual environment
 ================================================
 
-Create this script in your home directory (autoactivate_venv.sh):
+Create this script in your home directory (~/cd.sh):
 
 .. code-block:: console
 
-    # auto activate virtualenv
-    # Modified solution based on https://stackoverflow.com/questions/45216663/how-to-automatically-activate-virtualenvs-when-cding-into-a-directory/56309561#56309561
-    function cd() {
-      builtin cd "$@"
-
-      ## Default path to virtualenv in your projects
-      DEFAULT_ENV_PATH="./.venv"
-
-      ## If env folder is found then activate the vitualenv
-      function activate_venv() {
-        if [[ -f "${DEFAULT_ENV_PATH}/bin/activate" ]] ; then
-          source "${DEFAULT_ENV_PATH}/bin/activate"
-          echo "Activating ${VIRTUAL_ENV}"
+    function cd()
+    {
+        if [ -f .exit.sh ]; then
+            source .exit.sh;
         fi
-      }
 
-      if [[ -z "$VIRTUAL_ENV" ]] ; then
-        activate_venv
-      else
-        ## check the current folder belong to earlier VIRTUAL_ENV folder
-        # if yes then do nothing
-        # else deactivate then run a new env folder check
-        parentdir="$(dirname ${VIRTUAL_ENV})"
-        if [[ "$PWD"/ != "$parentdir"/* ]] ; then
-          echo "Deactivating ${VIRTUAL_ENV}"
-          deactivate
-          activate_venv
+        if [ -z $* ]; then
+            builtin cd ~
+        else
+            builtin cd "$*"
         fi
-      fi
+
+        if [ -f .enter.sh ]; then
+            source .enter.sh;
+        fi
     }
 
 And add this line at the end of your ~/.bashrc file:
 
 .. code-block:: console
 
-    source ~/autoactivate_venv.sh
+    source ~/cd.sh
+
+Any command present in `.enter.sh` will be execute when entering the directory
+it is located in.
+
+Any command present in `.exit.sh` will be execute when exiting the directory
+it is located in.
 
 pre-commit installation
 =======================
@@ -270,13 +187,13 @@ Downloads
 These softwares are stored in the static directory. This is just a reminder on
 where they have been taken and what are the versions used here:
 
-- `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.5.1 ;
-- `Bootstrap 4 <http://getbootstrap.com/>`_ - Version 4.5.2 ;
-- `Popper <https://popper.js.org/>`_ - Version 2.5.1 ;
-- `Moment <https://momentjs.com/>`_ - Version 2.29.0 ;
-- `Tempus Dominus - Bootstrap 4 <https://github.com/tempusdominus/bootstrap-4>`_ - Version 5.1.2 ;
-- `Font Awesome <https://fontawesome.com/>`_ - Version 5.14.0 ;
-- `Leaflet <https://leafletjs.com/>`_ - Version 1.7.1 ;
+- `JQuery <https://code.jquery.com/jquery/>`_ - Version 3.7.1 ;
+- `Bootstrap 4 <http://getbootstrap.com/>`_ - Version 4.6.2 ;
+- `Popper <https://popper.js.org/>`_ - Version 2.11.8 ;
+- `Moment <https://momentjs.com/>`_ - Version 2.30.1 ;
+- `Tempus Dominus - Bootstrap 4 <https://github.com/tempusdominus/bootstrap-4>`_ - Version 5.39.0 ;
+- `Font Awesome <https://fontawesome.com/>`_ - Version 5.14.4 ;
+- `Leaflet <https://leafletjs.com/>`_ - Version 1.9.4 ;
 
 Internationalization
 ====================
