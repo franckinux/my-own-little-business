@@ -1,5 +1,5 @@
 aiohttp==3.9.1
-aiohttp-babel==0.0.6
+git+https://github.com/tenproduct/aiohttp_babel.git@master
 aiohttp-jinja2==1.6
 aiohttp-security==0.5.0
 aiohttp-session==2.12.0
