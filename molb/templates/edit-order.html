@@ -18,7 +18,7 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block page_content %}
-<p><b>{{ _("Fournée du") }} {{ batch_date.strftime("%d/%m/%YM") }}</b></p>
+<p><b>{{ _("Fournée du") }} {{ batch_date.strftime("%d/%m/%Y") }}</b></p>
 
 <form method="POST" action="{{ url("edit_fill_order", id=order_id) }}" role="form">
     {{ form.csrf_token }}
