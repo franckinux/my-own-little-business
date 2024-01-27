@@ -1,3 +1,9 @@
 [flake8]
-ignore = E501, W605
-max-complexity = 10
+ignore = E501, W503, W504
+exclude = .git,.mypy_cache,.pytest_cache,.venv,__pycache__,assets,logs,reporting,requirements,ssh,tests/samples
+per-file-ignores =
+    conftest.py: F401,F403
+    tests/ocpp/test_startup.py: F821,F841
+    tests/ocpp/test_transaction_meter_values.py: F821,F841
+    tools/create_report.py: W605
+max-complexity = 30
